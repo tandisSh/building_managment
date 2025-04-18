@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -41,6 +43,36 @@ class AuthController extends Controller
 
         return back()->withErrors(['phone' => 'اطلاعات ورود نامعتبر است.']);
     }
+
+    public function showManagerRegisterForm()
+    {
+        return view('auth.register.manager');
+    }
+
+    public function registerManager(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|regex:/^09[0-9]{9}$/|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // اختصاص نقش مدیر
+        $managerRole = Role::where('name', 'manager')->first();
+        $user->roles()->attach($managerRole);
+
+        // لاگین خودکار کاربر پس از ثبت‌نام
+        Auth::login($user);
+
+        return redirect()->route('manager.dashboard')
+            ->with('success', 'ثبت‌نام شما با موفقیت انجام شد!');
+    }
 }
 
     // خروج
@@ -49,33 +81,3 @@ class AuthController extends Controller
     //     Auth::logout();
     //     return redirect()->route('home');
     // }
-
-    // // نمایش فرم ثبت‌نام مدیر ساختمان
-    // public function showManagerRegisterForm()
-    // {
-    //     return view('auth.register_manager');
-    // }
-
-    // // ثبت‌نام مدیر
-    // public function registerManager(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => 'required|string',
-    //         'phone' => 'required|unique:users,phone',
-    //         'password' => 'required|min:6|confirmed',
-    //     ]);
-
-    //     $user = User::create([
-    //         'name' => $request->name,
-    //         'phone' => $request->phone,
-    //         'password' => Hash::make($request->password),
-    //     ]);
-
-    //     // نقش مدیر را به کاربر اختصاص می‌دهیم
-    //     $managerRole = Role::where('name', 'manager')->first();
-    //     $user->roles()->attach($managerRole);
-
-    //     Auth::login($user);
-    //     return redirect()->route('manager.dashboard');
-    // }
-

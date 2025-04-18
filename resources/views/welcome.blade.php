@@ -18,7 +18,7 @@
                         <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4">
                             <i class="bi bi-box-arrow-in-right"></i> ورود به سیستم
                         </a>
-                        <a href="" class="btn btn-success btn-lg px-4">
+                        <a href="{{ route('register.manager') }}" class="btn btn-success btn-lg px-4">
                             <i class="bi bi-person-plus"></i> ثبت‌نام مدیر جدید
                         </a>
                     </div>

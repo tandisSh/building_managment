@@ -9,7 +9,7 @@
                         <a class="nav-link" href="{{ route('login') }}">ورود</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">ثبت‌نام مدیر</a>
+                        <a class="nav-link" href="{{ route('register.manager') }}">ثبت‌نام مدیر</a>
                     </li>
                 @endguest
             </ul>

@@ -13,6 +13,8 @@ Route::get('/', function () {
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register/manager', [AuthController::class, 'showManagerRegisterForm'])->name('register.manager');
+    Route::post('/register/manager', [AuthController::class, 'registerManager']);
 });
 
 // صفحات اختصاصی هر نقش:
