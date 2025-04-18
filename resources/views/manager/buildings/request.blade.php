@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="card shadow-lg">
-    <div class="card-header bg-primary text-white py-3">
+    <div class="card-header text-white py-3" style="background: linear-gradient(90deg, #7b1fa2, #4fc3f7);">
         <h5 class="mb-0"><i class="bi bi-building-add"></i> فرم درخواست ساختمان جدید</h5>
     </div>
     <div class="card-body">
@@ -25,7 +25,7 @@
                     <small class="text-muted">فرمت‌های مجاز: PDF, JPG, PNG (حداکثر 2MB)</small>
                 </div>
                 <div class="col-12 mt-4">
-                    <button type="submit" class="btn btn-primary w-100 py-2">
+                    <button type="submit" class="btn w-100 py-2" style="background: linear-gradient(to left, #7b1fa2, #4fc3f7); color: #fff;">
                         <i class="bi bi-send-check"></i> ارسال درخواست
                     </button>
                 </div>

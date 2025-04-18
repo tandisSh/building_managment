@@ -1,31 +1,37 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود | سیستم مدیریت ساختمان</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+</head>
 
-@section('title', 'ورود به سیستم')
-
-@section('content')
-<div class="row justify-content-center mt-5">
-    <div class="col-md-5">
-        <div class="card shadow-lg">
-            <div class="card-header bg-primary text-white text-center py-3">
-                <h4><i class="bi bi-box-arrow-in-right"></i> ورود به سیستم</h4>
-            </div>
-            <div class="card-body p-4">
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="phone" class="form-label">شماره موبایل</label>
-                        <input type="text" class="form-control" id="phone" name="phone" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="password" class="form-label">رمز عبور</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100 py-2">
-                        <i class="bi bi-box-arrow-in-right"></i> ورود
-                    </button>
-                </form>
-            </div>
+<body>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card login-card shadow-lg text-center p-4">
+        <div class="card-header bg-gradient text-white mb-4">
+            <h4><i class="bi bi-box-arrow-in-right"></i> ورود به سیستم</h4>
+        </div>
+        <div class="card-body text-start">
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+                <div class="mb-3">
+                    <label for="phone" class="form-label">شماره موبایل</label>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">رمز عبور</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-login w-100 py-2">
+                    <i class="bi bi-box-arrow-in-right"></i> ورود
+                </button>
+            </form>
         </div>
     </div>
 </div>
-@endsection
+</body>
+</html>

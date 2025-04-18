@@ -8,25 +8,26 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, string $role)
+    public function handle(Request $request, Closure $next, $role)
     {
-        $user = Auth::user();
-
-        if (!$user) {
+        if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // بررسی نقش با روش تضمینی
-        if (!$this->checkUserRole($user, $role)) {
-            abort(403, 'دسترسی ممنوع');
+        $user = Auth::user();
+
+        if (!$user->hasRole($role)) {
+            // اگر کاربر نقش مورد نظر را نداشت، به داشبورد مربوط به نقش خودش ریدایرکت شود
+            $redirectRoute = match(true) {
+                $user->hasRole('super_admin') => 'admin.dashboard',
+                $user->hasRole('manager') => 'manager.dashboard',
+                $user->hasRole('resident') => 'resident.dashboard',
+                default => 'home'
+            };
+
+            return redirect()->route($redirectRoute)->with('error', 'شما مجوز دسترسی به این صفحه را ندارید');
         }
 
         return $next($request);
-    }
-
-    protected function checkUserRole($user, string $role): bool
-    {
-        // روش کاملاً مطمئن بدون وابستگی به مدل Role
-        return in_array($role, $user->roles->pluck('name')->toArray());
     }
 }

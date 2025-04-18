@@ -14,6 +14,11 @@ class SuperAdminController extends Controller
         $requests = BuildingRequest::with('user')->where('status', 'pending')->get();
         return view('super_admin.dashboard', compact('requests'));
     }
+    public function requests()
+    {
+        $requests = \App\Models\BuildingRequest::with('user')->latest()->get();
+        return view('super_admin.requests', compact('requests'));
+    }
 
     public function approveRequest($id)
     {

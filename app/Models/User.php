@@ -55,7 +55,11 @@ class User extends Authenticatable
     }
 
     public function hasRole($roleName)
-{
-    return $this->roles()->where('name', $roleName)->exists();
-}
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
+    public function building()
+    {
+        return $this->hasOne(Building::class, 'manager_id');
+    }
 }

@@ -27,10 +27,10 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super_admin.dashboard');
 
     // مدیریت درخواست‌های ساختمان
-    Route::get('/building-requests', [SuperAdminController::class, 'pendingRequests'])->name('admin.requests');
+    Route::get('/requests', [SuperAdminController::class, 'requests'])->name('super_admin.requests');
     Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('admin.requests.approve');
     Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('admin.requests.reject');
 });

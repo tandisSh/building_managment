@@ -15,7 +15,6 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-
     public function login(Request $request)
     {
         $request->validate([
@@ -24,21 +23,15 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($request->only('phone', 'password'))) {
-            $user = Auth::user()->with('roles')->first(); // بارگذاری رابطه roles
+            $user = Auth::user();
 
-            if ($user->hasRole('super_admin')) {
-                return redirect()->route('admin.dashboard');
-            }
-
-            if ($user->hasRole('manager')) {
-                return redirect()->route('manager.dashboard');
-            }
-
-            if ($user->hasRole('resident')) {
-                return redirect()->route('resident.dashboard');
-            }
-
-            return redirect('/');
+            // ریدایرکت بر اساس نقش کاربر
+            return match(true) {
+                $user->hasRole('super_admin') => redirect()->route('admin.dashboard'),
+                $user->hasRole('manager') => redirect()->route('manager.dashboard'),
+                $user->hasRole('resident') => redirect()->route('resident.dashboard'),
+                default => redirect('/')
+            };
         }
 
         return back()->withErrors(['phone' => 'اطلاعات ورود نامعتبر است.']);

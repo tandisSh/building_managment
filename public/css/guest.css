@@ -1,0 +1,38 @@
+body {
+    background: linear-gradient(to bottom right, #f3e5f5, #e1f5fe);
+    font-family: 'Vazir', sans-serif;
+}
+
+.register-card,
+.login-card,
+.welcome-card {
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    background-color: #ffffff;
+    border: none;
+}
+
+.card-header.bg-gradient-purple {
+    background: linear-gradient(to right, #a18cd1, #fbc2eb);
+    border-radius: 15px 15px 0 0;
+    padding: 1.25rem;
+}
+
+.btn-purple {
+    background: linear-gradient(to right, #a18cd1, #fbc2eb);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-purple:hover {
+    opacity: 0.9;
+}
+
+.card-body {
+    padding: 2rem;
+}
