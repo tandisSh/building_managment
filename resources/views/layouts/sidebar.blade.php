@@ -1,34 +1,49 @@
-<div class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
-    <div class="position-sticky pt-3">
-        <ul class="nav flex-column">
-            @auth
-                @if(auth()->user()->roles->contains('name', 'manager'))
-                <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('manager.dashboard') ? 'active' : '' }}"
-                       href="{{ route('manager.dashboard') }}">
-                        <i class="bi bi-speedometer2"></i>
-                        داشبورد
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('manager.buildings.*') ? 'active' : '' }}"
-                       href="{{ route('manager.buildings.create') }}">
-                        <i class="bi bi-building-add"></i>
-                        درخواست ساختمان
-                    </a>
-                </li>
-                @endif
+<div class="sidebar">
+    <div class="p-4">
+        <div class="text-center mb-4 text-white">
+            <h4>سیستم مدیریت ساختمان</h4>
+        </div>
 
-                @if(auth()->user()->roles->contains('name', 'super_admin'))
-                <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
-                       href="{{ route('admin.dashboard') }}">
-                        <i class="bi bi-shield-lock"></i>
-                        مدیریت درخواست‌ها
-                    </a>
-                </li>
-                @endif
-            @endauth
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="#">
+                    <i class="bi bi-house-door me-2"></i>
+                    خانه
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-building me-2"></i>
+                    درخواست ساختمان
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-list-ul me-2"></i>
+                    لیست ساختمان‌ها
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-people me-2"></i>
+                    مدیریت ساکنین
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-file-text me-2"></i>
+                    گزارشات
+                </a>
+            </li>
+            <li class="nav-item mt-4">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="nav-link w-100 text-start bg-transparent border-0">
+                        <i class="bi bi-box-arrow-left me-2"></i>
+                        خروج از حساب
+                    </button>
+                </form>
+            </li>
         </ul>
     </div>
 </div>

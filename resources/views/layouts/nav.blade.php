@@ -1,28 +1,22 @@
-<!-- resources/views/layouts/nav.blade.php -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('home') }}">مدیریت ساختمان</a>
-        <div class="collapse navbar-collapse">
-            <ul class="navbar-nav ms-auto">
-                @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">ورود</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register.manager') }}">ثبت‌نام مدیر</a>
-                    </li>
-                @endguest
-                @auth
-                    <li class="nav-item">
-                        <form action="{{ route('logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="nav-link btn btn-link">
-                                <i class="bi bi-box-arrow-left"></i> خروج
-                            </button>
-                        </form>
-                    </li>
-                @endauth
+<div class="d-flex align-items-center">
+    @auth
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+               id="dropdownUser" data-bs-toggle="dropdown">
+                <span class="me-2">{{ auth()->user()->name }}</span>
+                <i class="bi bi-person-circle fs-4"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="#">پروفایل</a></li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="dropdown-item">خروج</button>
+                    </form>
+                </li>
             </ul>
         </div>
-    </div>
-</nav>
+    @else
+        <a href="{{ route('login') }}" class="btn btn-outline-primary">ورود</a>
+    @endauth
+</div>
