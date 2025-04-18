@@ -17,11 +17,15 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
     protected $fillable = [
         'name',
+        'phone',
         'email',
         'password',
+        'role_id',
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,5 +48,16 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    // بررسی اینکه آیا کاربر نقش خاصی دارد
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->exists();
     }
 }
