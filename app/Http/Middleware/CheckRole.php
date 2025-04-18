@@ -4,24 +4,29 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth; 
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, string $role)
     {
-        // استفاده از Auth facade به جای تابع auth()
-        if (!Auth::check()) {
+        $user = Auth::user();
+
+        if (!$user) {
             return redirect()->route('login');
         }
 
-        // استفاده از مدل User
-        if (!User::hasRole($role)) { // یا Auth::user()->hasRole($role)
-            abort(403, 'دسترسی غیرمجاز!');
+        // بررسی نقش با روش تضمینی
+        if (!$this->checkUserRole($user, $role)) {
+            abort(403, 'دسترسی ممنوع');
         }
 
         return $next($request);
+    }
+
+    protected function checkUserRole($user, string $role): bool
+    {
+        // روش کاملاً مطمئن بدون وابستگی به مدل Role
+        return in_array($role, $user->roles->pluck('name')->toArray());
     }
 }

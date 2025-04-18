@@ -27,7 +27,7 @@ class AuthController extends Controller
             $user = Auth::user()->with('roles')->first(); // بارگذاری رابطه roles
 
             if ($user->hasRole('super_admin')) {
-                return redirect()->route('super_admin.dashboard');
+                return redirect()->route('admin.dashboard');
             }
 
             if ($user->hasRole('manager')) {
@@ -42,6 +42,14 @@ class AuthController extends Controller
         }
 
         return back()->withErrors(['phone' => 'اطلاعات ورود نامعتبر است.']);
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/')->with('success', 'شما با موفقیت خارج شدید');
     }
 
     public function showManagerRegisterForm()

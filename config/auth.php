@@ -70,7 +70,7 @@ return [
         //     'table' => 'users',
         // ],
     ],
-
+    'model' => App\Models\User::class,
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords

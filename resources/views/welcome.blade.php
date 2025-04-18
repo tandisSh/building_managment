@@ -15,7 +15,7 @@
                     <p class="lead">برای ادامه لطفاً وارد شوید یا ثبت‌نام کنید</p>
 
                     <div class="d-flex justify-content-center gap-3 mt-4">
-                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-4">
+                        <a href="{{ route('loginForm') }}" class="btn btn-primary btn-lg px-4">
                             <i class="bi bi-box-arrow-in-right"></i> ورود به سیستم
                         </a>
                         <a href="{{ route('register.manager') }}" class="btn btn-success btn-lg px-4">

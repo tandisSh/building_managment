@@ -12,6 +12,16 @@
                         <a class="nav-link" href="{{ route('register.manager') }}">ثبت‌نام مدیر</a>
                     </li>
                 @endguest
+                @auth
+                    <li class="nav-item">
+                        <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="nav-link btn btn-link">
+                                <i class="bi bi-box-arrow-left"></i> خروج
+                            </button>
+                        </form>
+                    </li>
+                @endauth
             </ul>
         </div>
     </div>
