@@ -17,11 +17,30 @@ class ManagerController extends Controller
 
     public function createRequest()
     {
+        $existingRequest = BuildingRequest::where('user_id', auth()->id())
+            ->whereIn('status', ['pending', 'approved']) // فقط اگر در حال بررسی یا تایید شده باشه، نذاره
+            ->first();
+
+        if ($existingRequest) {
+            return redirect()->route('manager.dashboard')
+                ->with('error', 'شما قبلاً یک درخواست ثبت کرده‌اید که هنوز در حال بررسی یا تایید شده است.');
+        }
+
         return view('manager.buildings.request');
     }
 
+
     public function storeRequest(Request $request)
     {
+        $existingRequest = BuildingRequest::where('user_id', auth()->id())
+            ->whereIn('status', ['pending', 'approved'])
+            ->first();
+
+        if ($existingRequest) {
+            return redirect()->route('manager.dashboard')
+                ->with('error', 'شما قبلاً یک درخواست ثبت کرده‌اید.');
+        }
+
         $request->validate([
             'building_name' => 'required',
             'address' => 'required',
@@ -40,4 +59,6 @@ class ManagerController extends Controller
         return redirect()->route('manager.dashboard')
             ->with('success', 'درخواست با موفقیت ثبت شد');
     }
+
+
 }

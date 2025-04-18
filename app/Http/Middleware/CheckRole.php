@@ -19,7 +19,7 @@ class CheckRole
         if (!$user->hasRole($role)) {
             // اگر کاربر نقش مورد نظر را نداشت، به داشبورد مربوط به نقش خودش ریدایرکت شود
             $redirectRoute = match(true) {
-                $user->hasRole('super_admin') => 'admin.dashboard',
+                $user->hasRole('super_admin') => 'super_admin.dashboard',
                 $user->hasRole('manager') => 'manager.dashboard',
                 $user->hasRole('resident') => 'resident.dashboard',
                 default => 'home'

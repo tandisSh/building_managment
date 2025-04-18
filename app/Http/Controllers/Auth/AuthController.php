@@ -27,7 +27,7 @@ class AuthController extends Controller
 
             // ریدایرکت بر اساس نقش کاربر
             return match(true) {
-                $user->hasRole('super_admin') => redirect()->route('admin.dashboard'),
+                $user->hasRole('super_admin') => redirect()->route('super_admin.dashboard'),
                 $user->hasRole('manager') => redirect()->route('manager.dashboard'),
                 $user->hasRole('resident') => redirect()->route('resident.dashboard'),
                 default => redirect('/')

@@ -44,13 +44,16 @@
                     </a>
                 </li>
 
-                {{-- ثبت درخواست ساختمان (همیشه فعال) --}}
-                <li class="nav-item">
-                    <a class="nav-link text-white {{ request()->is('manager/buildings/create') ? 'active fw-bold' : '' }}"
-                        href="{{ route('manager.buildings.create') }}">
-                        <i class="bi bi-building-add me-2"></i> ثبت ساختمان
-                    </a>
-                </li>
+                {{-- ثبت درخواست ساختمان  --}}
+                @if ($roles->contains('manager') && !in_array($buildingRequestStatus, ['pending', 'approved']))
+                    <li class="nav-item">
+                        <a class="nav-link text-white {{ request()->is('manager/buildings/create') ? 'active fw-bold' : '' }}"
+                            href="{{ route('manager.buildings.create') }}">
+                            <i class="bi bi-building-add me-2"></i> ثبت ساختمان
+                        </a>
+                    </li>
+                @endif
+
 
                 {{-- سایر گزینه‌ها بسته به وضعیت درخواست --}}
                 <li class="nav-item">
