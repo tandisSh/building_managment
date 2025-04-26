@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('building_requests', function (Blueprint $table) {
+        Schema::create('notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('building_name');
-            $table->text('address');
-            $table->string('document_path')->nullable(); // مسیر فایل مدارک
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('rejection_reason')->nullable();
+            $table->string('title');
+            $table->text('message');
+            $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });
-
     }
 
     /**
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('building_requests');
+        Schema::dropIfExists('notifications');
     }
 };

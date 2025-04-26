@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('building_requests', function (Blueprint $table) {
+        Schema::create('repair_requests', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('unit_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('building_name');
-            $table->text('address');
-            $table->string('document_path')->nullable(); // مسیر فایل مدارک
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('rejection_reason')->nullable();
+            $table->text('description');
+            $table->enum('status', ['pending', 'in_progress', 'done'])->default('pending');
             $table->timestamps();
         });
-
     }
 
     /**
@@ -29,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('building_requests');
+        Schema::dropIfExists('repair_requests');
     }
 };

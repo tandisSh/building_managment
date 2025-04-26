@@ -26,7 +26,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             // ریدایرکت بر اساس نقش کاربر
-            return match(true) {
+            return match (true) {
                 $user->hasRole('super_admin') => redirect()->route('super_admin.dashboard'),
                 $user->hasRole('manager') => redirect()->route('manager.dashboard'),
                 $user->hasRole('resident') => redirect()->route('resident.dashboard'),
@@ -68,17 +68,9 @@ class AuthController extends Controller
         $managerRole = Role::where('name', 'manager')->first();
         $user->roles()->attach($managerRole);
 
-        // لاگین خودکار کاربر پس از ثبت‌نام
         Auth::login($user);
 
         return redirect()->route('manager.dashboard')
             ->with('success', 'ثبت‌نام شما با موفقیت انجام شد!');
     }
 }
-
-    // خروج
-    // public function logout()
-    // {
-    //     Auth::logout();
-    //     return redirect()->route('home');
-    // }

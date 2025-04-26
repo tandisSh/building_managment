@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('building_requests', function (Blueprint $table) {
+        Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('building_name');
-            $table->text('address');
-            $table->string('document_path')->nullable(); // مسیر فایل مدارک
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('rejection_reason')->nullable();
+            $table->foreignId('invoice_id')->constrained()->onDelete('cascade');
+            $table->decimal('amount', 12, 2);
+            $table->timestamp('paid_at')->nullable();
+            $table->string('method')->nullable(); // روش پرداخت مثلا آنلاین
+            $table->string('status')->default('pending'); // pending / completed
             $table->timestamps();
         });
-
     }
 
     /**
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('building_requests');
+        Schema::dropIfExists('payments');
     }
 };

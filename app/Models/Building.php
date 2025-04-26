@@ -10,11 +10,26 @@ class Building extends Model
     [
         'manager_id',
         'name',
-        'address'
+        'address',
+        'shared_utilities',
+        // 'has_elevator', 'has_guard', 'has_cctv',
+        'number_of_floors',
+        'number_of_units',
+        'is_residential'
     ];
 
     public function manager()
     {
         return $this->belongsTo(User::class, 'manager_id');
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withPivot('role');
+    }
+
+    public function units()
+    {
+        return $this->hasMany(Unit::class);
     }
 }

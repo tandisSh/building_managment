@@ -62,4 +62,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(Building::class, 'manager_id');
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function repairRequests()
+    {
+        return $this->hasMany(RepairRequest::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
 }
