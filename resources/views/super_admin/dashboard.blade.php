@@ -1,16 +1,13 @@
 @extends('layouts.app')
-
-@section('title', 'داشبورد سوپرادمین')
-
 @section('content')
-<div class="card shadow-lg">
-    <div class="card-header text-white py-3" style="background: linear-gradient(90deg, #d81b60, #8e24aa);">
+<div class="card">
+    <div class="card-header text-white py-3">
         <h5 class="mb-0"><i class="bi bi-shield-lock"></i> مدیریت سیستم</h5>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-4 mb-4">
-                <div class="card h-100" style="border-right: 5px solid #64b5f6;">
+                <div class="card h-100 card-stat" style="border-right: 5px solid #64b5f6;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -24,7 +21,7 @@
             </div>
 
             <div class="col-md-4 mb-4">
-                <div class="card h-100" style="border-right: 5px solid #ffb74d;">
+                <div class="card h-100 card-stat" style="border-right: 5px solid #ffb74d;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -38,7 +35,7 @@
             </div>
 
             <div class="col-md-4 mb-4">
-                <div class="card h-100" style="border-right: 5px solid #81c784;">
+                <div class="card h-100 card-stat" style="border-right: 5px solid #81c784;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between">
                             <div>
@@ -56,7 +53,7 @@
             <h5 class="mb-3"><i class="bi bi-clock-history"></i> آخرین درخواست‌ها</h5>
             <div class="table-responsive">
                 <table class="table table-hover">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>ردیف</th>
                             <th>نام ساختمان</th>
@@ -94,11 +91,9 @@
                             </tr>
                         @endforelse
                     </tbody>
-
                 </table>
             </div>
         </div>
-
     </div>
 </div>
 @endsection

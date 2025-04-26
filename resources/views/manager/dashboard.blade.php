@@ -1,13 +1,9 @@
 @extends('layouts.app')
-
-@section('title', 'داشبورد مدیر')
-
 @section('content')
-<div class="card shadow-sm" style="font-size: 0.9rem">
-    <div class="card-header text-white py-2" style="background: linear-gradient(90deg, #7e57c2, #64b5f6);">
+<div class="card">
+    <div class="card-header text-white py-2">
         <h6 class="mb-0"><i class="bi bi-speedometer2 me-1"></i> وضعیت درخواست‌های ثبت ساختمان</h6>
     </div>
-
     <div class="card-body p-3">
         @if($requests->isEmpty())
             <div class="alert alert-warning">
@@ -16,7 +12,7 @@
         @else
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle text-center">
-                    <thead class="table-light">
+                    <thead>
                         <tr>
                             <th>#</th>
                             <th>نام ساختمان</th>

@@ -1,10 +1,7 @@
 @extends('layouts.app')
-
-@section('title', 'درخواست‌های مدیران')
-
 @section('content')
-<div class="card shadow-lg">
-    <div class="card-header text-white py-3" style="background: linear-gradient(90deg, #d81b60, #8e24aa);">
+<div class="card">
+    <div class="card-header text-white py-3">
         <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> درخواست‌های ثبت ساختمان</h5>
     </div>
     <div class="card-body table-responsive">
@@ -13,7 +10,7 @@
         @endif
 
         <table class="table table-bordered table-striped align-middle small">
-            <thead class="table-light">
+            <thead>
                 <tr>
                     <th>#</th>
                     <th>نام ساختمان</th>

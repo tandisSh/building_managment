@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand navbar-light bg-white shadow-sm">
+<nav class="navbar navbar-expand navbar-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">
             <i class="bi bi-building"></i> سیستم مدیریت ساختمان
