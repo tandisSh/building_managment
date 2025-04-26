@@ -17,15 +17,15 @@ return new class extends Migration
             $table->string('name');
             $table->text('address');
             $table->boolean('shared_utilities')->default(false); // آب و برق مشترک؟
-            // $table->boolean('has_elevator')->default(false);    // آسانسور داره؟
-            // $table->boolean('has_guard')->default(false);       // نگهبان داره؟
-            // $table->boolean('has_cctv')->default(false);         // دوربین مدار بسته؟
             $table->integer('number_of_floors')->nullable();     // تعداد طبقات
             $table->integer('number_of_units')->nullable();      // تعداد کل واحدها
             $table->timestamps();
         });
 
 
+            // $table->boolean('has_elevator')->default(false);    // آسانسور داره؟
+            // $table->boolean('has_guard')->default(false);       // نگهبان داره؟
+            // $table->boolean('has_cctv')->default(false);         // دوربین مدار بسته؟
     }
 
     /**
