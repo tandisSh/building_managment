@@ -280,4 +280,14 @@ return [
         'work'                     => 'کار',
         'year'                     => 'سال',
     ],
+    'attributes' => [
+        'building_name' => 'نام ساختمان',
+        'address' => 'آدرس',
+        'number_of_floors' => 'تعداد طبقات',
+        'number_of_units' => 'تعداد واحدها',
+        'shared_utilities' => 'آب و برق مشترک',
+        'document' => 'مدارک ساختمان',
+        'reason' => 'علت رد درخواست',
+    ],
+
 ];

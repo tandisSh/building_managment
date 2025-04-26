@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\SuperAdmin;
 
+use App\Http\Requests\RejectBuildingRequest;
+
 use App\Http\Controllers\Controller;
 use App\Models\BuildingRequest;
 use App\Models\Building;
@@ -27,18 +29,20 @@ class SuperAdminController extends Controller
         Building::create([
             'manager_id' => $req->user_id,
             'name' => $req->building_name,
-            'address' => $req->address
+            'address' => $req->address,
+            'shared_utilities' => $req->shared_utilities,
+            'number_of_floors' => $req->number_of_floors,
+            'number_of_units' => $req->number_of_units,
         ]);
 
         $req->update(['status' => 'approved']);
 
-        return back()->with('success', 'درخواست تأیید شد');
+        return back()->with('success', 'درخواست تأیید شد و ساختمان ثبت گردید.');
     }
 
-    public function rejectRequest(Request $request, $id)
-    {
-        $request->validate(['reason' => 'required']);
 
+    public function rejectRequest(RejectBuildingRequest $request, $id)
+    {
         BuildingRequest::findOrFail($id)
             ->update([
                 'status' => 'rejected',
@@ -47,4 +51,5 @@ class SuperAdminController extends Controller
 
         return back()->with('success', 'درخواست رد شد');
     }
+
 }

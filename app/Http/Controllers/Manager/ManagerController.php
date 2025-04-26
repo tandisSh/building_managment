@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Manager;
 
+use App\Http\Requests\StoreBuildingRequest;
+
 use App\Http\Controllers\Controller;
 use App\Models\BuildingRequest;
 use Illuminate\Http\Request;
@@ -29,8 +31,7 @@ class ManagerController extends Controller
         return view('manager.buildings.request');
     }
 
-
-    public function storeRequest(Request $request)
+    public function storeRequest(StoreBuildingRequest $request)
     {
         $existingRequest = BuildingRequest::where('user_id', auth()->id())
             ->whereIn('status', ['pending', 'approved'])
@@ -41,22 +42,21 @@ class ManagerController extends Controller
                 ->with('error', 'شما قبلاً یک درخواست ثبت کرده‌اید.');
         }
 
-        $request->validate([
-            'building_name' => 'required',
-            'address' => 'required',
-            'document' => 'required|file|mimes:pdf,jpg,png|max:2048'
-        ]);
-
         $path = $request->file('document')->store('building_documents');
 
         BuildingRequest::create([
             'user_id' => auth()->id(),
             'building_name' => $request->building_name,
             'address' => $request->address,
-            'document_path' => $path
+            'number_of_floors' => $request->number_of_floors,
+            'number_of_units' => $request->number_of_units,
+            'shared_utilities' => $request->shared_utilities,
+            'document_path' => $path,
         ]);
 
         return redirect()->route('manager.dashboard')
             ->with('success', 'درخواست با موفقیت ثبت شد');
     }
+
+
 }
