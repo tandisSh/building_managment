@@ -57,6 +57,4 @@ class ManagerController extends Controller
         return redirect()->route('manager.dashboard')
             ->with('success', 'درخواست با موفقیت ثبت شد');
     }
-
-
 }

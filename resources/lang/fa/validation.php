@@ -288,6 +288,10 @@ return [
         'shared_utilities' => 'آب و برق مشترک',
         'document' => 'مدارک ساختمان',
         'reason' => 'علت رد درخواست',
+        'unit_number'    => 'شماره واحد',
+        'floor'          => 'طبقه',
+        'area'           => 'متراژ',
+        'parking_slots'  => 'جای پارک',
+        'storerooms'     => 'انباری',
     ],
-
 ];

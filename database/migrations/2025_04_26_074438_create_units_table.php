@@ -19,11 +19,9 @@ return new class extends Migration
             $table->decimal('area', 8, 2)->nullable(); // متراژ
             $table->integer('parking_slots')->default(0); // تعداد جای پارک
             $table->integer('storerooms')->default(0);   // تعداد انباری
-         
+
             $table->timestamps();
         });
-
-
     }
 
     /**

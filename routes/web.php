@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
+use App\Http\Controllers\Manager\UnitController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 
 Route::get('/', function () {
@@ -24,6 +25,10 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/buildings/create', [ManagerController::class, 'createRequest'])->name('manager.buildings.create');
     Route::post('/buildings', [ManagerController::class, 'storeRequest'])->name('manager.buildings.store');
     Route::get('/buildings/{id}', [ManagerController::class, 'showRequest'])->name('manager.buildings.show');
+
+    //مدیریت واحد ها
+    Route::get('buildings/{building}/units/create', [UnitController::class, 'create'])->name('units.create');
+    Route::post('buildings/{building}/units', [UnitController::class, 'store'])->name('units.store');
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {

@@ -59,7 +59,7 @@
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <textarea name="reason" class="form-control" required></textarea>
+                                                    <textarea name="reason" class="form-control" ></textarea>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="submit" class="btn btn-danger">ثبت رد</button>
