@@ -27,8 +27,12 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/buildings/{id}', [ManagerController::class, 'showRequest'])->name('manager.buildings.show');
 
     //مدیریت واحد ها
+    Route::get('buildings/{building}/units', [UnitController::class, 'index'])->name('units.index');
     Route::get('buildings/{building}/units/create', [UnitController::class, 'create'])->name('units.create');
     Route::post('buildings/{building}/units', [UnitController::class, 'store'])->name('units.store');
+    Route::get('buildings/{building}/units/{unit}/edit', [UnitController::class, 'edit'])->name('units.edit');
+    Route::put('buildings/{building}/units/{unit}', [UnitController::class, 'update'])->name('units.update');
+    Route::delete('buildings/{building}/units/{unit}', [UnitController::class, 'destroy'])->name('units.destroy');
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {

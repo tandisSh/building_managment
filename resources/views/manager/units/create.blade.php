@@ -2,43 +2,41 @@
 
 @section('content')
 <div class="card">
-    <div class="card-header">افزودن واحد جدید به ساختمان {{ $building->building_name }}</div>
+    <div class="card-header text-white py-3">
+        <h5 class="mb-0">افزودن واحد جدید</h5>
+    </div>
+
     <div class="card-body">
-        <form action="{{ route('units.store', $building) }}" method="POST">
+        <form action="{{ route('units.store', $building->id) }}" method="POST">
             @csrf
 
             <div class="mb-3">
                 <label class="form-label">شماره واحد</label>
                 <input type="text" name="unit_number" class="form-control" value="{{ old('unit_number') }}" required>
-                @error('unit_number') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">طبقه</label>
                 <input type="number" name="floor" class="form-control" value="{{ old('floor') }}">
-                @error('floor') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
             <div class="mb-3">
-                <label class="form-label">متراژ (مترمربع)</label>
-                <input type="text" name="area" class="form-control" value="{{ old('area') }}">
-                @error('area') <span class="text-danger small">{{ $message }}</span> @enderror
+                <label class="form-label">متراژ</label>
+                <input type="number" step="0.01" name="area" class="form-control" value="{{ old('area') }}">
             </div>
 
             <div class="mb-3">
                 <label class="form-label">تعداد جای پارک</label>
                 <input type="number" name="parking_slots" class="form-control" value="{{ old('parking_slots', 0) }}">
-                @error('parking_slots') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
             <div class="mb-3">
                 <label class="form-label">تعداد انباری</label>
                 <input type="number" name="storerooms" class="form-control" value="{{ old('storerooms', 0) }}">
-                @error('storerooms') <span class="text-danger small">{{ $message }}</span> @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">ثبت واحد</button>
-            <a href="{{ route('buildings.show', $building->id) }}" class="btn btn-secondary">بازگشت</a>
+            <button type="submit" class="btn btn-primary">ثبت</button>
+            <a href="{{ route('units.index', $building->id) }}" class="btn btn-secondary">بازگشت</a>
         </form>
     </div>
 </div>

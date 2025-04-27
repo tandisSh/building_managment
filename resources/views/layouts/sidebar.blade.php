@@ -55,23 +55,31 @@
                 @endif
 
                 {{-- سایر گزینه‌ها بسته به وضعیت درخواست --}}
+
                 <li class="nav-item">
-                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}"
-                        href="#">
+                    @php
+                        $building = \App\Models\Building::where('manager_id', auth()->id())->first();
+                    @endphp
+                    @if ($building)
+                        <a class="nav-link" href="{{ route('units.index', $building->id) }}">
+                            <i class="bi bi-houses me-2"></i> اطلاعات واحدها
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-houses me-2"></i> اطلاعات واحدها
+                        </span>
+                    @endif
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}" href="#">
                         <i class="bi bi-people me-2"></i> ساکنین
                     </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}"
-                        href="#">
-                        <i class="bi bi-houses me-2"></i> اطلاعات واحدها
-                    </a>
-                </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}"
-                        href="#">
+                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}" href="#">
                         <i class="bi bi-gear me-2"></i> تنظیمات
                     </a>
                 </li>
