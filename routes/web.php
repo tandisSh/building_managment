@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
+use App\Http\Controllers\Manager\ResidentController;
 use App\Http\Controllers\Manager\UnitController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 
@@ -33,6 +34,16 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('buildings/{building}/units/{unit}/edit', [UnitController::class, 'edit'])->name('units.edit');
     Route::put('buildings/{building}/units/{unit}', [UnitController::class, 'update'])->name('units.update');
     Route::delete('buildings/{building}/units/{unit}', [UnitController::class, 'destroy'])->name('units.destroy');
+
+    // مدیریت ساکنین  
+    Route::prefix('residents')->name('residents.')->group(function () {
+        Route::get('/', [ResidentController::class, 'index'])->name('index');
+        Route::get('/create', [ResidentController::class, 'create'])->name('create');
+        Route::post('/', [ResidentController::class, 'store'])->name('store');
+        Route::get('/{resident}/edit', [ResidentController::class, 'edit'])->name('edit');
+        Route::put('/{resident}', [ResidentController::class, 'update'])->name('update');
+        Route::delete('/{resident}', [ResidentController::class, 'destroy'])->name('destroy');
+    });
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {
