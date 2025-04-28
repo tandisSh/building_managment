@@ -36,7 +36,7 @@ class ResidentController extends Controller
         $user = User::create([
             'name' => $request->name,
             'phone' => $request->phone,
-            'password' => Hash::make('resident123'), // یا رمز تصادفی یا ارسال به کاربر
+            'password' => Hash::make('resident123'), 
         ]);
 
         $user->units()->attach($request->unit_id, [

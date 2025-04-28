@@ -18,7 +18,7 @@ class SuperAdminController extends Controller
     }
     public function requests()
     {
-        $requests = \App\Models\BuildingRequest::with('user')->latest()->get();
+        $requests = BuildingRequest::with('user')->latest()->get();
         return view('super_admin.requests', compact('requests'));
     }
 
