@@ -13,9 +13,12 @@ class UnitController extends Controller
 {
     public function index($buildingId)
     {
+        // $building = Building::findOrFail($buildingId);
+        // $units = $building->units()->with('users')->where('roles','resident')->get();
         $building = Building::findOrFail($buildingId);
-        $units = $building->units()->with('users')->where('role','resident')->get(); // اطلاعات ساکنین هم بگیر
-
+        $units = $building->units()->with(['users' => function($query) {
+            $query->wherePivot('role', 'resident');
+        }])->get();
         return view('manager.units.index', compact('building', 'units'));
     }
 

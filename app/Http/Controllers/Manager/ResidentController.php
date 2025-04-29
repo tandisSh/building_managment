@@ -7,22 +7,28 @@ use App\Http\Requests\StoreResidentRequest;
 use App\Models\Unit;
 use App\Models\UnitUser;
 use App\Models\User;
+use App\Services\ResidentService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class ResidentController extends Controller
 {
     public function index()
     {
-        $buildingId = auth()->user()->buildingUser->building_id;
+        $buildingUser = Auth::user()->buildingUser;
 
-        $residents = UnitUser::whereHas('unit', function ($q) use ($buildingId) {
-            $q->where('building_id', $buildingId);
+        if (!$buildingUser) {
+            abort(403, 'شما به هیچ ساختمانی متصل نیستید.');
+        }
+
+        $buildingId = $buildingUser->building_id;
+
+        $residents = UnitUser::whereHas('unit', function ($query) use ($buildingId) {
+            $query->where('building_id', $buildingId);
         })->with(['user', 'unit'])->get();
-
 
         return view('manager.residents.index', compact('residents'));
     }
-
     public function create()
     {
         $buildingId = auth()->user()->buildingUser->building_id;
@@ -33,18 +39,12 @@ class ResidentController extends Controller
 
     public function store(StoreResidentRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'password' => Hash::make('resident123'), 
-        ]);
+        $data = $request->validated();
+        $unitId = $data['unit_id'];
 
-        $user->units()->attach($request->unit_id, [
-            'role' => $request->role,
-            'from_date' => $request->from_date,
-            'to_date' => $request->to_date,
-        ]);
+        (new ResidentService())->createResident($data, $unitId);
 
         return redirect()->route('residents.index')->with('success', 'ساکن جدید با موفقیت اضافه شد.');
     }
+
 }

@@ -10,12 +10,12 @@ class ResidentService
 {
     public function createResident(array $data, $unitId)
     {
-        $user = User::where('mobile', $data['mobile'])->orWhere('email', $data['email'])->first();
+        $user = User::where('phone', $data['phone'])->orWhere('email', $data['email'])->first();
 
         if (!$user) {
             $user = User::create([
                 'name' => $data['name'],
-                'mobile' => $data['mobile'],
+                'phone' => $data['phone'],
                 'email' => $data['email'],
                 'password' => null,
             ]);

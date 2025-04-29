@@ -26,7 +26,7 @@ class SuperAdminController extends Controller
     {
         $req = BuildingRequest::findOrFail($id);
 
-        Building::create([
+        $building = Building::create([
             'manager_id' => $req->user_id,
             'name' => $req->building_name,
             'address' => $req->address,
@@ -35,10 +35,14 @@ class SuperAdminController extends Controller
             'number_of_units' => $req->number_of_units,
         ]);
 
+        // اتصال مدیر به ساختمان جدید در جدول میانی
+        $building->users()->attach($req->user_id, ['role' => 'manager']);
+
         $req->update(['status' => 'approved']);
 
         return back()->with('success', 'درخواست تأیید شد و ساختمان ثبت گردید.');
     }
+
 
 
     public function rejectRequest(RejectBuildingRequest $request, $id)

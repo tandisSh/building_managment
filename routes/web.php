@@ -6,6 +6,15 @@ use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\ResidentController;
 use App\Http\Controllers\Manager\UnitController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
+Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+
+Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,7 +44,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::put('buildings/{building}/units/{unit}', [UnitController::class, 'update'])->name('units.update');
     Route::delete('buildings/{building}/units/{unit}', [UnitController::class, 'destroy'])->name('units.destroy');
 
-    // مدیریت ساکنین  
+    // مدیریت ساکنین
     Route::prefix('residents')->name('residents.')->group(function () {
         Route::get('/', [ResidentController::class, 'index'])->name('index');
         Route::get('/create', [ResidentController::class, 'create'])->name('create');

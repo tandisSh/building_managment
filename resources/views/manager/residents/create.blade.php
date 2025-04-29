@@ -36,6 +36,12 @@
             </div>
 
             <div class="mb-3">
+                <label for="email" class="form-label"> ایمیل</label>
+                <input type="text" name="email" class="form-control" value="{{ old('email') }}">
+                @error('email') <div class="text-danger small">{{ $message }}</div> @enderror
+            </div>
+
+            <div class="mb-3">
                 <label for="role" class="form-label">نقش</label>
                 <select name="role" class="form-select select2">
                     <option value="resident" {{ old('role') == 'resident' ? 'selected' : '' }}>ساکن (مستاجر)</option>

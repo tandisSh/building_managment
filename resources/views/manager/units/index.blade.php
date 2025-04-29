@@ -19,8 +19,8 @@
                     <th>شماره واحد</th>
                     <th>طبقه</th>
                     <th>متراژ</th>
-                    <th>جای پارک</th>
-                    <th>انباری</th>
+                    {{-- <th>جای پارک</th>
+                    <th>انباری</th> --}}
                     <th>ساکنین</th>
                     <th>عملیات</th>
                 </tr>
@@ -31,11 +31,11 @@
                         <td>{{ $unit->unit_number }}</td>
                         <td>{{ $unit->floor ?? '-' }}</td>
                         <td>{{ $unit->area ?? '-' }}</td>
-                        <td>{{ $unit->parking_slots }}</td>
-                        <td>{{ $unit->storerooms }}</td>
+                        {{-- <td>{{ $unit->parking_slots }}</td>
+                        <td>{{ $unit->storerooms }}</td> --}}
                         <td>
-                            @if($unit->residents && $unit->residents->count())
-                                @foreach($unit->residents as $resident)
+                            @if($unit->users && $unit->users->count())
+                                @foreach($unit->users as $resident)
                                     <div>{{ $resident->name }} ({{ $resident->pivot->role == 'owner' ? 'مالک' : 'ساکن' }})</div>
                                 @endforeach
                             @else

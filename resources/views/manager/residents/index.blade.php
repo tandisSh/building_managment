@@ -44,7 +44,7 @@
                         <td>{{ jdate($resident->from_date)->format('Y/m/d') }}</td>
                         <td>{{ $resident->to_date ? jdate($resident->to_date)->format('Y/m/d') : '—' }}</td>
                         <td>
-                            <a href="{{ route('residents.edit', $resident->id) }}" class="btn btn-warning btn-sm">ویرایش</a>
+                            <a href="#" class="btn btn-warning btn-sm">ویرایش</a>
                         </td>
                     </tr>
                 @empty

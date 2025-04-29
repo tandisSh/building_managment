@@ -1,8 +1,9 @@
 @php
     $user = auth()->user();
-    $roles = $user->roles->pluck('name'); // لیست همه نقش‌های کاربر
+    $roles = $user->roles->pluck('name');
+    $building = \App\Models\Building::where('manager_id', $user->id)->first();
 
-    // وضعیت درخواست ساختمان برای مدیر
+    // اگر مدیر بود، آخرین وضعیت درخواست ساختمانش
     $buildingRequestStatus = null;
     if ($roles->contains('manager')) {
         $latestRequest = \App\Models\BuildingRequest::where('user_id', $user->id)->latest()->first();
@@ -17,51 +18,46 @@
         </div>
 
         <ul class="nav flex-column">
-            {{-- بررسی نقش ادمین --}}
+            {{-- سوپر ادمین --}}
             @if ($roles->contains('super_admin'))
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('super-admin/dashboard') ? 'active fw-bold' : '' }}"
-                        href="{{ route('super_admin.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('super_admin.dashboard') ? 'active fw-bold' : '' }}"
+                       href="{{ route('super_admin.dashboard') }}">
                         <i class="bi bi-shield-lock me-2"></i> داشبورد ادمین
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('super-admin/requests') ? 'active fw-bold' : '' }}"
-                        href="{{ route('super_admin.requests') }}">
+                    <a class="nav-link {{ request()->routeIs('super_admin.requests') ? 'active fw-bold' : '' }}"
+                       href="{{ route('super_admin.requests') }}">
                         <i class="bi bi-clipboard-check me-2"></i> درخواست‌ها
                     </a>
                 </li>
             @endif
 
-            {{-- بررسی نقش مدیر --}}
+            {{-- مدیر ساختمان --}}
             @if ($roles->contains('manager'))
-                {{-- همیشه فعال --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->is('manager/dashboard') ? 'active fw-bold' : '' }}"
-                        href="{{ route('manager.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('manager.dashboard') ? 'active fw-bold' : '' }}"
+                       href="{{ route('manager.dashboard') }}">
                         <i class="bi bi-speedometer2 me-2"></i> داشبورد
                     </a>
                 </li>
 
-                {{-- ثبت درخواست ساختمان  --}}
-                @if ($roles->contains('manager') && !in_array($buildingRequestStatus, ['pending', 'approved']))
+                {{-- ثبت ساختمان (فقط وقتی تایید نشده) --}}
+                @if (!in_array($buildingRequestStatus, ['pending', 'approved']))
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->is('manager/buildings/create') ? 'active fw-bold' : '' }}"
-                            href="{{ route('manager.buildings.create') }}">
+                        <a class="nav-link {{ request()->routeIs('manager.buildings.create') ? 'active fw-bold' : '' }}"
+                           href="{{ route('manager.buildings.create') }}">
                             <i class="bi bi-building-add me-2"></i> ثبت ساختمان
                         </a>
                     </li>
                 @endif
 
-                {{-- سایر گزینه‌ها بسته به وضعیت درخواست --}}
-
+                {{-- اطلاعات واحدها --}}
                 <li class="nav-item">
-                    @php
-                        $building = \App\Models\Building::where('manager_id', auth()->id())->first();
-                    @endphp
                     @if ($building)
-                        <a class="nav-link" href="{{ route('units.index', $building->id) }}">
+                        <a class="nav-link {{ request()->routeIs('units.index') ? 'active fw-bold' : '' }}"
+                           href="{{ route('units.index', $building->id) }}">
                             <i class="bi bi-houses me-2"></i> اطلاعات واحدها
                         </a>
                     @else
@@ -71,25 +67,39 @@
                     @endif
                 </li>
 
+                {{-- ساکنین --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}" href="#">
-                        <i class="bi bi-people me-2"></i> ساکنین
-                    </a>
+                    @if ($building && $buildingRequestStatus === 'approved')
+                        <a class="nav-link {{ request()->routeIs('residents.index') ? 'active fw-bold' : '' }}"
+                           href="{{ route('residents.index', $building->id) }}">
+                            <i class="bi bi-people me-2"></i> ساکنین
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-people me-2"></i> ساکنین
+                        </span>
+                    @endif
                 </li>
 
-
+                {{-- تنظیمات --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ $buildingRequestStatus !== 'approved' ? 'disabled' : '' }}" href="#">
-                        <i class="bi bi-gear me-2"></i> تنظیمات
-                    </a>
+                    @if ($building && $buildingRequestStatus === 'approved')
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-gear me-2"></i> تنظیمات
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-gear me-2"></i> تنظیمات
+                        </span>
+                    @endif
                 </li>
 
-                {{-- وضعیت درخواست نمایش داده شود --}}
+                {{-- پیام وضعیت درخواست --}}
                 @if ($buildingRequestStatus === 'pending')
                     <li class="nav-item px-3 small mt-2 text-warning">
                         <i class="bi bi-clock-history me-2"></i> در انتظار تایید ادمین...
                     </li>
-                @elseif($buildingRequestStatus === 'rejected')
+                @elseif ($buildingRequestStatus === 'rejected')
                     <li class="nav-item px-3 small mt-2 text-danger">
                         <i class="bi bi-x-circle me-2"></i> درخواست رد شده!
                     </li>
