@@ -13,8 +13,6 @@ class UnitController extends Controller
 {
     public function index($buildingId)
     {
-        // $building = Building::findOrFail($buildingId);
-        // $units = $building->units()->with('users')->where('roles','resident')->get();
         $building = Building::findOrFail($buildingId);
         $units = $building->units()->with(['users' => function($query) {
             $query->wherePivot('role', 'resident');

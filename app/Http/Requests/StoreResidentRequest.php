@@ -22,13 +22,6 @@ class StoreResidentRequest extends FormRequest
             'from_date' => 'required|date',
             'to_date' => 'nullable|date|after:from_date',
         ];
-        // return [
-        //     'name' => 'required|string|max:255',
-        //     'mobile' => 'required|string|max:20',
-        //     'email' => 'required|email|max:255',
-        //     'role' => 'required|in:resident,owner',
-        //     'from_date' => 'required|date',
-        //     'to_date' => 'nullable|date|after_or_equal:from_date',
-        // ];
+     
     }
 }
