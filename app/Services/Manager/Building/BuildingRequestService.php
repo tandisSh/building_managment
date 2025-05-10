@@ -1,8 +1,8 @@
 <?php
-namespace App\Services\Manager;
+
+namespace App\Services\Manager\Building;
 
 use App\Models\BuildingRequest;
-use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 
 class BuildingRequestService

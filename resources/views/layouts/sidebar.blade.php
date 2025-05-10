@@ -53,6 +53,19 @@
                     </li>
                 @endif
 
+                {{-- اطلاعات ساختمان --}}
+                <li class="nav-item">
+                    @if ($building)
+                        <a class="nav-link {{ request()->routeIs('manager.building.show') ? 'active fw-bold' : '' }}"
+                           href="{{ route('manager.building.show', $building->id) }}">
+                            <i class="bi bi-houses me-2"></i> اطلاعات ساختمان
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-houses me-2"></i> اطلاعات ساختمان
+                        </span>
+                    @endif
+                </li>
                 {{-- اطلاعات واحدها --}}
                 <li class="nav-item">
                     @if ($building)

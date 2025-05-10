@@ -8,6 +8,7 @@ use App\Http\Controllers\Manager\UnitController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Manager\Building\BuildingController;
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -32,9 +33,11 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
 
     // مدیریت ساختمان‌ها
-    Route::get('/buildings/create', [ManagerController::class, 'createRequest'])->name('manager.buildings.create');
-    Route::post('/buildings', [ManagerController::class, 'storeRequest'])->name('manager.buildings.store');
-    Route::get('/buildings/{id}', [ManagerController::class, 'showRequest'])->name('manager.buildings.show');
+    Route::get('/buildings/create', [BuildingController::class, 'createRequest'])->name('manager.buildings.create');
+    Route::post('/buildings', [BuildingController::class, 'storeRequest'])->name('manager.buildings.store');
+    Route::get('/buildings/{building}/edit', [BuildingController::class, 'editBuilding'])->name('manager.building.edit');
+    Route::put('/buildings/{building}', [BuildingController::class, 'updateBuilding'])->name('manager.building.update');
+    Route::get('/building', [BuildingController::class, 'showBuilding'])->name('manager.building.show');
 
     //مدیریت واحد ها
     Route::get('buildings/{building}/units', [UnitController::class, 'index'])->name('units.index');
