@@ -13,7 +13,7 @@
             <div class="card border-info shadow-sm">
                 <div class="card-body">
                     <h6 class="card-title text-muted">نام ساختمان</h6>
-                    <p class="card-text">{{ $building->name }}</p>
+                    <p class="card-text">{{ $building->building_name }}</p>
                 </div>
             </div>
         </div>

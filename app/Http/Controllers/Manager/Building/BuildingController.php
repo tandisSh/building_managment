@@ -48,5 +48,23 @@ class BuildingController extends Controller
         return view('manager.buildings.show', compact('building'));
     }
 
+    public function editBuilding(Building $building)
+    {
+        if (auth()->user()->buildingUser->building_id !== $building->id) {
+            abort(403);
+        }
+
+        return view('manager.buildings.edit', compact('building'));
     }
 
+    public function updateBuilding(BuildingRequest $request, Building $building)
+    {
+        if (auth()->user()->buildingUser->building_id !== $building->id) {
+            abort(403);
+        }
+
+        $this->buildingService->updateBuilding($building, $request->validated());
+
+        return redirect()->route('manager.building.show')->with('success', 'ساختمان با موفقیت به‌روزرسانی شد.');
+    }
+}

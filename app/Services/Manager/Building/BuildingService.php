@@ -3,7 +3,7 @@
 namespace App\Services\Manager\Building;
 
 use App\Models\Building;
-
+use Illuminate\Support\Facades\Storage;
 class BuildingService
 {
     public function createBuilding(array $data)
@@ -23,7 +23,20 @@ class BuildingService
 
     public function updateBuilding(Building $building, array $data)
     {
+        // پردازش فایل اگر وجود دارد
+        if (request()->hasFile('document')) {
+            // حذف فایل قبلی
+            if ($building->document_path) {
+                Storage::delete($building->document_path);
+            }
+            // ذخیره فایل جدید
+            $data['document_path'] = request()->file('document')->store('building_documents');
+        }
+
         $building->update($data);
         return $building;
     }
 }
+
+
+

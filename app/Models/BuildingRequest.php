@@ -10,9 +10,13 @@ class BuildingRequest extends Model
         'user_id',
         'building_name',
         'address',
+        'number_of_floors',
+        'number_of_units',
+        'shared_utilities',
         'document_path',
         'status',
         'rejection_reason'
+
     ];
 
     public function user()

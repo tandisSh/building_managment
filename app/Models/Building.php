@@ -9,7 +9,7 @@ class Building extends Model
     protected $fillable =
     [
         'manager_id',
-        'name',
+        'building_name',
         'address',
         'shared_utilities',
         // 'has_elevator', 'has_guard', 'has_cctv',
