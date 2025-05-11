@@ -25,6 +25,16 @@ class Unit extends Model
         return $this->belongsToMany(User::class)->withPivot('role', 'from_date', 'to_date');
     }
 
+    public function owner()
+    {
+        return $this->users()->wherePivot('role', 'owner');
+    }
+
+    public function resident()
+    {
+        return $this->users()->wherePivot('role', 'resident');
+    }
+
     public function invoices()
     {
         return $this->hasMany(Invoice::class);

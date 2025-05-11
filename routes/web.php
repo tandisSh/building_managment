@@ -41,6 +41,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
 
     //مدیریت واحد ها
     Route::get('buildings/{building}/units', [UnitController::class, 'index'])->name('units.index');
+    Route::get('buildings/{building}/units/{unit}', [UnitController::class, 'show'])->name('units.show');
     Route::get('buildings/{building}/units/create', [UnitController::class, 'create'])->name('units.create');
     Route::post('buildings/{building}/units', [UnitController::class, 'store'])->name('units.store');
     Route::get('buildings/{building}/units/{unit}/edit', [UnitController::class, 'edit'])->name('units.edit');

@@ -18,6 +18,14 @@ class UnitController extends Controller
         $units = $this->service->getUnitsWithResidents($building);
         return view('manager.units.index', compact('building', 'units'));
     }
+    public function show($buildingId, $unitId)
+    {
+        $building = Building::findOrFail($buildingId);
+        $unit = Unit::with(['owner', 'resident'])->findOrFail($unitId);
+
+        return view('manager.units.show', compact('building', 'unit'));
+    }
+
 
     public function create(Building $building)
     {
@@ -52,4 +60,3 @@ class UnitController extends Controller
         return redirect()->route('units.index', $buildingId)->with('success', 'واحد با موفقیت حذف شد.');
     }
 }
-
