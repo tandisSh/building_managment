@@ -55,6 +55,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::post('/', [ResidentController::class, 'store'])->name('store');
         Route::get('/{resident}/edit', [ResidentController::class, 'edit'])->name('edit');
         Route::post('/{resident}', [ResidentController::class, 'update'])->name('update');
+        Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
         Route::delete('/{resident}', [ResidentController::class, 'destroy'])->name('destroy');
     });
 });

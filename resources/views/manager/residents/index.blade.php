@@ -22,8 +22,7 @@
                     <th>شماره موبایل</th>
                     <th>واحد</th>
                     <th>نقش</th>
-                    <th>تاریخ شروع سکونت</th>
-                    <th>تاریخ پایان سکونت</th>
+                    <th>تاریخ ثبت</th>
                     <th>عملیات</th>
                 </tr>
             </thead>
@@ -41,9 +40,11 @@
                                 <span class="badge bg-info">ساکن (مستاجر)</span>
                             @endif
                         </td>
-                        <td>{{ jdate($resident->from_date)->format('Y/m/d') }}</td>
-                        <td>{{ $resident->to_date ? jdate($resident->to_date)->format('Y/m/d') : '—' }}</td>
+                        <td>{{ jdate($resident->created_at)->format('Y/m/d') }}</td>
+
                         <td>
+                            <a href="{{ route('residents.show', $resident->user) }}" class="btn btn-info btn-sm">نمایش</a>
+
                             <a href="{{ route('residents.edit',$resident->user->id) }}" class="btn btn-warning btn-sm">ویرایش</a>
                         </td>
                     </tr>

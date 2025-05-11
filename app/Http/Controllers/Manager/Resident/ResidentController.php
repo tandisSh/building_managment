@@ -23,6 +23,17 @@ class ResidentController extends Controller
         return view('manager.residents.index', compact('residents'));
     }
 
+    public function show(User $resident)
+    {
+        $unitUser = UnitUser::with('unit.building')
+            ->where('user_id', $resident->id)
+            ->orderByDesc('from_date')
+            ->first();
+
+
+        return view('manager.residents.show', compact('resident', 'unitUser'));
+    }
+
     public function create()
     {
         $units = Unit::where('building_id', Auth::user()->buildingUser->building_id)->get();
@@ -46,8 +57,4 @@ class ResidentController extends Controller
         $service->update($resident, $request->validated());
         return redirect()->route('residents.index')->with('success', 'ساکن بروزرسانی شد.');
     }
-
-
 }
-
-
