@@ -13,16 +13,18 @@ class ResidentRequest extends FormRequest
 
     public function rules(): array
     {
-        $residentId = $this->route('resident'); 
+        $resident = $this->route('resident');
+
+        $residentId = is_object($resident) ? $resident->id : $resident;
 
         return [
-            'unit_id' => 'required|exists:units,id',
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|unique:users,phone,' . $residentId,
-            'email' => 'required|email|max:255|unique:users,email,' . $residentId,
-            'role' => 'required|in:resident,owner',
-            'from_date' => 'required|date',
-            'to_date' => 'nullable|date|after:from_date',
+            'unit_id'    => 'required|exists:units,id',
+            'name'       => 'required|string|max:255',
+            'phone'      => 'required|string|unique:users,phone,' . $residentId,
+            'email'      => 'required|email|max:255|unique:users,email,' . $residentId,
+            'role'       => 'required|in:resident,owner',
+            'from_date'  => 'required|date',
+            'to_date'    => 'nullable|date|after:from_date',
         ];
     }
 }

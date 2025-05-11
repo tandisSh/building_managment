@@ -32,9 +32,11 @@ class ResidentService
             'email' => $data['email'],
         ]);
 
-        $unitUser = UnitUser::where('user_id', $user->id)
-            ->where('unit_id', $data['unit_id'])
-            ->first();
+
+        $unitUser = UnitUser::where('user_id', (int) $user->id)
+    ->where('unit_id', (int) $data['unit_id'])
+    ->first();
+
 
         if ($unitUser) {
             $unitUser->update([

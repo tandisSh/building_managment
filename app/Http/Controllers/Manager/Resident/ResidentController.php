@@ -46,6 +46,8 @@ class ResidentController extends Controller
         $service->update($resident, $request->validated());
         return redirect()->route('residents.index')->with('success', 'ساکن بروزرسانی شد.');
     }
+
+
 }
 
 
