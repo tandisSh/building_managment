@@ -1,22 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Manager;
+// app\Http\Controllers\Manager\UnitController.php
+
+namespace App\Http\Controllers\Manager\Unit;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUnitRequest;
-use App\Http\Requests\UpdateUnitRequest;
+use App\Http\Requests\UnitRequest;
 use App\Models\Building;
 use App\Models\Unit;
-use Illuminate\Http\Request;
+use App\Services\Manager\UnitService;
 
 class UnitController extends Controller
 {
+    public function __construct(protected UnitService $service) {}
+
     public function index($buildingId)
     {
         $building = Building::findOrFail($buildingId);
-        $units = $building->units()->with(['users' => function($query) {
-            $query->wherePivot('role', 'resident');
-        }])->get();
+        $units = $this->service->getUnitsWithResidents($building);
         return view('manager.units.index', compact('building', 'units'));
     }
 
@@ -25,37 +26,32 @@ class UnitController extends Controller
         return view('manager.units.create', compact('building'));
     }
 
-    public function store(StoreUnitRequest $request, $buildingId)
+    public function store(UnitRequest $request, $buildingId)
     {
         $building = Building::findOrFail($buildingId);
-
-        $building->units()->create($request->validated());
-
+        $this->service->createUnit($building, $request->validated());
         return redirect()->route('units.index', $building->id)->with('success', 'واحد جدید با موفقیت اضافه شد.');
     }
+
     public function edit($buildingId, $unitId)
     {
         $building = Building::findOrFail($buildingId);
         $unit = Unit::findOrFail($unitId);
-
         return view('manager.units.edit', compact('building', 'unit'));
     }
 
-    public function update(UpdateUnitRequest $request, $buildingId, $unitId)
+    public function update(UnitRequest $request, $buildingId, $unitId)
     {
         $unit = Unit::findOrFail($unitId);
-
-        $unit->update($request->validated());
-
+        $this->service->updateUnit($unit, $request->validated());
         return redirect()->route('units.index', $buildingId)->with('success', 'واحد با موفقیت ویرایش شد.');
     }
 
     public function destroy($buildingId, $unitId)
     {
         $unit = Unit::findOrFail($unitId);
-
-        $unit->delete();
-
+        $this->service->deleteUnit($unit);
         return redirect()->route('units.index', $buildingId)->with('success', 'واحد با موفقیت حذف شد.');
     }
 }
+
