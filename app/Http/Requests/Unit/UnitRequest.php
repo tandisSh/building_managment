@@ -15,8 +15,8 @@ class UnitRequest extends FormRequest
     {
         return [
             'unit_number'    => 'required|string|max:255',
-            'floor'          => 'nullable|integer',
-            'area'           => 'nullable|numeric|min:0',
+            'floor'          => 'required|integer',
+            'area'           => 'required|numeric|min:0',
             'parking_slots'  => 'nullable|integer|min:0',
             'storerooms'     => 'nullable|integer|min:0',
         ];
