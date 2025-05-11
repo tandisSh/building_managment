@@ -12,7 +12,7 @@
 
             <div class="mb-3">
                 <label class="form-label">شماره واحد</label>
-                <input type="text" name="unit_number" class="form-control" value="{{ old('unit_number') }}" required>
+                <input type="text" name="unit_number" class="form-control" value="{{ old('unit_number') }}" >
             </div>
 
             <div class="mb-3">

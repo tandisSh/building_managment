@@ -1,5 +1,5 @@
 <?php
-namespace App\Services\Manager;
+namespace App\Services\Manager\Unit;
 
 use App\Models\Building;
 use App\Models\Unit;

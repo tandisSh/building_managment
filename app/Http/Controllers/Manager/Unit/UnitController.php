@@ -1,14 +1,12 @@
 <?php
 
-// app\Http\Controllers\Manager\UnitController.php
-
 namespace App\Http\Controllers\Manager\Unit;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UnitRequest;
+use App\Http\Requests\Unit\UnitRequest;
 use App\Models\Building;
 use App\Models\Unit;
-use App\Services\Manager\UnitService;
+use App\Services\Manager\Unit\UnitService;
 
 class UnitController extends Controller
 {
