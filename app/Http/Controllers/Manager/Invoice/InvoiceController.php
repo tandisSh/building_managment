@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Manager\Invoice;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Manager\StoreInvoiceRequest;
+use App\Http\Requests\Invoice\InvoiceRequest;
 use App\Services\Manager\Invoice\InvoiceService;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,7 +16,7 @@ class InvoiceController extends Controller
         return view('manager.invoices.create', compact('building'));
     }
 
-    public function store(StoreInvoiceRequest $request)
+    public function store(InvoiceRequest $request)
     {
         try {
             $this->invoiceService->createMonthlyInvoices($request->validated(), Auth::user());
