@@ -59,7 +59,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::delete('/{resident}', [ResidentController::class, 'destroy'])->name('destroy');
 
     //مدیریت صورتحساب ها
-         Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
+        Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
         Route::post('/invoices', [InvoiceController::class, 'store'])->name('manager.invoices.store');
     });
 });
