@@ -4,6 +4,7 @@ namespace App\Services\Manager\Building;
 
 use App\Models\Building;
 use Illuminate\Support\Facades\Storage;
+
 class BuildingService
 {
     public function createBuilding(array $data)
@@ -16,7 +17,9 @@ class BuildingService
             'address' => $data['address'],
             'number_of_floors' => $data['number_of_floors'],
             'number_of_units' => $data['number_of_units'],
-            'shared_utilities' => $data['shared_utilities'],
+            'shared_electricity' => !empty($data['shared_electricity']),
+            'shared_water' => !empty($data['shared_water']),
+            'shared_gas' => !empty($data['shared_gas']),
             'document_path' => $path,
         ]);
     }
@@ -37,6 +40,3 @@ class BuildingService
         return $building;
     }
 }
-
-
-

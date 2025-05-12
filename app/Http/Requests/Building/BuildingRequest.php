@@ -10,21 +10,23 @@ class BuildingRequest extends FormRequest
     {
         return true;
     }
+public function rules(): array
+{
+    $rules = [
+        'building_name' => 'required|string|max:255',
+        'address' => 'required|string',
+        'number_of_floors' => 'required|integer|min:1',
+        'number_of_units' => 'required|integer|min:1',
+        'shared_electricity' => 'nullable|boolean',
+        'shared_water' => 'nullable|boolean',
+        'shared_gas' => 'nullable|boolean',
+    ];
 
-    public function rules(): array
-    {
-        $rules = [
-            'building_name' => 'required|string|max:255',
-            'address' => 'required|string',
-            'number_of_floors' => 'required|integer|min:1',
-            'number_of_units' => 'required|integer|min:1',
-            'shared_utilities' => 'required|boolean',
-        ];
-
-        if ($this->isMethod('POST')) {
-            $rules['document'] = 'required|file|mimes:pdf,jpg,png|max:2048';
-        }
-
-        return $rules;
+    if ($this->isMethod('POST')) {
+        $rules['document'] = 'required|file|mimes:pdf,jpg,png|max:2048';
     }
+
+    return $rules;
+}
+
 }

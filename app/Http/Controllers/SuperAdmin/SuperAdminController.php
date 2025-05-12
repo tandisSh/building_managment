@@ -28,9 +28,11 @@ class SuperAdminController extends Controller
 
         $building = Building::create([
             'manager_id' => $req->user_id,
-            'name' => $req->building_name,
+            'building_name' => $req->building_name,
             'address' => $req->address,
-            'shared_utilities' => $req->shared_utilities,
+            'shared_electricity' => $req->shared_electricity,
+            'shared_water' => $req->shared_water,
+            'shared_gas' => $req->shared_gas,
             'number_of_floors' => $req->number_of_floors,
             'number_of_units' => $req->number_of_units,
         ]);
@@ -55,5 +57,4 @@ class SuperAdminController extends Controller
 
         return back()->with('success', 'درخواست رد شد');
     }
-
 }

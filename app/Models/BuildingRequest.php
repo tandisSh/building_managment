@@ -12,7 +12,9 @@ class BuildingRequest extends Model
         'address',
         'number_of_floors',
         'number_of_units',
-        'shared_utilities',
+        'shared_electricity',
+        'shared_water',
+        'shared_gas',
         'document_path',
         'status',
         'rejection_reason'

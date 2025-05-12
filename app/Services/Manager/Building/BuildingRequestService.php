@@ -29,8 +29,10 @@ class BuildingRequestService
             'address' => $data['address'],
             'number_of_floors' => $data['number_of_floors'],
             'number_of_units' => $data['number_of_units'],
-            'shared_utilities' => $data['shared_utilities'],
-            'document_path' => $path,
+            'shared_electricity' => !empty($data['shared_electricity']),
+            'shared_water' => !empty($data['shared_water']),
+            'shared_gas' => !empty($data['shared_gas']),
+
         ]);
     }
 }
