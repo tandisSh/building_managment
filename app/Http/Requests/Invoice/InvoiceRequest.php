@@ -8,7 +8,7 @@ class InvoiceRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return auth()->check() && auth()->user()->isManager();
+        return true;
     }
 
     public function rules(): array
