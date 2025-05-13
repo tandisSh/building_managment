@@ -6,23 +6,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
-    protected $fillable =
-    [
-        'unit_id',
-        'amount',
-        'type',
-        'description',
-        'due_date',
-        'status'
-    ];
+    protected $fillable = ['unit_id', 'total_amount', 'due_date', 'status', 'type'];
 
     public function unit()
     {
         return $this->belongsTo(Unit::class);
     }
 
-    public function payments()
+    public function items()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(InvoiceItem::class);
+    }
+
+    public function calculateStatus()
+    {
+        $totalPaid = $this->items->sum('paid_amount');
+
+        return match (true) {
+            $totalPaid == 0 => 'unpaid',
+            $totalPaid >= $this->total_amount => 'paid',
+            default => 'partial',
+        };
     }
 }
+
