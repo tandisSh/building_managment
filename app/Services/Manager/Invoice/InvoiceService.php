@@ -1,55 +1,81 @@
 <?php
 
-// app/Services/Manager/InvoiceService.php
 namespace App\Services\Manager\Invoice;
 
-use App\Models\Invoice;
 use App\Models\Unit;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class InvoiceService
 {
-    public function createMonthlyInvoices(array $data, $manager)
+    public function getManagerInvoices(User $manager)
+    {
+        return Invoice::whereHas('unit.building', function ($q) use ($manager) {
+            $q->where('manager_id', $manager->id);
+        })->with('unit')->latest()->get();
+    }
+
+    public function getInvoiceFormData(User $manager)
     {
         $building = $manager->building;
+        $units = Unit::where('building_id', $building->id)
+            ->whereHas('resident')
+            ->get();
 
-        // فقط واحدهای دارای ساکن
-        $units = Unit::where('building_id', $building->id)->whereNotNull('resident_id')->get();
-        $unitCount = $units->count();
 
-        if ($unitCount === 0) {
-            throw new \Exception('هیچ واحد فعالی برای صدور صورتحساب وجود ندارد.');
+        return [
+            'units' => $units,
+            'building' => $building,
+        ];
+    }
+
+    public function createMonthlyInvoice(User $manager, array $data)
+    {
+        $building = $manager->building;
+        $units = Unit::where('building_id', $building->id)
+            ->whereHas('resident')
+            ->get();
+
+        $items = [
+            'شارژ ساختمان' => $data['base_amount'],
+        ];
+
+        if ($building->shared_water && !empty($data['water_cost'])) {
+            $items['آب'] = $data['water_cost'];
         }
 
-        // محاسبه مبلغ کل
-        $total = $data['base_amount'];
-
-        if ($building->shared_water) {
-            $total += $data['water_cost'] ?? 0;
+        if ($building->shared_electricity && !empty($data['electricity_cost'])) {
+            $items['برق'] = $data['electricity_cost'];
         }
 
-        if ($building->shared_electricity) {
-            $total += $data['electricity_cost'] ?? 0;
+        if ($building->shared_gas && !empty($data['gas_cost'])) {
+            $items['گاز'] = $data['gas_cost'];
         }
 
-        if ($building->shared_gas) {
-            $total += $data['gas_cost'] ?? 0;
-        }
+        $totalCost = array_sum($items);
+        $unitCount = max($units->count(), 1);
+        $perUnitTotal = $totalCost / $unitCount;
 
-        $amountPerUnit = round($total / $unitCount, 2);
-
-        // ایجاد صورتحساب برای هر واحد
-        DB::transaction(function () use ($units, $amountPerUnit, $data) {
-            foreach ($units as $unit) {
-                Invoice::create([
+        foreach ($units as $unit) {
+            DB::transaction(function () use ($unit, $items, $data, $perUnitTotal, $unitCount) {
+                $invoice = Invoice::create([
                     'unit_id' => $unit->id,
-                    'amount' => $amountPerUnit,
-                    'type' => 'current',
-                    'description' => $data['description'] ?? null,
+                    'total_amount' => $perUnitTotal,
                     'due_date' => $data['due_date'],
                     'status' => 'unpaid',
+                    'type' => 'current',
                 ]);
-            }
-        });
+
+                foreach ($items as $title => $cost) {
+                    InvoiceItem::create([
+                        'invoice_id' => $invoice->id,
+                        'title' => $title,
+                        'amount' => $cost / $unitCount,
+                    ]);
+                }
+            });
+        }
     }
 }
