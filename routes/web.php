@@ -58,12 +58,13 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::post('/{resident}', [ResidentController::class, 'update'])->name('update');
         Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
         Route::delete('/{resident}', [ResidentController::class, 'destroy'])->name('destroy');
-
-
     });
-     Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
+
+    //مدیریت صورتحساب ها
+    Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
     Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('manager.invoices.store');
+    Route::get('/invoice/show{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {

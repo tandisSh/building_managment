@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Manager\Resident;
 
 use App\Models\User;
@@ -34,8 +35,8 @@ class ResidentService
 
 
         $unitUser = UnitUser::where('user_id', (int) $user->id)
-    ->where('unit_id', (int) $data['unit_id'])
-    ->first();
+            ->where('unit_id', (int) $data['unit_id'])
+            ->first();
 
 
         if ($unitUser) {

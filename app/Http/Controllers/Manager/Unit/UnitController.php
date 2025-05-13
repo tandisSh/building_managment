@@ -26,7 +26,6 @@ class UnitController extends Controller
         return view('manager.units.show', compact('building', 'unit'));
     }
 
-
     public function create(Building $building)
     {
         return view('manager.units.create', compact('building'));

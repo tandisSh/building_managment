@@ -36,7 +36,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('residents.show', $invoice->id) }}"
+                                <a href="{{ route('manager.invoices.show', $invoice->id) }}"
                                     class="btn btn-info btn-sm">نمایش</a>
 
                                 <a href="{{ route('residents.edit', $invoice->id) }}"
