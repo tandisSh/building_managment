@@ -5,6 +5,7 @@ namespace App\Services\Manager\Invoice;
 use App\Models\Unit;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use App\Models\BulkInvoices;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -17,41 +18,29 @@ class InvoiceService
         })->with('unit')->latest()->get();
     }
 
-    public function getInvoiceFormData(User $manager)
+    public function generateInvoicesFromBulk(BulkInvoices $bulkInvoice)
     {
-        $building = $manager->building;
-        $units = Unit::where('building_id', $building->id)
-            ->whereHas('resident')
-            ->get();
+        $bulkInvoice->loadMissing('building');
+        $building = $bulkInvoice->building;
 
-
-        return [
-            'units' => $units,
-            'building' => $building,
-        ];
-    }
-
-    public function createMonthlyInvoice(User $manager, array $data)
-    {
-        $building = $manager->building;
         $units = Unit::where('building_id', $building->id)
             ->whereHas('resident')
             ->get();
 
         $items = [
-            'شارژ ساختمان' => $data['base_amount'],
+            'شارژ ساختمان' => $bulkInvoice->base_amount,
         ];
 
-        if ($building->shared_water && !empty($data['water_cost'])) {
-            $items['آب'] = $data['water_cost'];
+        if ($building->shared_water && !empty($bulkInvoice->water_cost)) {
+            $items['آب'] = $bulkInvoice->water_cost;
         }
 
-        if ($building->shared_electricity && !empty($data['electricity_cost'])) {
-            $items['برق'] = $data['electricity_cost'];
+        if ($building->shared_electricity && !empty($bulkInvoice->electricity_cost)) {
+            $items['برق'] = $bulkInvoice->electricity_cost;
         }
 
-        if ($building->shared_gas && !empty($data['gas_cost'])) {
-            $items['گاز'] = $data['gas_cost'];
+        if ($building->shared_gas && !empty($bulkInvoice->gas_cost)) {
+            $items['گاز'] = $bulkInvoice->gas_cost;
         }
 
         $totalCost = array_sum($items);
@@ -59,11 +48,11 @@ class InvoiceService
         $perUnitTotal = $totalCost / $unitCount;
 
         foreach ($units as $unit) {
-            DB::transaction(function () use ($unit, $items, $data, $perUnitTotal, $unitCount) {
+            DB::transaction(function () use ($unit, $bulkInvoice, $items, $perUnitTotal, $unitCount) {
                 $invoice = Invoice::create([
                     'unit_id' => $unit->id,
                     'total_amount' => $perUnitTotal,
-                    'due_date' => $data['due_date'],
+                    'due_date' => $bulkInvoice->due_date,
                     'status' => 'unpaid',
                     'type' => 'current',
                 ]);
@@ -73,6 +62,7 @@ class InvoiceService
                         'invoice_id' => $invoice->id,
                         'title' => $title,
                         'amount' => $cost / $unitCount,
+                        'paid_amount' => 0,
                     ]);
                 }
             });
