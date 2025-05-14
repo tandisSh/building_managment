@@ -37,13 +37,17 @@
                                 @if ($unit->users && $unit->users->count())
                                     @foreach ($unit->users as $resident)
                                         <div>{{ $resident->name }}
-                                            ({{ $resident->pivot->role == 'owner' ? 'مالک' : 'ساکن' }})</div>
+                                            ({{ $resident->pivot->role == 'owner' ? 'مالک' : 'ساکن' }})
+                                        </div>
                                     @endforeach
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif
                             </td>
                             <td>
+                                <a href="{{ route('invoices.single.create', [$unit->id]) }}"
+                                    class="btn btn-sm btn-warning">صدور صورتحساب</a>
+
                                 <a href="{{ route('units.show', [$building->id, $unit->id]) }}"
                                     class="btn btn-sm btn-primary">مشاهده</a>
 

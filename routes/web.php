@@ -65,6 +65,12 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
     Route::post('/invoices', [InvoiceController::class, 'store'])->name('manager.invoices.store');
     Route::get('/invoice/show{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
+    // نمایش فرم (با یا بدون unit_id)
+    Route::get('/invoices/single/create', [InvoiceController::class, 'createSingle'])
+        ->name('invoices.single.create');
+    // ذخیره‌سازی
+    Route::post('/invoices/single/store', [InvoiceController::class, 'storeSingle'])
+        ->name('invoices.single.store');
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {

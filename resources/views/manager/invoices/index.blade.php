@@ -3,9 +3,14 @@
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5><i class="bi bi-receipt"></i> لیست صورتحساب‌ها</h5>
-            <a href="{{ route('manager.invoices.create') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> افزودن صورتحساب
-            </a>
+           <a href="#" class="btn btn-primary" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi bi-plus-circle"></i> افزودن صورتحساب
+</a>
+<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <li><a class="dropdown-item" href="{{ route('manager.invoices.create') }}">افزودن صورتحساب برای کل ساختمان</a></li>
+    <li><a class="dropdown-item" href="{{ route('invoices.single.create') }}">افزودن صورتحساب برای یک واحد خاص</a></li>
+</ul>
+
         </div>
         <div class="card-body">
             @if (session('success'))
