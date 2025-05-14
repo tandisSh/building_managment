@@ -27,22 +27,31 @@ class InvoiceService
             ->whereHas('resident')
             ->get();
 
-        $items = [
-            'شارژ ساختمان' => $bulkInvoice->base_amount,
-        ];
+        // منطق صورتحساب جاری
+        if ($bulkInvoice->type === 'current') {
+            $items = [
+                'شارژ ساختمان' => $bulkInvoice->base_amount,
+            ];
 
-        if ($building->shared_water && !empty($bulkInvoice->water_cost)) {
-            $items['آب'] = $bulkInvoice->water_cost;
+            if ($building->shared_water && !empty($bulkInvoice->water_cost)) {
+                $items['آب'] = $bulkInvoice->water_cost;
+            }
+
+            if ($building->shared_electricity && !empty($bulkInvoice->electricity_cost)) {
+                $items['برق'] = $bulkInvoice->electricity_cost;
+            }
+
+            if ($building->shared_gas && !empty($bulkInvoice->gas_cost)) {
+                $items['گاز'] = $bulkInvoice->gas_cost;
+            }
         }
-
-        if ($building->shared_electricity && !empty($bulkInvoice->electricity_cost)) {
-            $items['برق'] = $bulkInvoice->electricity_cost;
+        // منطق صورتحساب ثابت
+        else {
+            $items = [
+                $bulkInvoice->fixed_title  => $bulkInvoice->base_amount,
+            ];
         }
-
-        if ($building->shared_gas && !empty($bulkInvoice->gas_cost)) {
-            $items['گاز'] = $bulkInvoice->gas_cost;
-        }
-
+// dd($items);
         $totalCost = array_sum($items);
         $unitCount = max($units->count(), 1);
         $perUnitTotal = $totalCost / $unitCount;
@@ -51,10 +60,11 @@ class InvoiceService
             DB::transaction(function () use ($unit, $bulkInvoice, $items, $perUnitTotal, $unitCount) {
                 $invoice = Invoice::create([
                     'unit_id' => $unit->id,
+                    'bulk_invoice_id' => $bulkInvoice->id,
                     'total_amount' => $perUnitTotal,
                     'due_date' => $bulkInvoice->due_date,
                     'status' => 'unpaid',
-                    'type' => 'current',
+                    'type' => $bulkInvoice->type,
                 ]);
 
                 foreach ($items as $title => $cost) {

@@ -31,6 +31,8 @@ class InvoiceController extends Controller
 
     public function store(InvoiceRequest $request)
     {
+        // dd($request->all());
+
         $validated = $request->validated();
 
         $bulkInvoice = $this->bulkInvoiceService->create(Auth::user(), $validated);
@@ -38,7 +40,7 @@ class InvoiceController extends Controller
         $this->invoiceService->generateInvoicesFromBulk($bulkInvoice);
 
         return redirect()->route('manager.invoices.index')
-            ->with('success', 'صورتحساب ماهانه با موفقیت ثبت شد.');
+            ->with('success', 'صورتحساب  با موفقیت ثبت شد.');
     }
 
     public function show($invoiceid)

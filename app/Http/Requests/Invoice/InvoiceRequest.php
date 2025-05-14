@@ -20,6 +20,9 @@ class InvoiceRequest extends FormRequest
             'gas_cost' => 'nullable|numeric|min:0',
             'due_date' => 'required|date|after:today',
             'description' => 'nullable|string|max:255',
+            'type' => ['required', 'in:current,fixed'],
+            'fixed_title' => ['required_if:type,fixed', 'string', 'max:255'],
+
         ];
     }
 }
