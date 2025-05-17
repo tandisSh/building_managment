@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Invoice extends Model
 {
     protected $fillable = [
-        'unit_id', 'bulk_invoice_id', 'total_amount',
-        'due_date', 'status', 'type'
+        'unit_id',
+        'bulk_invoice_id',
+        'total_amount',
+        'due_date',
+        'status',
+        'type'
     ];
 
     public function unit()
@@ -16,24 +20,15 @@ class Invoice extends Model
         return $this->belongsTo(Unit::class);
     }
 
-    public function items()
-    {
-        return $this->hasMany(InvoiceItem::class);
-    }
-
     public function bulkInvoice()
     {
-        return $this->belongsTo(BulkInvoices::class);
+        return $this->belongsTo(BulkInvoice::class);
     }
-
-    public function calculateStatus()
+    public function calculateStatus(): string
     {
-        $totalPaid = $this->items->sum('paid_amount');
-
         return match (true) {
-            $totalPaid == 0 => 'unpaid',
-            $totalPaid >= $this->total_amount => 'paid',
-            default => 'partial',
+            $this->status === 'paid' => 'paid',
+            default => 'unpaid',
         };
     }
 }

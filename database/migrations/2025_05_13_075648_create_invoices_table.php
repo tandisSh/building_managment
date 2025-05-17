@@ -17,7 +17,7 @@ return new class extends Migration
             $table->decimal('total_amount', 12, 2);
             $table->date('due_date');
             $table->enum('status', ['paid', 'unpaid', 'partial'])->default('unpaid');
-            $table->enum('type', ['current', 'fixed']); // نوع صورتحساب
+            $table->enum('type', ['current', 'fixed']);
             $table->timestamps();
         });
     }

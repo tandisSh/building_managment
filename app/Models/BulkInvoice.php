@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BulkInvoices extends Model
+class BulkInvoice extends Model
 {
     protected $fillable = [
         'building_id', 'base_amount', 'water_cost', 'electricity_cost',

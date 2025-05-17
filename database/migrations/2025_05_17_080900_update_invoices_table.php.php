@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
          Schema::table('invoices', function (Blueprint $table) {
-            $table->foreignId('bulk_invoice_id')->nullable();
+            $table->enum('status', ['paid', 'unpaid'])->default('unpaid');
         });
     }
 
@@ -22,8 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            //
-        });
+        //
     }
 };
