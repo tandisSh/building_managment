@@ -60,17 +60,28 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::delete('/{resident}', [ResidentController::class, 'destroy'])->name('destroy');
     });
 
-    //مدیریت صورتحساب ها
+    // لیست صورتحساب‌ها
     Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
-    Route::get('/invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
-    Route::post('/invoices', [InvoiceController::class, 'store'])->name('manager.invoices.store');
-    Route::get('/invoice/show{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
-    // نمایش فرم (با یا بدون unit_id)
-    Route::get('/invoices/single/create', [InvoiceController::class, 'createSingle'])
-        ->name('invoices.single.create');
-    // ذخیره‌سازی
-    Route::post('/invoices/single/store', [InvoiceController::class, 'storeSingle'])
-        ->name('invoices.single.store');
+
+    // صورتحساب کلی (bulk)
+    Route::get('invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
+    Route::post('invoices', [InvoiceController::class, 'storebulk'])->name('manager.invoices.store');
+
+    // نمایش جزئیات صورتحساب
+    Route::get('invoice/show/{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
+
+    // صورتحساب تکی (single)
+    Route::get('invoices/single/create', [InvoiceController::class, 'createSingle'])->name('invoices.single.create');
+    Route::post('invoices/single/store', [InvoiceController::class, 'storeSingle'])->name('invoices.single.store');
+    Route::get('/single-invoices/{invoice}/edit', [InvoiceController::class, 'editSingle'])->name('manager.single-invoices.edit');
+    Route::put('/single-invoices/{invoice}', [InvoiceController::class, 'updateSingle'])->name('manager.single-invoices.update');
+
+
+    // صورتحساب‌های کلی (bulk) مدیریت
+    Route::get('bulk-invoices', [InvoiceController::class, 'bulkindex'])->name('bulk_invoices.index');
+    Route::post('bulk-invoices/{bulkInvoice}/approve', [InvoiceController::class, 'approve'])->name('bulk_invoices.approve');
+    Route::get('manager/bulk_invoices/{bulkInvoice}/edit', [InvoiceController::class, 'editBulkInvoice'])->name('manager.bulk_invoices.edit');
+    Route::post('manager/bulk_invoices/{bulkInvoice}', [InvoiceController::class, 'updateBulkInvoice'])->name('manager.bulk_invoices.update');
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {
@@ -86,3 +97,4 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
 //     Route::get('/dashboard', [ResidentController::class, 'dashboard'])->name('resident.dashboard');
 //     Route::get('/payments', [ResidentController::class, 'payments'])->name('resident.payments');
 // });
+
