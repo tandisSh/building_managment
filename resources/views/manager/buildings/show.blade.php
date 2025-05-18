@@ -50,7 +50,9 @@
                     <div class="card border rounded shadow-sm p-3 h-100">
                         <div class="d-flex align-items-center">
                             <label class="fw-bold text-secondary me-2 mb-0 flex-shrink-0">مشترکات:</label>
-                            <span class="text-dark">{{ $building->shared_utilities ? 'بله' : 'خیر' }}</span>
+                            <span class="text-dark">{{ $building->shared_water ? 'آب' : '-'}}</span>
+                            <span class="text-dark">{{ $building->shared_gas ? 'گاز' : '-' }}</span>
+                            <span class="text-dark">{{ $building->shared_electricity ? 'برق': '-' }}</span>
                         </div>
                     </div>
                 </div>
