@@ -51,7 +51,7 @@
                                 <button class="btn btn-secondary btn-sm" disabled>تایید شده</button>
                             @endif
 
-                            <a href='' class="btn btn-info btn-sm mt-1">نمایش</a>
+                            <a href="{{ route('manager.bulk_invoices.show', $bulkInvoice->id) }}" class="btn btn-info btn-sm mt-1">نمایش</a>
                             <a href="{{ route('manager.bulk_invoices.edit', $bulkInvoice->id) }}" class="btn btn-warning btn-sm mt-1">ویرایش</a>
                         </td>
                     </tr>

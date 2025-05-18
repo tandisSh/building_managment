@@ -20,18 +20,20 @@ class InvoiceController extends Controller
         protected SingleInvoiceService $singleInvoiceService
     ) {}
 
-    // لیست تمام صورتحساب‌های واحدی که مدیر دارد
-    public function index()
+    //bulk Invoices
+
+    // لیست صورتحساب‌های کلی (bulk)
+    public function bulkindex()
     {
-        $invoices = $this->invoiceService->getManagerInvoices(Auth::user());
-        return view('manager.invoices.index', compact('invoices'));
+        $bulkInvoices = $this->bulkInvoiceService->getByManager(Auth::user());
+        return view('manager.invoices.bulk.index', compact('bulkInvoices'));
     }
 
     // فرم ثبت صورتحساب کلی (bulk)
     public function create()
     {
         $building = Auth::user()->building;
-        return view('manager.invoices.create', compact('building'));
+        return view('manager.invoices.bulk.create', compact('building'));
     }
 
     // ذخیره صورتحساب کلی (bulk)
@@ -44,11 +46,68 @@ class InvoiceController extends Controller
             ->with('success', 'صورتحساب کلی با موفقیت ثبت شد.');
     }
 
+    // تایید و پخش صورتحساب کلی بین واحدها
+    public function approve(BulkInvoice $bulkInvoice)
+    {
+        if ($bulkInvoice->status !== 'pending') {
+            return redirect()->back()->with('error', 'این صورتحساب قبلا تایید شده است.');
+        }
+
+        $this->invoiceService->generateInvoicesFromBulk($bulkInvoice);
+        $this->bulkInvoiceService->markAsApproved($bulkInvoice);
+
+        return redirect()->route('bulk_invoices.index')
+            ->with('success', 'صورتحساب کلی با موفقیت تایید و بین واحدها پخش شد.');
+    }
+
+    //فرم ویرایش صورتحساب کلی
+    public function editBulkInvoice(BulkInvoice $bulkInvoice)
+    {
+        try {
+            // فقط اجازه میدیم فرم ویرایش برای bulk invoice با وضعیت pending باز بشه
+            if ($bulkInvoice->status !== 'pending') {
+                return redirect()->route('bulk_invoices.index')
+                    ->with('error', 'امکان ویرایش این صورتحساب کلی وجود ندارد چون قبلاً تایید شده است.');
+            }
+
+            return view('manager.invoices.bulk.edit', compact('bulkInvoice'));
+        } catch (\Exception $e) {
+            return redirect()->route('bulk_invoices.index')
+                ->with('error', $e->getMessage());
+        }
+    }
+
+    //ویرایش صورتحساب کلی
+    public function updateBulkInvoice(InvoiceRequest $request, BulkInvoice $bulkInvoice)
+    {
+        $this->bulkInvoiceService->updateBulkInvoice($bulkInvoice, $request->validated());
+
+        return redirect()->route('bulk_invoices.index')
+            ->with('success', 'صورتحساب کلی با موفقیت ویرایش شد.');
+    }
+
+    //نمایش صورتحساب کلی
+    public function showBulk($id)
+    {
+        $bulkInvoice = BulkInvoice::with('invoices.unit')->findOrFail($id);
+        return view('manager.invoices.bulk.show', compact('bulkInvoice'));
+    }
+
+
+    //single invoices
+
+    // لیست تمام صورتحساب‌های واحدی که مدیر دارد
+    public function index()
+    {
+        $invoices = $this->invoiceService->getManagerInvoices(Auth::user());
+        return view('manager.invoices.single.index', compact('invoices'));
+    }
+
     // نمایش جزئیات یک صورتحساب
     public function show($invoiceId)
     {
         $invoice = Invoice::with('unit')->findOrFail($invoiceId);
-        return view('manager.invoices.show', compact('invoice'));
+        return view('manager.invoices.single.show', compact('invoice'));
     }
 
     // فرم ثبت صورتحساب تکی برای یک واحد خاص
@@ -68,57 +127,18 @@ class InvoiceController extends Controller
             ->with('success', 'صورتحساب با موفقیت ثبت شد.');
     }
 
-    // لیست صورتحساب‌های کلی (bulk)
-    public function bulkindex()
-    {
-        $bulkInvoices = $this->bulkInvoiceService->getByManager(Auth::user());
-        return view('manager.invoices.bulk.index', compact('bulkInvoices'));
-    }
-
-    // تایید و پخش صورتحساب کلی بین واحدها
-    public function approve(BulkInvoice $bulkInvoice)
-    {
-        if ($bulkInvoice->status !== 'pending') {
-            return redirect()->back()->with('error', 'این صورتحساب قبلا تایید شده است.');
-        }
-
-        $this->invoiceService->generateInvoicesFromBulk($bulkInvoice);
-        $this->bulkInvoiceService->markAsApproved($bulkInvoice);
-
-        return redirect()->route('bulk_invoices.index')
-            ->with('success', 'صورتحساب کلی با موفقیت تایید و بین واحدها پخش شد.');
-    }
-    public function editBulkInvoice(BulkInvoice $bulkInvoice)
-    {
-        try {
-            // فقط اجازه میدیم فرم ویرایش برای bulk invoice با وضعیت pending باز بشه
-            if ($bulkInvoice->status !== 'pending') {
-                return redirect()->route('bulk_invoices.index')
-                    ->with('error', 'امکان ویرایش این صورتحساب کلی وجود ندارد چون قبلاً تایید شده است.');
-            }
-
-            return view('manager.invoices.edit', compact('bulkInvoice'));
-        } catch (\Exception $e) {
-            return redirect()->route('bulk_invoices.index')
-                ->with('error', $e->getMessage());
-        }
-    }
-    public function updateBulkInvoice(InvoiceRequest $request, BulkInvoice $bulkInvoice)
-    {
-        $this->bulkInvoiceService->updateBulkInvoice($bulkInvoice, $request->validated());
-
-        return redirect()->route('bulk_invoices.index')
-            ->with('success', 'صورتحساب کلی با موفقیت ویرایش شد.');
-    }
+    //فرم ویرایش صورتحساب تکی
     public function editSingle(Invoice $invoice)
     {
-        $units = $invoice->unit->building->units; // یا اگر دسترسی نداره، همه واحدها رو بیار
+        $units = $invoice->unit->building->units;
 
         return view('manager.invoices.single.edit', [
             'invoice' => $invoice,
             'units' => $units,
         ]);
     }
+
+    // ویرایش صورتحساب تکی
     public function updateSingle(SingleInvoiceRequest $request, Invoice $invoice)
     {
         if ($invoice->status === 'paid') {
