@@ -15,14 +15,10 @@ class InvoiceRequest extends FormRequest
     {
         return [
             'base_amount' => 'required|numeric|min:0',
-            'water_cost' => 'nullable|numeric|min:0',
-            'electricity_cost' => 'nullable|numeric|min:0',
-            'gas_cost' => 'nullable|numeric|min:0',
+            'title' => 'required|string|max:255',
             'due_date' => 'required|date|after:today',
             'description' => 'nullable|string|max:255',
             'type' => ['required', 'in:current,fixed'],
-            'fixed_title' => ['required_if:type,fixed', 'string', 'max:255'],
-
         ];
     }
 }

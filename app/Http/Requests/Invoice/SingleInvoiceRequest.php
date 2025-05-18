@@ -14,7 +14,7 @@ class SingleInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-           'unit_id' => 'required|exists:units,id',
+        'unit_id' => 'required|exists:units,id',
         'type' => 'required|in:current,fixed',
         'title' => 'required|string|max:255',
         'amount' => 'required|numeric|min:0',
