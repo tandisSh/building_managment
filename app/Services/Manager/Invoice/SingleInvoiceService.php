@@ -3,7 +3,6 @@
 namespace App\Services\Manager\Invoice;
 
 use App\Models\Invoice;
-use App\Models\InvoiceItem;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
@@ -11,29 +10,33 @@ class SingleInvoiceService
 {
     public function create(User $manager, array $data): Invoice
     {
-        $building = $manager->building;
+        // $building = $manager->building; // در صورت نیاز
 
         return DB::transaction(function () use ($data) {
-            // ایجاد صورتحساب
-            $invoice = Invoice::create([
+            return Invoice::create([
                 'unit_id' => $data['unit_id'],
+                'title' => $data['title'],
                 'total_amount' => $data['amount'],
                 'due_date' => $data['due_date'],
-                'description' => $data['description'],
+                'description' => $data['description'] ?? null,
                 'type' => $data['type'],
+                'status' => 'unpaid',
             ]);
-
-            // ایجاد آیتم صورتحساب
-            InvoiceItem::create([
-                'invoice_id' => $invoice->id,
+        });
+    }
+    public function update(Invoice $invoice, array $data): Invoice
+    {
+        return DB::transaction(function () use ($invoice, $data) {
+            $invoice->update([
+                'unit_id' => $data['unit_id'],
                 'title' => $data['title'],
                 'amount' => $data['amount'],
-                'paid_amount' => 0, // مبلغ پرداخت نشده
+                'due_date' => $data['due_date'],
+                'description' => $data['description'] ?? null,
+                // 'type' => $data['type'],
             ]);
 
             return $invoice;
         });
     }
 }
-
-
