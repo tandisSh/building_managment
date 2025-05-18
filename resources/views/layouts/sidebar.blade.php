@@ -22,13 +22,13 @@
             @if ($roles->contains('super_admin'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('super_admin.dashboard') ? 'active fw-bold' : '' }}"
-                       href="{{ route('super_admin.dashboard') }}">
+                        href="{{ route('super_admin.dashboard') }}">
                         <i class="bi bi-shield-lock me-2"></i> داشبورد ادمین
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('super_admin.requests') ? 'active fw-bold' : '' }}"
-                       href="{{ route('super_admin.requests') }}">
+                        href="{{ route('super_admin.requests') }}">
                         <i class="bi bi-clipboard-check me-2"></i> درخواست‌ها
                     </a>
                 </li>
@@ -38,7 +38,7 @@
             @if ($roles->contains('manager'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('manager.dashboard') ? 'active fw-bold' : '' }}"
-                       href="{{ route('manager.dashboard') }}">
+                        href="{{ route('manager.dashboard') }}">
                         <i class="bi bi-speedometer2 me-2"></i> داشبورد
                     </a>
                 </li>
@@ -47,7 +47,7 @@
                 @if (!in_array($buildingRequestStatus, ['pending', 'approved']))
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('manager.buildings.create') ? 'active fw-bold' : '' }}"
-                           href="{{ route('manager.buildings.create') }}">
+                            href="{{ route('manager.buildings.create') }}">
                             <i class="bi bi-building-add me-2"></i> ثبت ساختمان
                         </a>
                     </li>
@@ -57,7 +57,7 @@
                 <li class="nav-item">
                     @if ($building)
                         <a class="nav-link {{ request()->routeIs('manager.building.show') ? 'active fw-bold' : '' }}"
-                           href="{{ route('manager.building.show', $building->id) }}">
+                            href="{{ route('manager.building.show', $building->id) }}">
                             <i class="bi bi-houses me-2"></i> اطلاعات ساختمان
                         </a>
                     @else
@@ -70,7 +70,7 @@
                 <li class="nav-item">
                     @if ($building)
                         <a class="nav-link {{ request()->routeIs('units.index') ? 'active fw-bold' : '' }}"
-                           href="{{ route('units.index', $building->id) }}">
+                            href="{{ route('units.index', $building->id) }}">
                             <i class="bi bi-houses me-2"></i> اطلاعات واحدها
                         </a>
                     @else
@@ -84,7 +84,7 @@
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link {{ request()->routeIs('residents.index') ? 'active fw-bold' : '' }}"
-                           href="{{ route('residents.index', $building->id) }}">
+                            href="{{ route('residents.index', $building->id) }}">
                             <i class="bi bi-people me-2"></i> ساکنین
                         </a>
                     @else
@@ -95,18 +95,37 @@
                 </li>
 
                 {{-- صورتحساب ها --}}
-                <li class="nav-item">
-                    @if ($building && $buildingRequestStatus === 'approved')
-                        <a class="nav-link {{ request()->routeIs('manager.invoices.index') ? 'active fw-bold' : '' }}"
-                           href="{{ route('manager.invoices.index', $building->id) }}">
-                            <i class="bi bi-people me-2"></i> صورتحساب ها
+                {{-- صورتحساب‌ها با زیرمنو --}}
+                @if ($building && $buildingRequestStatus === 'approved')
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'active fw-bold' : '' }}"
+                            href="#" id="invoiceDropdown" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="bi bi-file-text me-2"></i> صورتحساب‌ها
                         </a>
-                    @else
+                        <ul class="dropdown-menu" aria-labelledby="invoiceDropdown">
+                            <li>
+                                <a class="dropdown-item {{ request()->routeIs('manager.invoices.index') ? 'active fw-bold' : '' }}"
+                                    href="{{ route('manager.invoices.index') }}">
+                                    صورتحساب‌ها
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {{ request()->routeIs('manager.bulk_invoices.index') ? 'active fw-bold' : '' }}"
+                                    href="{{ route('bulk_invoices.index') }}">
+                                    صورتحساب‌های کلی
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <li class="nav-item">
                         <span class="nav-link disabled">
-                            <i class="bi bi-people me-2"></i> صورتحساب ها
+                            <i class="bi bi-file-text me-2"></i> صورتحساب‌ها
                         </span>
-                    @endif
-                </li>
+                    </li>
+                @endif
+
                 {{-- تنظیمات --}}
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')

@@ -1,52 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-    <form method="POST" action="{{ route('invoices.single.store') }}">
+<div class="container mt-5">
+    <h4 class="text-center mb-4">صدور صورتحساب تکی برای یک واحد</h4>
+
+    <form action="{{ route('invoices.single.store') }}" method="POST">
         @csrf
 
-        {{-- اگر unit_id از URL اومده، این hidden باشه --}}
-        @if (request()->has('unit_id'))
-            <input type="hidden" name="unit_id" value="{{ request('unit_id') }}">
-        @else
-            {{-- اگر مستقیماً از لیست صورتحساب اومده، انتخاب واحد --}}
-            <div class="mb-3">
-                <label for="unit_id">واحد</label>
-                <select name="unit_id" class="form-select" required>
-                    @foreach ($units as $unit)
-                        <option value="{{ $unit->id }}">{{ $unit->id }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-        @endif
         <div class="mb-3">
-            <label for="type">نوع صورتحساب</label>
-            <select name="type" class="form-select" required>
-                <option value="current">جاری</option>
-                <option value="fixed">ثابت</option>
+            <label for="unit_id" class="form-label">واحد</label>
+            <select name="unit_id" class="form-select" required>
+                <option value="">انتخاب واحد</option>
+                @foreach($units as $unit)
+                    <option value="{{ $unit->id }}">{{ $unit->unit_number }}</option>
+                @endforeach
             </select>
         </div>
+
         <div class="mb-3">
-            <label for="title">عنوان هزینه</label>
+            <label for="title" class="form-label">عنوان صورتحساب</label>
             <input type="text" name="title" class="form-control" required>
         </div>
 
         <div class="mb-3">
-            <label for="amount">مبلغ</label>
+            <label for="amount" class="form-label">مبلغ</label>
             <input type="number" name="amount" class="form-control" required>
         </div>
 
         <div class="mb-3">
-            <label for="due_date">تاریخ سررسید</label>
+            <label for="due_date" class="form-label">مهلت پرداخت</label>
             <input type="date" name="due_date" class="form-control" required>
         </div>
 
         <div class="mb-3">
-            <label for="description">توضیحات</label>
-            <textarea name="description" class="form-control"></textarea>
+            <label for="description" class="form-label">توضیحات (اختیاری)</label>
+            <textarea name="description" class="form-control" rows="2"></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary w-100">ثبت صورتحساب</button>
-    </form>
+        <input type="hidden" name="type" value="fixed">
 
+        <button type="submit" class="btn btn-success w-100">ثبت صورتحساب تکی</button>
+    </form>
+</div>
 @endsection

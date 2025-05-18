@@ -33,7 +33,7 @@
                         <tr>
                             <td> {{ $index + 1 }}</td>
                             <td> {{ $invoice->unit_id }}</td>
-                            <td>{{ number_format($invoice->total_amount) }} تومان</td>
+                            <td>{{ number_format($invoice->amount) }} تومان</td>
                             <td>{{ jdate($invoice->due_date)->format('Y/m/d') }}</td>
                             <td>
                                 <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : 'warning' }}">
@@ -44,7 +44,7 @@
                                 <a href="{{ route('manager.invoices.show', $invoice->id) }}"
                                     class="btn btn-info btn-sm">نمایش</a>
 
-                                <a href="{{ route('residents.edit', $invoice->id) }}"
+                                <a href="{{ route('manager.single-invoices.edit', $invoice->id) }}"
                                     class="btn btn-warning btn-sm">ویرایش</a>
                             </td>
                         </tr>
