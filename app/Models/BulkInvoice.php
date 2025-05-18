@@ -7,8 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class BulkInvoice extends Model
 {
     protected $fillable = [
-        'building_id', 'base_amount', 'water_cost', 'electricity_cost',
-        'gas_cost', 'type', 'due_date', 'description', 'fixed_title'
+        'building_id',
+        'title',
+        'base_amount',
+        'type',
+        'due_date',
+        'description',
     ];
 
     public function invoices()
@@ -20,4 +24,7 @@ class BulkInvoice extends Model
     {
         return $this->belongsTo(Building::class);
     }
+    protected $attributes = [
+        'status' => 'pending',
+    ];
 }

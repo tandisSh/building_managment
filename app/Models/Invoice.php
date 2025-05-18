@@ -9,10 +9,11 @@ class Invoice extends Model
     protected $fillable = [
         'unit_id',
         'bulk_invoice_id',
-        'total_amount',
+        'amount',
         'due_date',
         'status',
-        'type'
+        'type',
+        'title'
     ];
 
     public function unit()
