@@ -16,7 +16,7 @@ class SingleInvoiceService
             return Invoice::create([
                 'unit_id' => $data['unit_id'],
                 'title' => $data['title'],
-                'total_amount' => $data['amount'],
+                'amount' => $data['amount'],
                 'due_date' => $data['due_date'],
                 'description' => $data['description'] ?? null,
                 'type' => $data['type'],
@@ -33,7 +33,7 @@ class SingleInvoiceService
                 'amount' => $data['amount'],
                 'due_date' => $data['due_date'],
                 'description' => $data['description'] ?? null,
-                // 'type' => $data['type'],
+                'type' => $data['type'],
             ]);
 
             return $invoice;
