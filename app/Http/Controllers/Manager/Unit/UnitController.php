@@ -34,7 +34,7 @@ class UnitController extends Controller
     public function store(UnitRequest $request, $buildingId)
     {
         $building = Building::findOrFail($buildingId);
-        $this->service->createUnit($building, $request->validated());
+        $this->service->createUnit($building , $request->validated());
         return redirect()->route('units.index', $building->id)->with('success', 'واحد جدید با موفقیت اضافه شد.');
     }
 

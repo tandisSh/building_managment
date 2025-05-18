@@ -1,70 +1,89 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-5">
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">مشاهده اطلاعات ساختمان</h5>
-        </div>
+<div class="container mt-3">
+    <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
+        <h6 class="mb-0 fw-bold text-dark fs-6 py-2 px-3">
+            <i class="bi bi-building me-2"></i>مشاهده اطلاعات ساختمان
+        </h6>
+    </div>
 
-        <div class="card-body">
-            <div class="row row-cols-1 row-cols-md-2 g-3 px-2">
-
-                <div class="col">
-                    <div class="card border rounded shadow-sm p-3 h-100">
+    <div class="card admin-table-card border-0">
+        <div class="card-body p-3">
+            <div class="row g-3">
+                <!-- کارت اطلاعات ساختمان -->
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card">
+                        <i class="bi bi-building icon"></i>
                         <div class="d-flex align-items-center">
-                            <label class="fw-bold text-secondary me-2 mb-0 flex-shrink-0">نام ساختمان:</label>
-                            <span class="text-dark text-truncate">{{ $building->building_name }}</span>
+                            <span class="label">نام ساختمان:</span>
+                            <span class="value ms-2 fs-6">{{ $building->building_name }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="card border rounded shadow-sm p-3 h-100">
+                <!-- کارت آدرس -->
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card">
+                        <i class="bi bi-geo-alt icon"></i>
                         <div class="d-flex align-items-center">
-                            <label class="fw-bold text-secondary me-2 mb-0 flex-shrink-0">آدرس:</label>
-                            <span class="text-dark text-truncate">{{ $building->address }}</span>
+                            <span class="label">آدرس:</span>
+                            <span class="value ms-2 fs-6 text-truncate">{{ $building->address }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="card border rounded shadow-sm p-3 h-100">
+                <!-- کارت تعداد طبقات -->
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card">
+                        <i class="bi bi-layers icon"></i>
                         <div class="d-flex align-items-center">
-                            <label class="fw-bold text-secondary me-2 mb-0 flex-shrink-0">تعداد طبقات:</label>
-                            <span class="text-dark">{{ $building->number_of_floors }}</span>
+                            <span class="label">تعداد طبقات:</span>
+                            <span class="value ms-2 fs-6">{{ $building->number_of_floors }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="card border rounded shadow-sm p-3 h-100">
+                <!-- کارت تعداد واحدها -->
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card">
+                        <i class="bi bi-door-closed icon"></i>
                         <div class="d-flex align-items-center">
-                            <label class="fw-bold text-secondary me-2 mb-0 flex-shrink-0">تعداد واحدها:</label>
-                            <span class="text-dark">{{ $building->number_of_units }}</span>
+                            <span class="label">تعداد واحدها:</span>
+                            <span class="value ms-2 fs-6">{{ $building->number_of_units }}</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="col">
-                    <div class="card border rounded shadow-sm p-3 h-100">
+                <!-- کارت مشترکات -->
+                <div class="col-12">
+                    <div class="compact-info-card">
+                        <i class="bi bi-lightning-charge icon"></i>
                         <div class="d-flex align-items-center">
-                            <label class="fw-bold text-secondary me-2 mb-0 flex-shrink-0">مشترکات:</label>
-                            <span class="text-dark">{{ $building->shared_water ? 'آب' : '-'}}</span>
-                            <span class="text-dark">{{ $building->shared_gas ? 'گاز' : '-' }}</span>
-                            <span class="text-dark">{{ $building->shared_electricity ? 'برق': '-' }}</span>
+                            <span class="label">مشترکات:</span>
+                            <div class="d-flex gap-2 ms-2">
+                                <span class="badge bg-{{ $building->shared_water ? 'primary' : 'secondary' }} py-1 px-2 fs-6">
+                                    آب
+                                </span>
+                                <span class="badge bg-{{ $building->shared_gas ? 'primary' : 'secondary' }} py-1 px-2 fs-6">
+                                    گاز
+                                </span>
+                                <span class="badge bg-{{ $building->shared_electricity ? 'primary' : 'secondary' }} py-1 px-2 fs-6">
+                                    برق
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            <div class="mt-4 px-2">
-                <a href="{{ route('manager.building.edit', $building->id) }}" class="btn btn-outline-primary">
-                    ویرایش ساختمان
+            <div class="mt-4 text-end">
+                <a href="{{ route('manager.building.edit', $building->id) }}" class="btn btn-sm add-btn">
+                    <i class="bi bi-pencil-square me-1"></i>ویرایش ساختمان
                 </a>
             </div>
         </div>
     </div>
 </div>
+
 @endsection

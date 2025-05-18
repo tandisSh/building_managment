@@ -1,39 +1,59 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5><i class="bi bi-receipt"></i> جزئیات صورتحساب واحد {{ $invoice->unit->id }}</h5>
-        <a href="{{ route('manager.invoices.index') }}" class="btn btn-sm btn-secondary">
-            بازگشت به لیست
+<div class="container mt-3">
+    <div class="admin-header d-flex justify-content-between align-items-center mb-4">
+        <h6 class="mb-0 fw-bold text-dark">
+            <i class="bi bi-receipt me-2"></i>جزئیات صورتحساب واحد {{ $invoice->unit->id }}
+        </h6>
+        <a href="{{ route('manager.invoices.index') }}" class="btn filter-btn">
+            <i class="bi bi-arrow-right me-1"></i>بازگشت به لیست
         </a>
     </div>
 
-    <div class="card-body">
-        <div class="mb-3">
-            <strong>عنوان صورتحساب:</strong>
-            {{ $invoice->title }}
+    <div class="admin-table-card p-4">
+        <div class="compact-info-card mb-4 mx-3">
+            <i class="bi bi-card-text icon"></i>
+            <div class="w-100">
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center">
+                        <span class="label me-3">عنوان صورتحساب:</span>
+                        <span class="value">{{ $invoice->title }}</span>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <span class="label me-3">توضیحات:</span>
+                        <span class="value">{{ $invoice->description ?? '-' }}</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <strong>توضیحات:</strong>
-            {{ $invoice->description ?? '-' }}
+        <div class="compact-info-card mb-4 mx-3">
+            <i class="bi bi-calendar-check icon"></i>
+            <div class="w-100">
+                <div class="d-flex flex-wrap gap-4">
+                    <div class="d-flex align-items-center">
+                        <span class="label me-3">تاریخ سررسید:</span>
+                        <span class="value">{{ jdate($invoice->due_date)->format('Y/m/d') }}</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="label me-3">وضعیت پرداخت:</span>
+                        <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : ($invoice->status === 'partial' ? 'warning' : 'danger') }}">
+                            {{ $invoice->status === 'paid' ? 'پرداخت شده' : ($invoice->status === 'partial' ? 'پرداخت جزئی' : 'پرداخت نشده') }}
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <strong>تاریخ سررسید:</strong>
-            {{ jdate($invoice->due_date)->format('Y/m/d') }}
-        </div>
-
-        <div class="mb-3">
-            <strong>وضعیت پرداخت:</strong>
-            <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : ($invoice->status === 'partial' ? 'warning' : 'danger') }}">
-                {{ $invoice->status === 'paid' ? 'پرداخت شده' : ($invoice->status === 'partial' ? 'پرداخت جزئی' : 'پرداخت نشده') }}
-            </span>
-        </div>
-
-        <div class="mb-3">
-            <strong>مبلغ کل:</strong> {{ number_format($invoice->amount) }} تومان
+        <div class="compact-info-card mx-3">
+            <i class="bi bi-cash-stack icon"></i>
+            <div class="w-100">
+                <div class="d-flex align-items-center">
+                    <span class="label me-3">مبلغ کل:</span>
+                    <span class="value">{{ number_format($invoice->amount) }} تومان</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>

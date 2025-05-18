@@ -42,7 +42,7 @@ class InvoiceController extends Controller
         $validated = $request->validated();
         $this->bulkInvoiceService->create(Auth::user(), $validated);
 
-        return redirect()->route('manager.invoices.index')
+        return redirect()->route('bulk_invoices.index')
             ->with('success', 'صورتحساب کلی با موفقیت ثبت شد.');
     }
 

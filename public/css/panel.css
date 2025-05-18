@@ -1,0 +1,182 @@
+/* admin-panel.css */
+
+body {
+    direction: rtl;
+    text-align: right;
+    font-family: "IRANSans", sans-serif;
+}
+
+/* نوار بالای لیست */
+.admin-header {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    min-height: 48px;
+    border-radius: 10px;
+    padding: 8px 16px;
+}
+
+/* ابزار بالا (جستجو + دکمه‌ها) */
+.tools-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+
+/* فیلتر */
+.filter-btn {
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    background-color: #e5ddfa;
+    color: #4e3cb3;
+    border-color: #c4b6f5;
+}
+
+/* افزودن */
+.add-btn {
+    background-color: #e5ddfa;
+    color: #4e3cb3;
+    padding: 4px 14px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+    border: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.add-btn:hover {
+    background-color: #d8cefa;
+    color: #3b2c9e;
+}
+
+/* سرچ */
+.search-input {
+    width: 160px;
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+}
+
+/* جدول */
+.admin-table-card {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.03);
+}
+
+.table-units th {
+    background-color: #e5ddfa;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.table-units td {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+/* استایل‌های اختصاصی برای منوی آبشاری */
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+.dropdown-menu {
+    min-width: 220px;
+    border-radius: 8px;
+    padding: 6px 0;
+    margin-top: 8px !important;
+}
+
+.dropdown-item {
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    border-radius: 4px;
+    margin: 0 6px;
+}
+
+.dropdown-item:hover {
+    background-color: #f3f0ff;
+    color: #4e3cb3;
+}
+
+.dropdown-arrow {
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.dropdown-toggle.show .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-divider {
+    border-color: #f0f0f0;
+}
+
+.compact-info-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    min-height: 50px;
+    border: 1px solid #e1e1e1;
+}
+
+.compact-info-card .icon {
+    font-size: 1.2rem;
+    color: #4e3cb3;
+    background: #e5ddfa;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.compact-info-card .label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.compact-info-card .value {
+    font-size: 0.95rem;
+    color: #212529;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.admin-header {
+    border-radius: 8px;
+}
+/* ریسپانسیو */
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 0.75rem;
+    }
+
+    .tools-box {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .search-input {
+        width: 100%;
+    }
+}

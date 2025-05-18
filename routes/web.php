@@ -41,12 +41,12 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/building', [BuildingController::class, 'showBuilding'])->name('manager.building.show');
 
     //مدیریت واحد ها
-    Route::get('buildings/{building}/units', [UnitController::class, 'index'])->name('units.index');
-    Route::get('buildings/{building}/units/{unit}', [UnitController::class, 'show'])->name('units.show');
     Route::get('buildings/{building}/units/create', [UnitController::class, 'create'])->name('units.create');
     Route::post('buildings/{building}/units', [UnitController::class, 'store'])->name('units.store');
     Route::get('buildings/{building}/units/{unit}/edit', [UnitController::class, 'edit'])->name('units.edit');
     Route::put('buildings/{building}/units/{unit}', [UnitController::class, 'update'])->name('units.update');
+    Route::get('buildings/{building}/units', [UnitController::class, 'index'])->name('units.index');
+    Route::get('buildings/{building}/units/{unit}', [UnitController::class, 'show'])->name('units.show');
     Route::delete('buildings/{building}/units/{unit}', [UnitController::class, 'destroy'])->name('units.destroy');
 
     // مدیریت ساکنین
@@ -78,7 +78,6 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('/single-invoices/{invoice}/edit', [InvoiceController::class, 'editSingle'])->name('manager.single-invoices.edit');
     Route::put('/single-invoices/{invoice}', [InvoiceController::class, 'updateSingle'])->name('manager.single-invoices.update');
     Route::get('invoice/show/{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
-
 });
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {
@@ -94,4 +93,3 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
 //     Route::get('/dashboard', [ResidentController::class, 'dashboard'])->name('resident.dashboard');
 //     Route::get('/payments', [ResidentController::class, 'payments'])->name('resident.payments');
 // });
-
