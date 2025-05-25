@@ -18,7 +18,7 @@
                     <div class="form-group">
                         <label for="title" class="form-label small">عنوان صورتحساب</label>
                         <input type="text" name="title" id="title" class="form-control form-control-sm"
-                            value="{{ old('title', $bulkInvoice->title) }}" required>
+                            value="{{ old('title', $bulkInvoice->title) }}" >
                     </div>
                 </div>
 
@@ -26,7 +26,7 @@
                     <div class="form-group">
                         <label for="base_amount" class="form-label small">مبلغ پایه</label>
                         <input type="number" name="base_amount" id="base_amount" class="form-control form-control-sm"
-                            value="{{ old('base_amount', $bulkInvoice->base_amount) }}" required>
+                            value="{{ old('base_amount', $bulkInvoice->base_amount) }}" >
                     </div>
                 </div>
 
@@ -34,19 +34,35 @@
                     <div class="form-group">
                         <label for="due_date" class="form-label small">تاریخ سررسید</label>
                         <input type="date" name="due_date" id="due_date" class="form-control form-control-sm"
-                            value="{{ old('due_date', \Carbon\Carbon::parse($bulkInvoice->due_date)->format('Y-m-d')) }}" required>
+                            value="{{ old('due_date', \Carbon\Carbon::parse($bulkInvoice->due_date)->format('Y-m-d')) }}" >
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="type" class="form-label small">نوع صورتحساب</label>
-                        <select name="type" id="type" class="form-select form-select-sm" required>
+                        <select name="type" id="type" class="form-select form-select-sm" >
                             <option value="current" {{ old('type', $bulkInvoice->type) == 'current' ? 'selected' : '' }}>جاری</option>
                             <option value="fixed" {{ old('type', $bulkInvoice->type) == 'fixed' ? 'selected' : '' }}>ثابت</option>
                         </select>
                     </div>
                 </div>
+<div class="row">
+    <div class="col-md-6">
+        <label class="form-label small">روش تقسیم هزینه بین واحدها</label>
+        <select name="distribution_type" class="form-select form-select-sm" onchange="toggleFixedPercentField()">
+            <option value="equal" {{ $bulkInvoice->distribution_type == 'equal' ? 'selected' : '' }}>تقسیم مساوی بین همه واحدها</option>
+            <option value="by_person_count" {{ $bulkInvoice->distribution_type == 'by_person_count' ? 'selected' : '' }}>تقسیم بر اساس تعداد نفرات ساکن</option>
+        </select>
+    </div>
+
+    <div class="col-md-6 {{ $bulkInvoice->distribution_type === 'by_person_count' ? '' : 'd-none' }}" id="fixed_percent_wrapper">
+        <label class="form-label small">درصد پایه برای تقسیم (مثلاً 100)</label>
+        <input type="number" name="fixed_percent" id="fixed_percent_input"
+               class="form-control form-control-sm"
+               value="{{ old('fixed_percent', $bulkInvoice->fixed_percent) }}" min="1" max="100">
+    </div>
+</div>
 
                 <div class="col-12">
                     <div class="form-group">
@@ -69,4 +85,28 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function toggleFixedPercentField() {
+        const distType = document.querySelector('[name="distribution_type"]').value;
+        const percentWrapper = document.getElementById('fixed_percent_wrapper');
+
+        if (distType === 'by_person_count') {
+            percentWrapper.classList.remove('d-none');
+        } else {
+            percentWrapper.classList.add('d-none');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        toggleFixedPercentField();
+        const select = document.querySelector('[name="distribution_type"]');
+        if (select) {
+            select.addEventListener('change', toggleFixedPercentField);
+        }
+    });
+</script>
+@endpush
+
 @endsection

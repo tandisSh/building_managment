@@ -12,14 +12,15 @@ class Unit extends Model
         'floor',
         'area',
         'parking_slots',
-        'storerooms'
+        'storerooms',
+        'residents_count'
     ];
 
     public function building()
     {
         return $this->belongsTo(Building::class);
     }
-    
+
     public function users()
     {
         return $this->belongsToMany(User::class)->withPivot('role', 'from_date', 'to_date');

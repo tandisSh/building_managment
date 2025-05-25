@@ -12,6 +12,8 @@ class BulkInvoice extends Model
         'base_amount',
         'type',
         'due_date',
+        'distribution_type',
+        'fixed_percent',
         'description',
     ];
 

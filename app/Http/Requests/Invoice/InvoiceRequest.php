@@ -13,12 +13,15 @@ class InvoiceRequest extends FormRequest
 
     public function rules(): array
     {
+
         return [
-            'base_amount' => 'required|numeric|min:0',
-            'title' => 'required|string|max:255',
-            'due_date' => 'required|date|after:today',
-            'description' => 'nullable|string|max:255',
+            'title' => ['required', 'string'],
+            'base_amount' => ['required', 'numeric'],
+            'due_date' => ['required', 'date'],
             'type' => ['required', 'in:current,fixed'],
+            'distribution_type' => ['required', 'in:equal,per_person'],
+            'fixed_percent' => ['required_if:distribution_type,per_person', 'numeric', 'min:0', 'max:100'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

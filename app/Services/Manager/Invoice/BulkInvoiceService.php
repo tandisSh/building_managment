@@ -18,7 +18,9 @@ class BulkInvoiceService
             'due_date' => $data['due_date'],
             'description' => $data['description'] ?? null,
             'type' => $data['type'],
-            'status' => 'pending', // وضعیت اولیه
+            'distribution_type' => $data['distribution_type'] ?? 'equal', // این خط اضافه شد
+            'fixed_percent' => $data['fixed_percent'] ?? null,
+            'status' => 'pending',
         ]);
     }
 
@@ -46,6 +48,8 @@ class BulkInvoiceService
             'due_date' => $data['due_date'],
             'type' => $data['type'],
             'description' => $data['description'] ?? null,
+            'distribution_type' => $data['distribution_type'] ?? 'equal',
+
         ]);
     }
 }
