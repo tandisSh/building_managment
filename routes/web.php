@@ -3,13 +3,15 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
-use App\Http\Controllers\Manager\Resident\ResidentController;
 use App\Http\Controllers\Manager\Unit\UnitController;
 use App\Http\Controllers\Manager\Invoice\InvoiceController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Manager\Building\BuildingController;
+use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
+use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
+
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -51,13 +53,13 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
 
     // مدیریت ساکنین
     Route::prefix('residents')->name('residents.')->group(function () {
-        Route::get('/', [ResidentController::class, 'index'])->name('index');
-        Route::get('/create', [ResidentController::class, 'create'])->name('create');
-        Route::post('/', [ResidentController::class, 'store'])->name('store');
-        Route::get('/{resident}/edit', [ResidentController::class, 'edit'])->name('edit');
-        Route::post('/{resident}', [ResidentController::class, 'update'])->name('update');
-        Route::get('/{resident}', [ResidentController::class, 'show'])->name('show');
-        Route::delete('/{resident}', [ResidentController::class, 'destroy'])->name('destroy');
+        Route::get('/', [ManagerResidentController::class, 'index'])->name('index');
+        Route::get('/create', [ManagerResidentController::class, 'create'])->name('create');
+        Route::post('/', [ManagerResidentController::class, 'store'])->name('store');
+        Route::get('/{resident}/edit', [ManagerResidentController::class, 'edit'])->name('edit');
+        Route::post('/{resident}', [ManagerResidentController::class, 'update'])->name('update');
+        Route::get('/{resident}', [ManagerResidentController::class, 'show'])->name('show');
+        Route::delete('/{resident}', [ManagerResidentController::class, 'destroy'])->name('destroy');
     });
 
     // لیست صورتحساب‌ها
@@ -89,7 +91,7 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
     Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('admin.requests.reject');
 });
 
-// Route::prefix('resident')->middleware(['auth', 'role:resident'])->group(function () {
-//     Route::get('/dashboard', [ResidentController::class, 'dashboard'])->name('resident.dashboard');
-//     Route::get('/payments', [ResidentController::class, 'payments'])->name('resident.payments');
-// });
+
+Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident.')->group(function () {
+    Route::get('/dashboard', [ResidentDashboardController::class, 'index'])->name('dashboard');
+});

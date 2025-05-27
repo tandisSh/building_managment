@@ -14,11 +14,17 @@ use Illuminate\Validation\ValidationException;
 
 class ResidentService
 {
+
     public function create(array $data): User
     {
         $this->checkDuplicateRole($data['unit_id'], $data['role']);
 
         $user = $this->findOrCreateUser($data);
+
+        if (!$user->hasRole('resident')) {
+            $user->assignRole('resident');
+        }
+
         $this->attachToUnit($user->id, $data);
         $this->attachToBuilding($user->id, $data['unit_id']);
 
@@ -48,6 +54,9 @@ class ResidentService
         } else {
             $this->checkDuplicateRole($data['unit_id'], $data['role'], $user->id);
             $this->attachToUnit($user->id, $data);
+        }
+        if (!$user->hasRole('resident')) {
+            $user->assignRole('resident');
         }
 
         $this->attachToBuilding($user->id, $data['unit_id']);
