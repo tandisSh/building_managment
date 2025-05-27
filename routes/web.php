@@ -94,4 +94,8 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
 
 Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident.')->group(function () {
     Route::get('/dashboard', [ResidentDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [ResidentDashboardController::class, 'profile'])->name('profile');
+    Route::get('/invoices', [ResidentDashboardController::class, 'index'])->name('invoices.index');
+    Route::get('/payments', [ResidentDashboardController::class, 'index'])->name('payments.index');
+    Route::get('/requests', [ResidentDashboardController::class, 'index'])->name('requests.index');
 });

@@ -66,6 +66,7 @@
                         </span>
                     @endif
                 </li>
+
                 {{-- اطلاعات واحدها --}}
                 <li class="nav-item">
                     @if ($building)
@@ -94,8 +95,7 @@
                     @endif
                 </li>
 
-                {{-- صورتحساب ها --}}
-                {{-- صورتحساب‌ها با زیرمنو --}}
+                {{-- صورتحساب‌ها --}}
                 @if ($building && $buildingRequestStatus === 'approved')
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'active fw-bold' : '' }}"
@@ -111,7 +111,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item {{ request()->routeIs('manager.bulk_invoices.index') ? 'active fw-bold' : '' }}"
+                                <a class="dropdown-item {{ request()->routeIs('bulk_invoices.index') ? 'active fw-bold' : '' }}"
                                     href="{{ route('bulk_invoices.index') }}">
                                     صورتحساب‌های کلی
                                 </a>
@@ -149,6 +149,48 @@
                         <i class="bi bi-x-circle me-2"></i> درخواست رد شده!
                     </li>
                 @endif
+            @endif
+
+            {{-- ساکن --}}
+            @if ($roles->contains('resident'))
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('resident.dashboard') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.dashboard') }}">
+                        <i class="bi bi-house-door me-2"></i> داشبورد ساکن
+                    </a>
+                </li>
+
+                {{-- پروفایل ساکن --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('resident.profile') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.profile') }}">
+                        <i class="bi bi-person me-2"></i> پروفایل
+                    </a>
+                </li>
+
+                {{-- صورتحساب‌ها --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('resident.invoices.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.invoices.index') }}">
+                        <i class="bi bi-file-earmark-text me-2"></i> صورتحساب‌ها
+                    </a>
+                </li>
+
+                {{-- پرداخت‌ها --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('resident.payments.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.payments.index') }}">
+                        <i class="bi bi-credit-card me-2"></i> پرداخت‌ها
+                    </a>
+                </li>
+
+                {{-- درخواست‌ها --}}
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('resident.requests.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.requests.index') }}">
+                        <i class="bi bi-clipboard-list me-2"></i> درخواست‌ها
+                    </a>
+                </li>
             @endif
 
             {{-- خروج --}}
