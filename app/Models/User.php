@@ -91,5 +91,8 @@ class User extends Authenticatable
 
         $this->notify(new ResetPassword($token));
     }
-    
+    public function units()
+    {
+        return $this->belongsToMany(Unit::class)->withPivot('role')->withTimestamps();
+    }
 }

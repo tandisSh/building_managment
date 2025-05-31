@@ -12,6 +12,7 @@ use App\Http\Controllers\Manager\Building\BuildingController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
 use App\Http\Controllers\Resident\ResidentProfileController;
+use App\Http\Controllers\Resident\ResidentInvoiceController;
 
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -100,7 +101,11 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::get('/profile/edit', [ResidentProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ResidentProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ResidentProfileController::class, 'updatePassword'])->name('profile.password');
-    Route::get('/invoices', [ResidentDashboardController::class, 'index'])->name('invoices.index');
+    //invoices
+    Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/payments', [ResidentDashboardController::class, 'index'])->name('payments.index');
     Route::get('/requests', [ResidentDashboardController::class, 'index'])->name('requests.index');
 });
+
+
+

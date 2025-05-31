@@ -21,6 +21,15 @@ class Invoice extends Model
         return $this->belongsTo(Unit::class);
     }
 
+    public function scopeCurrent($query)
+    {
+        return $query->where('type', 'current');
+    }
+
+    public function scopeFixed($query)
+    {
+        return $query->where('type', 'fixed');
+    }
     public function bulkInvoice()
     {
         return $this->belongsTo(BulkInvoice::class);
