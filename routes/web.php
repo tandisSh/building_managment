@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Manager\Building\BuildingController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
+use App\Http\Controllers\Resident\ResidentProfileController;
 
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -94,7 +95,11 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
 
 Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident.')->group(function () {
     Route::get('/dashboard', [ResidentDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [ResidentDashboardController::class, 'profile'])->name('profile');
+    //profile
+    Route::get('/profile', [ResidentProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ResidentProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ResidentProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ResidentProfileController::class, 'updatePassword'])->name('profile.password');
     Route::get('/invoices', [ResidentDashboardController::class, 'index'])->name('invoices.index');
     Route::get('/payments', [ResidentDashboardController::class, 'index'])->name('payments.index');
     Route::get('/requests', [ResidentDashboardController::class, 'index'])->name('requests.index');

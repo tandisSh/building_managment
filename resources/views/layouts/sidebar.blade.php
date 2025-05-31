@@ -162,8 +162,8 @@
 
                 {{-- پروفایل ساکن --}}
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('resident.profile') ? 'active fw-bold' : '' }}"
-                        href="{{ route('resident.profile') }}">
+                    <a class="nav-link {{ request()->routeIs('resident.profile.show') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.profile.show') }}">
                         <i class="bi bi-person me-2"></i> پروفایل
                     </a>
                 </li>
