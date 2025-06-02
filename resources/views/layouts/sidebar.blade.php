@@ -169,12 +169,19 @@
                 </li>
 
                 {{-- صورتحساب‌ها --}}
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('resident.invoices.index') ? 'active fw-bold' : '' }}"
-                        href="{{ route('resident.invoices.index') }}">
-                        <i class="bi bi-file-earmark-text me-2"></i> صورتحساب‌ها
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="invoiceDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        صورتحساب‌ها
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="invoiceDropdown">
+                        <li><a class="dropdown-item" href="{{ route('resident.invoices.index') }}">لیست صورتحساب‌ها</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{{ route('resident.invoices.unpaid') }}">پرداخت گروهی</a>
+                        </li>
+                    </ul>
                 </li>
+
 
                 {{-- پرداخت‌ها --}}
                 <li class="nav-item">

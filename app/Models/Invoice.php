@@ -16,6 +16,11 @@ class Invoice extends Model
         'title'
     ];
 
+public function getRouteKeyName()
+{
+    return 'id';
+}
+
     public function unit()
     {
         return $this->belongsTo(Unit::class);

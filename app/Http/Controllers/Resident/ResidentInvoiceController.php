@@ -21,5 +21,13 @@ class ResidentInvoiceController extends Controller
 
         return view('resident.invoices.index', compact('invoices'));
     }
+    public function unpaid()
+{
+    $user = Auth::user();
+    $invoices = $this->service->getUserInvoices($user, onlyUnpaid: true);
+
+    return view('resident.invoices.unpaid', compact('invoices'));
+}
+
 }
 

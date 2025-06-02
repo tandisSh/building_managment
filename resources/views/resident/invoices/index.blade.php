@@ -1,66 +1,60 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt"></i> لیست صورتحساب‌های من</h6>
-    </div>
+<div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
+    <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt"></i> لیست صورتحساب‌ها</h6>
+</div>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @forelse($invoices as $unitItem)
-        <div class="card admin-table-card mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center bg-light">
-                <span>
-                    <i class="bi bi-house-door text-primary me-1"></i>
-                    واحد: {{ $unitItem['unit']->name }}
-                </span>
-                <span class="badge bg-{{ $unitItem['role'] === 'owner' ? 'info' : 'secondary' }}">
-                    نقش شما: {{ $unitItem['role'] === 'owner' ? 'مالک' : 'ساکن' }}
-                </span>
-            </div>
-
-            <div class="card-body table-responsive p-0">
-                <table class="table table-bordered table-striped align-middle small m-0">
-                    <thead>
-                        <tr>
-                            <th>ردیف</th>
-                            <th>عنوان</th>
-                            <th>مبلغ</th>
-                            <th>تاریخ سررسید</th>
-                            <th>نوع</th>
-                            <th>وضعیت</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($unitItem['invoices'] as $index => $invoice)
-                            <tr>
-                                <td>{{ $index + 1 }}</td>
-                                <td>{{ $invoice->title ?? '-' }}</td>
-                                <td>{{ number_format($invoice->amount) }} تومان</td>
-                                <td>{{ jdate($invoice->due_date)->format('Y/m/d') }}</td>
-                                <td>
-                                    <span class="badge bg-{{ $invoice->type === 'fixed' ? 'dark' : 'secondary' }}">
-                                        {{ $invoice->type === 'fixed' ? 'ثابت' : 'جاری' }}
-                                    </span>
-                                </td>
-                                <td>
-                                    <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : 'warning' }}">
-                                        {{ $invoice->status === 'paid' ? 'پرداخت شده' : 'پرداخت نشده' }}
-                                    </span>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center">هیچ صورتحسابی برای این واحد وجود ندارد.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+@foreach($invoices as $group)
+    <div class="card admin-table-card mb-4">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-house-door text-primary me-1"></i> واحد {{ $group['unit']->unit_number }}</span>
+            <span class="text-muted small">{{ $group['role'] === 'owner' ? 'مالک' : 'ساکن' }}</span>
         </div>
-    @empty
-        <div class="alert alert-info text-center">شما در هیچ واحدی ثبت نشده‌اید.</div>
-    @endforelse
+
+        <div class="card-body table-responsive p-0">
+            <table class="table table-bordered table-striped align-middle small mb-0">
+                <thead class="table-secondary">
+                    <tr class="text-center">
+                        <th>ردیف</th>
+                        <th>عنوان</th>
+                        <th>مبلغ</th>
+                        <th>وضعیت</th>
+                        <th>عملیات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($group['invoices'] as  $index => $invoice)
+                        <tr class="text-center">
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $invoice->title }}</td>
+                            <td>{{ number_format($invoice->amount) }} تومان</td>
+                            <td>
+                                @if($invoice->status === 'paid')
+                                    <span class="badge bg-success">پرداخت شده</span>
+                                @else
+                                    <span class="badge bg-danger">پرداخت نشده</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($invoice->status !== 'paid')
+                                    <form method="POST" action="{{ route('resident.invoices.pay', $invoice) }}" class="d-inline">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-outline-warning" title="پرداخت">
+                                            <i class="bi bi-credit-card"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                                <a href="{{ route('resident.invoices.show', $invoice->id) }}"
+                                    class="btn btn-sm btn-outline-primary" title="نمایش">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endforeach
 @endsection

@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Manager\Building\BuildingController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
+use App\Http\Controllers\Resident\InvoicePaymentController;
 use App\Http\Controllers\Resident\ResidentProfileController;
 use App\Http\Controllers\Resident\ResidentInvoiceController;
 
@@ -103,9 +104,13 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::post('/profile/password', [ResidentProfileController::class, 'updatePassword'])->name('profile.password');
     //invoices
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
+    Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');
+    //payment
+    Route::post('/pay/{invoice}', [InvoicePaymentController::class, 'paySingle'])->name('invoices.pay');
+    Route::post('/pay-multiple', [InvoicePaymentController::class, 'payMultiple'])->name('invoices.pay.multiple');
+
     Route::get('/payments', [ResidentDashboardController::class, 'index'])->name('payments.index');
     Route::get('/requests', [ResidentDashboardController::class, 'index'])->name('requests.index');
 });
-
-
 
