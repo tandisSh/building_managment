@@ -14,6 +14,7 @@ use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentC
 use App\Http\Controllers\Resident\InvoicePaymentController;
 use App\Http\Controllers\Resident\ResidentProfileController;
 use App\Http\Controllers\Resident\ResidentInvoiceController;
+use App\Http\Controllers\Resident\ResidentPaymentController;
 
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -102,15 +103,14 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::get('/profile/edit', [ResidentProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ResidentProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ResidentProfileController::class, 'updatePassword'])->name('profile.password');
-    //invoices
-    Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
-    Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
-    Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');
     //payment
     Route::post('/pay/{invoice}', [InvoicePaymentController::class, 'paySingle'])->name('invoices.pay');
     Route::post('/pay-multiple', [InvoicePaymentController::class, 'payMultiple'])->name('invoices.pay.multiple');
 
-    Route::get('/payments', [ResidentDashboardController::class, 'index'])->name('payments.index');
-    Route::get('/requests', [ResidentDashboardController::class, 'index'])->name('requests.index');
+    Route::get('/payments', [ResidentPaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/{id}', [ResidentPaymentController::class, 'show'])->name('payments.show');
+    //invoices
+    Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
+    Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');
 });
-
