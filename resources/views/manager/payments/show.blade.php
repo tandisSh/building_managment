@@ -6,7 +6,10 @@
         <h6 class="mb-0 fw-bold text-dark">
             <i class="bi bi-receipt me-2"></i>جزئیات پرداخت  {{ $payment->invoice->id }}
         </h6>
-        <a href="{{ route('resident.payments.index') }}" class="btn filter-btn">
+        <a href="{{ route('manager.payments.receipt', $payment->id) }}" target="_blank" class="btn btn-outline-secondary">
+                <i class="bi bi-printer me-1"></i>چاپ رسید
+            </a>
+        <a href="{{ route('manager.payments.index') }}" class="btn filter-btn">
             <i class="bi bi-arrow-right me-1"></i>بازگشت به لیست
         </a>
     </div>

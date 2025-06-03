@@ -33,4 +33,11 @@ class PaymentController extends Controller
         $payment = Payment::with('invoice')->findOrFail($id);
         return view('resident.payments.show', compact('payment'));
     }
+
+    public function receipt($id)
+{
+    $payment = Payment::with('invoice', 'user')->findOrFail($id);
+    return view('manager.payments.receipt', compact('payment'));
+}
+
 }

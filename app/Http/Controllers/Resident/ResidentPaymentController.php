@@ -19,7 +19,13 @@ class ResidentPaymentController extends Controller
     }
    public function show($id)
     {
-        $payment = Payment::with('invoice')->findOrFail($id);
+        $payment = Payment::with('invoice', 'user')->findOrFail($id);
         return view('resident.payments.show', compact('payment'));
     }
+    public function receipt($id)
+{
+    $payment = Payment::with('invoice', 'user')->findOrFail($id);
+    return view('resident.payments.receipt', compact('payment'));
+}
+
 }

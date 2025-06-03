@@ -70,8 +70,10 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     // مدیریت پرداخت ها
     Route::prefix('payments')->name('payments.')->group(function () {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
-        Route::get('/payments/{id}', [PaymentController::class, 'show'])->name('show');
+        Route::get('/{id}', [PaymentController::class, 'show'])->name('show');
+        Route::get('/{payment}/receipt', [PaymentController::class, 'receipt'])->name('receipt');
     });
+
     // لیست صورتحساب‌ها
     Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
 
@@ -115,6 +117,8 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
 
     Route::get('/payments', [ResidentPaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [ResidentPaymentController::class, 'show'])->name('payments.show');
+    Route::get('/payments/{payment}/receipt', [ResidentPaymentController::class, 'receipt'])->name('payments.receipt');
+
     //invoices
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');

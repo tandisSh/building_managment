@@ -31,15 +31,15 @@ class Unit extends Model
         return $this->hasMany(Invoice::class);
     }
 
-    // public function owner()
-    // {
-    //     return $this->users()->wherePivot('role', 'owner');
-    // }
+    public function owner()
+    {
+        return $this->users()->wherePivot('role', 'owner');
+    }
 
-    // public function resident()
-    // {
-    //     return $this->users()->wherePivot('role', 'resident');
-    // }
+    public function resident()
+    {
+        return $this->users()->wherePivot('role', 'resident');
+    }
 
     public function repairRequests()
     {
