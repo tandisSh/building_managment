@@ -47,8 +47,8 @@
                                 @endif
                             </td>
                             <td class="d-flex justify-content-center gap-2 flex-wrap">
-                                <a href="{{ route('invoices.single.create', [$unit->id]) }}"
-                                    class="btn btn-sm btn-outline-secondary" title="صدور صورتحساب">
+                                <a href="{{ route('manager.units.invoices', $unit->id) }}"
+                                    class="btn btn-sm btn-outline-secondary" title="مشاهده صورتحساب ها">
                                     <i class="bi bi-file-earmark-plus"></i>
                                 </a>
                                 <a href="{{ route('units.show', [$building->id, $unit->id]) }}"

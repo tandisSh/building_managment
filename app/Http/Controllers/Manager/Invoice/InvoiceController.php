@@ -7,6 +7,7 @@ use App\Http\Requests\Invoice\InvoiceRequest;
 use App\Http\Requests\Invoice\SingleInvoiceRequest;
 use App\Models\BulkInvoice;
 use App\Models\Invoice;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Auth;
 use App\Services\Manager\Invoice\InvoiceService;
 use App\Services\Manager\Invoice\BulkInvoiceService;
@@ -155,4 +156,13 @@ class InvoiceController extends Controller
                 ->with('error', 'خطا در ویرایش صورتحساب: ' . $e->getMessage());
         }
     }
+
+    //نمایش صورتحساب های یک واحد خاص
+   public function unitInvoices(Unit $unit)
+{
+    $invoices = $this->invoiceService->getUnitInvoices($unit->id);
+    // dd($invoices);
+    return view('manager.invoices.unit_index', compact('invoices', 'unit'));
+}
+
 }

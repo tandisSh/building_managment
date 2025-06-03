@@ -76,6 +76,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
 
     // لیست صورتحساب‌ها
     Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
+    Route::get('/units/{unit}/invoices', [InvoiceController::class, 'unitInvoices'])->name('manager.units.invoices');
 
     // صورتحساب کلی (bulk)
     Route::get('invoices/create', [InvoiceController::class, 'create'])->name('manager.invoices.create');
