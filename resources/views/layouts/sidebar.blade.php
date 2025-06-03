@@ -207,8 +207,8 @@
 
                 {{-- درخواست‌ها --}}
                 <li class="nav-item">
-                    {{-- <a class="nav-link {{ request()->routeIs('resident.requests.index') ? 'active fw-bold' : '' }}" --}}
-                        {{-- href="{{ route('resident.requests.index') }}"> --}}
+                    <a class="nav-link {{ request()->routeIs('resident.requests.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('resident.requests.index') }}">
                         <i class="bi bi-clipboard-list me-2"></i> درخواست‌ها
                     </a>
                 </li>

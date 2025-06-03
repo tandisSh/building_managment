@@ -13,6 +13,7 @@ use App\Http\Controllers\Manager\Building\BuildingController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
 use App\Http\Controllers\Resident\InvoicePaymentController;
+use App\Http\Controllers\Resident\RepairRequestController;
 use App\Http\Controllers\Resident\ResidentProfileController;
 use App\Http\Controllers\Resident\ResidentInvoiceController;
 use App\Http\Controllers\Resident\ResidentPaymentController;
@@ -119,9 +120,16 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::get('/payments', [ResidentPaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [ResidentPaymentController::class, 'show'])->name('payments.show');
     Route::get('/payments/{payment}/receipt', [ResidentPaymentController::class, 'receipt'])->name('payments.receipt');
-
+    //requests
+    Route::get('/requests', [RepairRequestController::class, 'index'])->name('requests.index');
+    Route::get('/requests/create', [RepairRequestController::class, 'create'])->name('requests.create');
+    Route::post('/requests', [RepairRequestController::class, 'store'])->name('requests.store');
+    Route::get('/requests/{request}/edit', [RepairRequestController::class, 'edit'])->name('requests.edit');
+    Route::put('/requests/{request}', [RepairRequestController::class, 'update'])->name('requests.update');
     //invoices
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
     Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');
+
+
 });
