@@ -126,6 +126,20 @@
                     </li>
                 @endif
 
+                {{-- پرداخت ها --}}
+                <li class="nav-item">
+                    @if ($building && $buildingRequestStatus === 'approved')
+                        <a class="nav-link {{ request()->routeIs('payments.index') ? 'active fw-bold' : '' }}"
+                            href="{{ route('payments.index', $building->id) }}">
+                            <i class="bi bi-people me-2"></i> پرداخت‌ها
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-people me-2"></i> پرداخت‌ها
+                        </span>
+                    @endif
+                </li>
+
                 {{-- تنظیمات --}}
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')

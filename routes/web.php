@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Manager\Payment\PaymentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\Unit\UnitController;
@@ -66,6 +67,11 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::delete('/{resident}', [ManagerResidentController::class, 'destroy'])->name('destroy');
     });
 
+    // مدیریت پرداخت ها
+    Route::prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', [PaymentController::class, 'index'])->name('index');
+        Route::get('/payments/{id}', [PaymentController::class, 'show'])->name('show');
+    });
     // لیست صورتحساب‌ها
     Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
 
