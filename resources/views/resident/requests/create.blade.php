@@ -9,6 +9,21 @@
     </div>
 
     <div class="admin-table-card p-4">
+
+        {{-- پیام موفقیت --}}
+        @if (session('success'))
+            <div class="alert alert-success small">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        {{-- پیام خطاهای عمومی --}}
+        @if ($errors->any())
+            <div class="alert alert-danger small">
+                لطفاً خطاهای فرم را بررسی کنید.
+            </div>
+        @endif
+
         <form action="{{ route('resident.requests.store') }}" method="POST">
             @csrf
 
@@ -16,14 +31,20 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label class="form-label small">عنوان درخواست *</label>
-                        <input type="text" name="title" class="form-control form-control-sm" required>
+                        <input type="text" name="title" class="form-control form-control-sm" value="{{ old('title') }}">
+                        @error('title')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
                 <div class="col-12">
                     <div class="form-group">
                         <label class="form-label small">توضیحات *</label>
-                        <textarea name="description" rows="3" class="form-control form-control-sm" required></textarea>
+                        <textarea name="description" rows="3" class="form-control form-control-sm">{{ old('description') }}</textarea>
+                        @error('description')
+                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 

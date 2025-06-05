@@ -16,6 +16,8 @@ class RepairRequestController extends Controller
 
     public function store(RepairRequestFormRequest $request)
     {
+       
+
 
         $unit = auth()->user()->units()->first();
 
@@ -29,7 +31,6 @@ class RepairRequestController extends Controller
             'title'   => $request->title,
             'description' => $request->description,
         ]);
-
         return redirect()->route('resident.requests.index')->with('success', 'درخواست با موفقیت ثبت شد.');
     }
 
