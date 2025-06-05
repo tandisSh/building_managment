@@ -100,9 +100,11 @@ class InvoiceController extends Controller
     // لیست تمام صورتحساب‌های واحدی که مدیر دارد
     public function index()
     {
-        $invoices = $this->invoiceService->getManagerInvoices(Auth::user());
-        return view('manager.invoices.single.index', compact('invoices'));
+        $invoices = $this->invoiceService->getManagerInvoices(Auth::user(), request()->all());
+        $units = Unit::whereHas('building', fn($q) => $q->where('manager_id', Auth::id()))->get();
+        return view('manager.invoices.single.index', compact('invoices', 'units'));
     }
+
 
     // نمایش جزئیات یک صورتحساب
     public function show($invoiceId)
@@ -158,11 +160,10 @@ class InvoiceController extends Controller
     }
 
     //نمایش صورتحساب های یک واحد خاص
-   public function unitInvoices(Unit $unit)
-{
-    $invoices = $this->invoiceService->getUnitInvoices($unit->id);
-    // dd($invoices);
-    return view('manager.invoices.unit_index', compact('invoices', 'unit'));
-}
-
+    public function unitInvoices(Unit $unit)
+    {
+        $invoices = $this->invoiceService->getUnitInvoices($unit->id);
+        // dd($invoices);
+        return view('manager.invoices.unit_index', compact('invoices', 'unit'));
+    }
 }

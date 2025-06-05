@@ -17,14 +17,38 @@ class InvoiceService
             ->latest()
             ->get();
     }
-    
+
     // دریافت تمام صورتحساب‌های واحدهای ساختمان مدیر
-    public function getManagerInvoices($manager)
+    public function getManagerInvoices($manager, $filters = [])
     {
-        return Invoice::whereHas('unit.building', function ($q) use ($manager) {
+        $query = Invoice::whereHas('unit.building', function ($q) use ($manager) {
             $q->where('manager_id', $manager->id);
-        })->with('unit')->latest()->get();
+        })->with('unit');
+
+        if (!empty($filters['search'])) {
+            $query->whereHas('unit', function ($q) use ($filters) {
+                $q->where('unit_number', 'like', '%' . $filters['search'] . '%')
+                    ->orWhereHas('users', function ($qu) use ($filters) {
+                        $qu->where('name', 'like', '%' . $filters['search'] . '%');
+                    });
+            });
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']); // فرض بر اینکه فیلد `type` در جدول invoices هست
+        }
+
+        if (!empty($filters['unit_id'])) {
+            $query->where('unit_id', $filters['unit_id']);
+        }
+
+        return $query->latest()->get();
     }
+
 
     // ساخت صورتحساب‌های واحدها بر اساس صورتحساب کلی تایید شده
     public function generateInvoicesFromBulk(BulkInvoice $bulkInvoice)
