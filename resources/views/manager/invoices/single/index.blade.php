@@ -62,8 +62,8 @@
                     </select>
                 </div>
                 <div class="col-auto">
-                    <button type="submit" class="btn btn-sm btn-primary">اعمال فیلتر</button>
-                    <a href="{{ route('manager.invoices.index') }}" class="btn btn-sm btn-secondary">حذف فیلتر</a>
+                    <button type="submit" class="btn btn-sm btn-outline-primary">اعمال فیلتر</button>
+                    <a href="{{ route('manager.invoices.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
                 </div>
             </form>
         </div>

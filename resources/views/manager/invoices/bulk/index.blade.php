@@ -3,22 +3,39 @@
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
         <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-files"></i> لیست صورتحساب‌های کلی</h6>
+        <a href="{{ route('manager.invoices.create') }}" class="btn btn-primary btn-sm d-flex align-items-center">
+            <i class="bi bi-plus-circle me-1"></i> افزودن صورتحساب کلی جدید
+        </a>
+    </div>
 
-        <div class="tools-box">
-            <input type="text" class="form-control form-control-sm search-input" placeholder="جستجو..." />
-            <button class="btn filter-btn">فیلتر</button>
-            <a href="{{ route('manager.invoices.create') }}" class="btn add-btn">
-                <i class="bi bi-plus-circle me-1"></i> افزودن صورتحساب کلی جدید
-            </a>
-        </div>
+    <div class="filters-box p-3 mb-4 bg-white rounded shadow-sm">
+        <form method="GET" action="{{ route('bulk_invoices.index') }}" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm"
+                    placeholder="جستجو بر اساس عنوان یا مبلغ">
+            </div>
+
+            <div class="col-auto">
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">وضعیت</option>
+                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>تایید شده</option>
+                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>در انتظار تایید</option>
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-sm btn-outline-primary">اعمال فیلتر</button>
+                <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
+            </div>
+        </form>
     </div>
 
     <div class="card admin-table-card">
         <div class="card-body table-responsive">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-            @if(session('error'))
+            @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
@@ -47,9 +64,10 @@
                             </td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center gap-1">
-                                    @if($bulkInvoice->status !== 'approved')
-                                        <form action="{{ route('bulk_invoices.approve', $bulkInvoice->id) }}" method="POST"
-                                              onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این صورتحساب کلی را تایید و ثبت کنید؟');">
+                                    @if ($bulkInvoice->status !== 'approved')
+                                        <form action="{{ route('bulk_invoices.approve', $bulkInvoice->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این صورتحساب کلی را تایید و ثبت کنید؟');">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-success" title="تایید">
                                                 <i class="bi bi-check-circle"></i>
@@ -62,11 +80,11 @@
                                     @endif
 
                                     <a href="{{ route('manager.bulk_invoices.show', $bulkInvoice->id) }}"
-                                       class="btn btn-sm btn-outline-primary" title="نمایش">
+                                        class="btn btn-sm btn-outline-primary" title="نمایش">
                                         <i class="bi bi-eye"></i>
                                     </a>
                                     <a href="{{ route('manager.bulk_invoices.edit', $bulkInvoice->id) }}"
-                                       class="btn btn-sm btn-outline-warning" title="ویرایش">
+                                        class="btn btn-sm btn-outline-warning" title="ویرایش">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 </div>

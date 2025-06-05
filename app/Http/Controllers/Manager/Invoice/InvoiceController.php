@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Services\Manager\Invoice\InvoiceService;
 use App\Services\Manager\Invoice\BulkInvoiceService;
 use App\Services\Manager\Invoice\SingleInvoiceService;
+use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
@@ -24,11 +25,16 @@ class InvoiceController extends Controller
     //bulk Invoices
 
     // لیست صورتحساب‌های کلی (bulk)
-    public function bulkindex()
+    public function bulkindex(Request $request)
     {
-        $bulkInvoices = $this->bulkInvoiceService->getByManager(Auth::user());
+        $filters = $request->only(['search', 'status']);
+        $user = Auth::user();
+
+        $bulkInvoices = $this->bulkInvoiceService->getBulkInvoicesByManager($user, $filters);
+
         return view('manager.invoices.bulk.index', compact('bulkInvoices'));
     }
+
 
     // فرم ثبت صورتحساب کلی (bulk)
     public function create()

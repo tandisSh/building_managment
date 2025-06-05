@@ -24,12 +24,29 @@ class BulkInvoiceService
         ]);
     }
 
-    public function getByManager(User $manager)
+    public function getBulkInvoicesByManager(User $manager, array $filters = [])
     {
-        return BulkInvoice::whereHas('building', function ($q) use ($manager) {
+        $query = BulkInvoice::whereHas('building', function ($q) use ($manager) {
             $q->where('manager_id', $manager->id);
-        })->latest()->get();
+        });
+
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $query->where('title', 'like', "%{$search}%");
+        }
+
+        if (!empty($filters['status'])) {
+            $status = $filters['status'];
+            if ($status === 'approved') {
+                $query->where('status', 'approved');
+            } elseif ($status === 'pending') {
+                $query->where('status', '!=', 'approved');
+            }
+        }
+
+        return $query->latest()->get();
     }
+
 
     public function markAsApproved(BulkInvoice $bulkInvoice)
     {
