@@ -10,6 +10,7 @@ use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Manager\Building\BuildingController;
+use App\Http\Controllers\Manager\Request\RequestController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
 use App\Http\Controllers\Resident\InvoicePaymentController;
@@ -67,6 +68,11 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::get('/{resident}', [ManagerResidentController::class, 'show'])->name('show');
         Route::delete('/{resident}', [ManagerResidentController::class, 'destroy'])->name('destroy');
     });
+
+    //requests
+    Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
+    Route::post('/requests/{repairRequest}', [RequestController::class, 'updateStatus'])->name('requests.update');
+
 
     // مدیریت پرداخت ها
     Route::prefix('payments')->name('payments.')->group(function () {
@@ -130,6 +136,4 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
     Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');
-
-
 });
