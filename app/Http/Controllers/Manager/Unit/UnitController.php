@@ -15,9 +15,14 @@ class UnitController extends Controller
     public function index($buildingId)
     {
         $building = Building::findOrFail($buildingId);
-        $units = $this->service->getUnitsWithResidents($building);
+        $filters = [
+            'search' => request('search'),
+        ];
+        $units = $this->service->getUnitsWithResidents($building, $filters);
         return view('manager.units.index', compact('building', 'units'));
     }
+
+
     public function show($buildingId, $unitId)
     {
         $building = Building::findOrFail($buildingId);
@@ -34,7 +39,7 @@ class UnitController extends Controller
     public function store(UnitRequest $request, $buildingId)
     {
         $building = Building::findOrFail($buildingId);
-        $this->service->createUnit($building , $request->validated());
+        $this->service->createUnit($building, $request->validated());
         return redirect()->route('units.index', $building->id)->with('success', 'واحد جدید با موفقیت اضافه شد.');
     }
 

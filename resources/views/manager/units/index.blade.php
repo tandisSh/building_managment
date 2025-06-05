@@ -5,11 +5,18 @@
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
         <h6 class="mb-0 fw-bold text-dark">واحدهای ساختمان {{ $building->name }}</h6>
 
-        <div class="tools-box">
-            <input type="text" class="form-control form-control-sm search-input" placeholder="جستجو..." />
-            <button class="btn btn-sm filter-btn">فیلتر</button>
-            <a href="{{ route('units.create', $building->id) }}" class="btn btn-sm add-btn">افزودن واحد جدید</a>
-        </div>
+   <form method="GET" class="d-flex align-items-center gap-2 mb-3" style="flex-wrap: wrap;">
+    <input type="text" name="search" class="form-control form-control-sm w-auto"
+           placeholder="شماره واحد یا نام ساکن" value="{{ request('search') }}" style="max-width: 200px;">
+
+    <button class="btn btn-sm btn-outline-primary">جستجو</button>
+
+    <a href="{{ route('units.index', $building->id) }}" class="btn btn-sm btn-outline-secondary">ریست</a>
+
+    <a href="{{ route('units.create', $building->id) }}" class="btn btn-sm add-btn">+ افزودن واحد</a>
+</form>
+
+
     </div>
 
 
