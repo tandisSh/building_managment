@@ -4,11 +4,35 @@
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
         <h6 class="mb-0 fw-bold text-dark">لیست ساکنین ساختمان</h6>
 
-        <div class="tools-box">
-            <input type="text" class="form-control form-control-sm search-input" placeholder="جستجو..." />
-            <button class="btn btn-sm filter-btn">فیلتر</button>
-            <a href="{{ route('residents.create') }}" class="btn btn-sm add-btn">افزودن ساکن</a>
+        <div class="tools-box mb-3">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <form method="GET" action="{{ route('residents.index') }}" class="d-flex flex-wrap align-items-center gap-2">
+                    <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm"
+                        placeholder="نام یا موبایل ساکن" style="width: 200px;">
+
+                    <select name="role" class="form-select form-select-sm" style="width: 150px;">
+                        <option value="">نقش</option>
+                        <option value="owner" {{ request('role') == 'owner' ? 'selected' : '' }}>مالک</option>
+                        <option value="tenant" {{ request('role') == 'tenant' ? 'selected' : '' }}>ساکن (مستاجر)</option>
+                    </select>
+
+                    <select name="unit_id" class="form-select form-select-sm" style="width: 150px;">
+                        <option value="">واحد</option>
+                        @foreach ($units as $unit)
+                            <option value="{{ $unit->id }}" {{ request('unit_id') == $unit->id ? 'selected' : '' }}>
+                                واحد {{ $unit->unit_number }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="btn btn-sm btn-outline-primary"> جستجو</button>
+                    <a href="{{ route('residents.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
+                </form>
+
+                <a href="{{ route('residents.create') }}" class="btn btn-sm add-btn">افزودن ساکن</a>
+            </div>
         </div>
+
     </div>
 
     <div class="card admin-table-card">

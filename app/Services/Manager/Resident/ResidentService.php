@@ -116,4 +116,20 @@ class ResidentService
             ]);
         }
     }
+
+    public function getFilteredResidents($filters, $buildingId)
+    {
+        return UnitUser::with(['user', 'unit'])
+            ->whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
+            ->when($filters['search'] ?? null, function ($q, $search) {
+                $q->whereHas('user', function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%");
+                });
+            })
+            ->when($filters['role'] ?? null, fn($q, $role) => $q->where('role', $role))
+            ->when($filters['unit_id'] ?? null, fn($q, $unitId) => $q->where('unit_id', $unitId))
+            ->latest()
+            ->get();
+    }
 }
