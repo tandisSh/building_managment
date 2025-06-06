@@ -76,4 +76,13 @@ class RepairRequestController extends Controller
 
         return redirect()->route('resident.requests.index')->with('success', 'درخواست با موفقیت ویرایش شد.');
     }
+
+    public function show(RepairRequest $request)
+    {
+        if ($request->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('resident.requests.show', compact('request'));
+    }
 }

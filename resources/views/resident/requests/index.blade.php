@@ -48,7 +48,6 @@
                     <tr>
                         <th>ردیف</th>
                         <th>عنوان</th>
-                        <th>توضیحات</th>
                         <th>وضعیت</th>
                         <th>تاریخ ثبت</th>
                         <th>عملیات</th>
@@ -59,7 +58,6 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $request->title }}</td>
-                            <td>{{ Str::limit($request->description, 50) }}</td>
                             <td>
                                 <span
                                     class="badge bg-{{ $request->status === 'done' ? 'success' : ($request->status === 'in_progress' ? 'info' : 'warning') }}">
@@ -72,6 +70,10 @@
                             </td>
                             <td>{{ jdate($request->created_at)->format('Y/m/d') }}</td>
                             <td>
+                                <a href="{{ route('resident.requests.show', $request->id) }}"
+                                    class="btn btn-sm btn-outline-primary" title="مشاهده">
+                                    <i class="bi bi-eye"></i>
+                                </a>
                                 @if ($request->status === 'pending')
                                     <a href="{{ route('resident.requests.edit', $request->id) }}"
                                         class="btn btn-sm btn-outline-warning" title="ویرایش">
