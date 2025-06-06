@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt"></i> لیست صورتحساب‌ها</h6>
 
-        <div class="tools-box">
-            <input type="text" class="form-control form-control-sm search-input" placeholder="جستجو..." />
-            <button class="btn filter-btn">فیلتر</button>
-        </div>
+    <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
+        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt"></i> لیست پرداخت ها</h6>
+
+        <form method="GET" action="{{ route('resident.payments.index') }}" class="d-flex gap-2 align-items-center">
+            <input type="text" name="search" value="{{ $search ?? '' }}" class="form-control form-control-sm"
+                placeholder="جستجوی عنوان صورتحساب..." />
+            <button type="submit" class="btn btn-sm btn-outline-primary">جستجو</button>
+        </form>
     </div>
 
     <div class="card admin-table-card">

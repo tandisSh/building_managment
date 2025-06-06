@@ -10,22 +10,32 @@ use Illuminate\Support\Facades\Auth;
 
 class ResidentPaymentController extends Controller
 {
-      public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $payments = Payment::with(['invoice'])->where('user_id', $user['id'])->get();
+        $search = $request->input('search');
 
-        return view('resident.payments.index', compact('payments'));
+        $payments = Payment::with('invoice')
+            ->where('user_id', $user->id)
+            ->whereHas('invoice', function ($query) use ($search) {
+                if ($search) {
+                    $query->where('title', 'like', '%' . $search . '%');
+                }
+            })
+            ->get();
+
+        return view('resident.payments.index', compact('payments', 'search'));
     }
-   public function show($id)
+
+
+    public function show($id)
     {
         $payment = Payment::with('invoice', 'user')->findOrFail($id);
         return view('resident.payments.show', compact('payment'));
     }
     public function receipt($id)
-{
-    $payment = Payment::with('invoice', 'user')->findOrFail($id);
-    return view('resident.payments.receipt', compact('payment'));
-}
-
+    {
+        $payment = Payment::with('invoice', 'user')->findOrFail($id);
+        return view('resident.payments.receipt', compact('payment'));
+    }
 }
