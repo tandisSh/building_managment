@@ -5,7 +5,7 @@ use App\Models\User;
 
 class InvoiceService
 {
- 
+
     public function getUserInvoices(User $user, bool $onlyUnpaid = false)
 {
     $invoices = [];

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Invoice;
 use App\Services\Resident\Invoice\InvoiceService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class ResidentInvoiceController extends Controller
 {
@@ -16,13 +17,49 @@ class ResidentInvoiceController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $invoices = $this->service->getUserInvoices($user);
+        $filters = $request->only(['title', 'status']);
 
-        return view('resident.invoices.index', compact('invoices'));
+        $units = $user->units ?? collect();
+        $allInvoices = [];
+
+        foreach ($units as $unit) {
+            $role = $unit->pivot->role; // 'owner' یا 'resident'
+
+            $query = $unit->invoices();
+
+            // فقط صورتحساب‌های متناسب با نقش نمایش داده شوند
+            if ($role === 'resident') {
+                $query->where('type', 'current');
+            } elseif ($role === 'owner') {
+                $query->where('type', 'fixed');
+            }
+
+            // فیلترهای اضافه‌شده
+            if (!empty($filters['title'])) {
+                $query->where('title', 'like', '%' . $filters['title'] . '%');
+            }
+
+            if (!empty($filters['status'])) {
+                $query->where('status', $filters['status']);
+            }
+
+            $invoices = $query->get();
+
+            if ($invoices->count()) {
+                $allInvoices[] = [
+                    'unit' => $unit,
+                    'role' => $role,
+                    'invoices' => $invoices,
+                ];
+            }
+        }
+
+        return view('resident.invoices.index', ['invoices' => $allInvoices]);
     }
+
     public function unpaid()
     {
         $user = Auth::user();
