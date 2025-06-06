@@ -37,8 +37,8 @@
                         <th>واحد</th>
                         <th>ساکن</th>
                         <th>عنوان</th>
-                        <th>توضیحات</th>
                         <th>تاریخ</th>
+                        <th>عملیات</th>
                         <th>وضعیت</th>
                     </tr>
                 </thead>
@@ -49,8 +49,13 @@
                             <td>{{ $request->unit->unit_number ?? '-' }}</td>
                             <td>{{ $request->user->name ?? '-' }}</td>
                             <td>{{ $request->title }}</td>
-                            <td>{{ Str::limit($request->description, 50) }}</td>
                             <td>{{ jdate($request->created_at)->format('Y/m/d') }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('requests.show', $request->id) }}" class="btn btn-sm btn-outline-primary"
+                                    title="مشاهده جزئیات">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
                             <td>
                                 <form action="{{ route('requests.update', $request) }}" method="POST" class="d-inline">
                                     @csrf

@@ -72,6 +72,8 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     //requests
     Route::get('/requests', [RequestController::class, 'index'])->name('requests.index');
     Route::post('/requests/{repairRequest}', [RequestController::class, 'updateStatus'])->name('requests.update');
+    Route::get('/requests/{repairrequest}', [RequestController::class, 'show'])->name('requests.show');
+
 
 
     // مدیریت پرداخت ها

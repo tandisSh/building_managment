@@ -32,7 +32,7 @@ class RequestController extends Controller
             $query->where('status', $request->status);
         }
 
-       $repairRequests = $query->latest()->paginate(10);
+        $repairRequests = $query->latest()->paginate(10);
 
         return view('manager.requests.index', compact('repairRequests'));
     }
@@ -49,5 +49,11 @@ class RequestController extends Controller
         ]);
 
         return back()->with('success', 'وضعیت با موفقیت به‌روزرسانی شد.');
+    }
+
+    public function show($id)
+    {
+        $request = RepairRequest::with(['user', 'unit'])->findOrFail($id);
+        return view('manager.requests.show', compact('request'));
     }
 }
