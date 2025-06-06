@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Manager\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use App\Services\Manager\Payment\PaymentService;
 use App\Models\Payment;
 use App\Models\Unit;
 use App\Models\User;
@@ -12,18 +13,18 @@ use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
-    public function index()
+    protected $paymentService;
+
+    public function __construct(PaymentService $paymentService)
     {
-        $buildingId = Auth::user()->buildingUser->building_id;
+        $this->paymentService = $paymentService;
+    }
 
-        $userIds = User::whereHas('units', function ($q) use ($buildingId) {
-            $q->where('building_id', $buildingId);
-        })->pluck('id');
+    public function index(Request $request)
+    {
+        $filters = $request->only(['search', 'status']);
 
-        $payments = Payment::with(['user', 'invoice.unit'])
-            ->whereIn('user_id', $userIds)
-            ->latest()
-            ->get();
+        $payments = $this->paymentService->getPaymentsForManager(auth()->user(), $filters);
 
         return view('manager.payments.index', compact('payments'));
     }
