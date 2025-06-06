@@ -134,6 +134,8 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::post('/requests', [RepairRequestController::class, 'store'])->name('requests.store');
     Route::get('/requests/{request}/edit', [RepairRequestController::class, 'edit'])->name('requests.edit');
     Route::put('/requests/{request}', [RepairRequestController::class, 'update'])->name('requests.update');
+    Route::get('/requests/{request}', [RepairRequestController::class, 'show'])->name('requests.show');
+
     //invoices
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');

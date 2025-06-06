@@ -1,15 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- هدر بالا: عنوان و دکمه درخواست جدید --}}
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
         <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-tools"></i> درخواست‌های تعمیر ثبت‌شده من</h6>
-        <div class="tools-box">
-            <input type="text" class="form-control form-control-sm search-input" placeholder="جستجو..." />
-            <button class="btn btn-sm filter-btn">فیلتر</button>
-            <a href="{{ route('resident.requests.create') }}" class="btn btn-sm add-btn">افزودن درخواست جدید</a>
+
+        <a href="{{ route('resident.requests.create') }}" class="btn add-btn">
+            <i class="bi bi-plus-circle me-1"></i> درخواست جدید
+        </a>
+    </div>
+
+    {{-- کادر فیلترها --}}
+    <div class="card mb-3 shadow-sm rounded">
+        <div class="card-body">
+            <form method="GET" action="{{ route('resident.requests.index') }}" class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <input type="text" name="search" class="form-control form-control-sm" placeholder="جستجوی عنوان..."
+                        value="{{ $search ?? '' }}" />
+                </div>
+                <div class="col-auto">
+                    <select name="status" class="form-select form-select-sm">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="pending" {{ ($status ?? '') === 'pending' ? 'selected' : '' }}>در انتظار بررسی
+                        </option>
+                        <option value="in_progress" {{ ($status ?? '') === 'in_progress' ? 'selected' : '' }}>در حال انجام
+                        </option>
+                        <option value="done" {{ ($status ?? '') === 'done' ? 'selected' : '' }}>انجام‌شده</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-outline-primary">اعمال فیلتر</button>
+                    <a href="{{ route('resident.requests.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
+                </div>
+            </form>
         </div>
     </div>
 
+    {{-- جدول درخواست‌ها --}}
     <div class="card admin-table-card">
         <div class="card-body table-responsive">
             @if (session('success'))

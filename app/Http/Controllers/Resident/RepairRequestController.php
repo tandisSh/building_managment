@@ -16,9 +16,6 @@ class RepairRequestController extends Controller
 
     public function store(RepairRequestFormRequest $request)
     {
-       
-
-
         $unit = auth()->user()->units()->first();
 
         if (!$unit) {
@@ -34,12 +31,26 @@ class RepairRequestController extends Controller
         return redirect()->route('resident.requests.index')->with('success', 'درخواست با موفقیت ثبت شد.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $requests = RepairRequest::where('user_id', auth()->id())->latest()->get();
-        return view('resident.requests.index', compact('requests'));
-    }
+        $query = RepairRequest::where('user_id', auth()->id());
 
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $requests = $query->latest()->get();
+
+        return view('resident.requests.index', [
+            'requests' => $requests,
+            'search' => $request->search,
+            'status' => $request->status,
+        ]);
+    }
 
     public function edit(RepairRequest $request)
     {
