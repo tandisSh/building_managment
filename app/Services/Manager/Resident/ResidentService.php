@@ -62,7 +62,6 @@ class ResidentService
         return $user;
     }
 
-
     public function update(User $user, array $data): void
     {
         $user->update([
@@ -110,7 +109,6 @@ class ResidentService
             throw new ValidationException($validator);
         }
     }
-
     private function findOrCreateUser(array $data): User
     {
         $user = User::where('phone', $data['phone'])->orWhere('email', $data['email'])->first();
@@ -160,7 +158,7 @@ class ResidentService
 
     public function getFilteredResidents($filters, $buildingId)
     {
-        return UnitUser::with(['user', 'unit'])
+        $unitUsers = UnitUser::with(['user', 'unit'])
             ->whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
             ->when($filters['search'] ?? null, function ($q, $search) {
                 $q->whereHas('user', function ($q2) use ($search) {
@@ -170,7 +168,34 @@ class ResidentService
             })
             ->when($filters['role'] ?? null, fn($q, $role) => $q->where('role', $role))
             ->when($filters['unit_id'] ?? null, fn($q, $unitId) => $q->where('unit_id', $unitId))
-            ->latest()
             ->get();
+
+        // گروه‌بندی بر اساس user_id و unit_id تا فقط یک بار برای هر ترکیب نمایش داده شود
+        $grouped = $unitUsers
+            ->groupBy(fn($item) => $item->user_id . '-' . $item->unit_id)
+            ->map(function ($items) {
+                /** @var \Illuminate\Support\Collection $items */
+                $first = $items->first();
+                $roles = $items->pluck('role')->unique()->sort()->values();
+
+                $combinedRole = match (true) {
+                    $roles->contains('resident') && $roles->contains('owner') => 'مالک و ساکن',
+                    $roles->contains('owner') => 'مالک',
+                    $roles->contains('resident') => 'ساکن',
+                    default => implode('، ', $roles->toArray()),
+                };
+
+                return (object)[
+                    'user' => $first->user,
+                    'unit' => $first->unit,
+                    'roles' => $combinedRole,
+                    'created_at' => $first->created_at,
+                    'from_date' => $first->from_date,
+                    'to_date' => $first->to_date,
+                    'resident_count' => $items->where('role', 'resident')->first()->resident_count ?? null,
+                ];
+            })->values();
+
+        return $grouped;
     }
 }
