@@ -57,9 +57,9 @@
                     @forelse($residents as $i => $resident)
                         <tr>
                             <td>{{ $i + 1 }}</td>
-                            <td>{{ $resident->user->name }}</td>
-                            <td>{{ $resident->user->phone }}</td>
-                            <td>{{ $resident->unit->unit_number }}</td>
+                            <td>{{ optional($resident->user)->name ?? '-' }}</td>
+                            <td>{{ optional($resident->user)->phone ?? '-' }}</td>
+                            <td>{{ optional($resident->unit)->unit_number ?? '-' }}</td>
                             <td>
                                 @if ($resident->role === 'owner')
                                     <span class="badge bg-success">مالک</span>
@@ -69,32 +69,24 @@
                             </td>
                             <td>{{ jdate($resident->created_at)->format('Y/m/d') }}</td>
                             <td>
-                                <a href="{{ route('residents.show', $resident->user) }}"
-                                    class="btn btn-sm btn-outline-primary" title="نمایش">
-                                    <i class="bi bi-eye"></i>
-                                </a>
-                                <a href="{{ route('residents.edit', $resident->user->id) }}"
-                                    class="btn btn-sm btn-outline-warning" title="ویرایش">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form action="{{ route('residents.destroy', $resident->user->id) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button class="btn btn-sm btn-outline-danger" title="حذف"
-                                        onclick="return confirm('آیا مطمئنید؟')" title="حذف">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-
+                                @if ($resident->user)
+                                    <a href="{{ route('residents.show', $resident->user) }}"
+                                        class="btn btn-sm btn-outline-primary" title="نمایش">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('residents.edit', $resident->user->id) }}"
+                                        class="btn btn-sm btn-outline-warning" title="ویرایش">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                @endif
                             </td>
-
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center">ساکنی ثبت نشده است.</td>
+                            <td colspan="7" class="text-center text-muted">ساکنی یافت نشد.</td>
                         </tr>
                     @endforelse
+
                 </tbody>
             </table>
         </div>

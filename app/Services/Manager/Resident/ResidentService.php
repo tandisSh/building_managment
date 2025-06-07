@@ -14,18 +14,36 @@ use Illuminate\Validation\ValidationException;
 
 class ResidentService
 {
-
     public function create(array $data): User
     {
-        $this->checkDuplicateRole($data['unit_id'], $data['role']);
+        // بررسی نقش‌ها برای جلوگیری از تکرار
+        if ($data['role'] === 'both') {
+            $this->checkDuplicateRole($data['unit_id'], 'owner');
+            $this->checkDuplicateRole($data['unit_id'], 'resident');
+        } else {
+            $this->checkDuplicateRole($data['unit_id'], $data['role']);
+        }
 
         $user = $this->findOrCreateUser($data);
 
-        if (!$user->hasRole('resident')) {
-            $user->assignRole('resident');
+        // اختصاص نقش‌ها
+        if ($data['role'] === 'both') {
+            if (!$user->hasRole('resident')) $user->assignRole('resident');
+            if (!$user->hasRole('owner')) $user->assignRole('owner');
+
+            $this->attachToUnit($user->id, array_merge($data, ['role' => 'resident']));
+            $this->attachToUnit($user->id, array_merge($data, ['role' => 'owner']));
+        } else {
+            if ($data['role'] === 'resident' && !$user->hasRole('resident')) {
+                $user->assignRole('resident');
+            }
+            if ($data['role'] === 'owner' && !$user->hasRole('owner')) {
+                $user->assignRole('owner');
+            }
+
+            $this->attachToUnit($user->id, $data);
         }
 
-        $this->attachToUnit($user->id, $data);
         $this->attachToBuilding($user->id, $data['unit_id']);
 
         return $user;
@@ -39,24 +57,27 @@ class ResidentService
             'email' => $data['email'],
         ]);
 
-
         $unitUser = UnitUser::where('user_id', (int) $user->id)
             ->where('unit_id', (int) $data['unit_id'])
+            ->where('role', $data['role'])
             ->first();
-
 
         if ($unitUser) {
             $unitUser->update([
-                'role' => $data['role'],
                 'from_date' => $data['from_date'],
                 'to_date' => $data['to_date'],
+                'resident_count' => $data['role'] === 'resident' ? ($data['resident_count'] ?? 1) : null,
             ]);
         } else {
             $this->checkDuplicateRole($data['unit_id'], $data['role'], $user->id);
             $this->attachToUnit($user->id, $data);
         }
-        if (!$user->hasRole('resident')) {
+
+        if ($data['role'] === 'resident' && !$user->hasRole('resident')) {
             $user->assignRole('resident');
+        }
+        if ($data['role'] === 'owner' && !$user->hasRole('owner')) {
+            $user->assignRole('owner');
         }
 
         $this->attachToBuilding($user->id, $data['unit_id']);
@@ -70,7 +91,7 @@ class ResidentService
         }
         if ($query->exists()) {
             $validator = Validator::make([], []);
-            $label = $role === 'owner' ? 'مالک' : 'مستاجر';
+            $label = $role === 'owner' ? 'مالک' : 'ساکن';
             $validator->errors()->add('role', "قبلاً یک {$label} برای این واحد ثبت شده است.");
             throw new ValidationException($validator);
         }
@@ -97,13 +118,19 @@ class ResidentService
 
     private function attachToUnit($userId, array $data): void
     {
-        UnitUser::create([
+        $unitUser = new UnitUser([
             'unit_id' => $data['unit_id'],
             'user_id' => $userId,
             'role' => $data['role'],
             'from_date' => $data['from_date'],
             'to_date' => $data['to_date'],
         ]);
+
+        if ($data['role'] === 'resident') {
+            $unitUser->resident_count = $data['resident_count'] ?? 1;
+        }
+
+        $unitUser->save();
     }
 
     private function attachToBuilding($userId, $unitId): void
