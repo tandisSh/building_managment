@@ -56,17 +56,19 @@ class InvoiceService
         $bulkInvoice->loadMissing('building');
         $building = $bulkInvoice->building;
 
-        // دریافت واحدها با تعداد ساکنین از فیلد residents_count
-        $units = Unit::where('building_id', $building->id)
-            ->where('residents_count', '>', 0)
-            ->get();
+        // دریافت واحدها مربوط به ساختمان
+        $units = Unit::where('building_id', $building->id)->get();
+
+        // فقط واحدهایی که حداقل یک ساکن دارند
+        $unitsWithResidents = $units->filter(function ($unit) {
+            return $unit->totalResidentsCount() > 0;
+        });
 
         if ($bulkInvoice->distribution_type === 'equal') {
-            // محاسبات تقسیم مساوی
-            $unitCount = max($units->count(), 1);
+            $unitCount = max($unitsWithResidents->count(), 1);
             $perUnitAmount = $bulkInvoice->base_amount / $unitCount;
 
-            foreach ($units as $unit) {
+            foreach ($unitsWithResidents as $unit) {
                 Invoice::create([
                     'unit_id' => $unit->id,
                     'bulk_invoice_id' => $bulkInvoice->id,
@@ -78,24 +80,20 @@ class InvoiceService
                 ]);
             }
         } elseif ($bulkInvoice->distribution_type === 'per_person') {
-            $unitCount = $units->count();
-            $totalResidents = $units->sum('residents_count');
+            $unitCount = $unitsWithResidents->count();
+            $totalResidents = $unitsWithResidents->sum(function ($unit) {
+                return $unit->totalResidentsCount();
+            });
 
-            // محاسبه مبلغ پایه (ثابت)
+            // محاسبه مبلغ ثابت و متغیر
             $fixedAmount = ($bulkInvoice->base_amount * ($bulkInvoice->fixed_percent ?? 0)) / 100;
             $remainingAmount = $bulkInvoice->base_amount - $fixedAmount;
 
-            // تقسیم مبلغ ثابت به طور مساوی بین واحدها
-            $fixedPerUnit = $fixedAmount / $unitCount;
+            $fixedPerUnit = $unitCount > 0 ? $fixedAmount / $unitCount : 0;
+            $perPersonAmount = $totalResidents > 0 ? $remainingAmount / $totalResidents : 0;
 
-            // تقسیم مبلغ باقیمانده بر اساس نفرات
-            $perPersonAmount = $remainingAmount / $totalResidents;
-
-
-
-            // ادامه کد ایجاد فاکتورها
-            foreach ($units as $unit) {
-                $variableAmount = $unit->residents_count * $perPersonAmount;
+            foreach ($unitsWithResidents as $unit) {
+                $variableAmount = $unit->totalResidentsCount() * $perPersonAmount;
                 $unitTotalAmount = $fixedPerUnit + $variableAmount;
 
                 Invoice::create([

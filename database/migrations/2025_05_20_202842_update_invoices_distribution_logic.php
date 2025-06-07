@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         // اضافه کردن تعداد ساکنین به واحدها
         Schema::table('units', function (Blueprint $table) {
-            $table->unsignedInteger('residents_count')->default(1)->after('storerooms');
+            $table->unsignedInteger('resident_count')->default(1)->after('storerooms');
         });
 
         // اضافه کردن فیلدهای تقسیم هزینه به صورتحساب کلی
@@ -25,7 +25,7 @@ return new class extends Migration {
 
     public function down(): void {
         Schema::table('units', function (Blueprint $table) {
-            $table->dropColumn('residents_count');
+            $table->dropColumn('resident_count');
         });
 
         Schema::table('bulk_invoices', function (Blueprint $table) {

@@ -24,7 +24,7 @@ class ResidentRequest extends FormRequest
             'role'            => ['required', 'in:resident,owner,resident_owner'],
             'from_date'       => ['required', 'date'],
             'to_date'         => ['nullable', 'date', 'after:from_date'],
-            'residents_count' => [
+            'resident_count' => [
                 'required_if:role,resident,resident_owner',
                 'nullable', // برای نقش owner این فیلد اختیاری باشد
                 'integer',
@@ -43,8 +43,8 @@ class ResidentRequest extends FormRequest
             'phone.unique' => 'این شماره قبلاً ثبت شده است.',
             'email.email' => 'ایمیل وارد شده معتبر نیست.',
             'role.required' => 'لطفاً نقش را انتخاب کنید.',
-            'residents_count.required_if' => 'تعداد افراد خانوار برای ساکن الزامی است.',
-            'residents_count.min' => 'حداقل تعداد افراد باید 1 باشد.',
+            'resident_count.required_if' => 'تعداد افراد خانوار برای ساکن الزامی است.',
+            'resident_count.min' => 'حداقل تعداد افراد باید 1 باشد.',
             'from_date.required' => 'تاریخ شروع سکونت الزامی است.',
             'to_date.after' => 'تاریخ پایان باید بعد از تاریخ شروع باشد.',
         ];

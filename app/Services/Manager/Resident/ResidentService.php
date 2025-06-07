@@ -139,7 +139,7 @@ class ResidentService
         ]);
 
         if ($data['role'] === 'resident') {
-            $unitUser->resident_count = $data['resident_count'] ?? 1;
+            $unitUser->resident_count = $data['resident_count'] ?? null;
         }
 
         $unitUser->save();

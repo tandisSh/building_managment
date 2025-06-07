@@ -13,7 +13,6 @@ class Unit extends Model
         'area',
         'parking_slots',
         'storerooms',
-        'residents_count'
     ];
 
     public function building()
@@ -44,5 +43,16 @@ class Unit extends Model
     public function repairRequests()
     {
         return $this->hasMany(RepairRequest::class);
+    }
+    public function residents()
+    {
+        return $this->belongsToMany(User::class, 'unit_user')
+            ->withPivot('resident_count')
+            ->wherePivot('resident_count', '>', 0);
+    }
+
+    public function totalResidentsCount()
+    {
+        return $this->residents()->sum('unit_user.resident_count');
     }
 }

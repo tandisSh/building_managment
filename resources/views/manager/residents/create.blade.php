@@ -80,10 +80,10 @@
                     {{-- تعداد افراد خانوار --}}
                     <div class="col-md-6">
                         <label class="form-label small">تعداد افراد خانوار *</label>
-                        <input type="number" name="residents_count" id="residents_count"
-                            class="form-control form-control-sm @error('residents_count') is-invalid @enderror"
-                            value="{{ old('residents_count', 1) }}" min="1">
-                        @error('residents_count')
+                        <input type="number" name="resident_count" id="resident_count"
+                            class="form-control form-control-sm @error('resident_count') is-invalid @enderror"
+                            value="{{ old('resident_count', 1) }}" min="1">
+                        @error('resident_count')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -123,7 +123,7 @@
     <script>
         function handleResidentsCountField() {
             const role = document.getElementById('role').value;
-            const countInput = document.getElementById('residents_count');
+            const countInput = document.getElementById('resident_count');
 
             if (role === 'owner' || role === '') {
                 countInput.disabled = true;
