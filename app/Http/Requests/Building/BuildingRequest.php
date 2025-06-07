@@ -13,7 +13,7 @@ class BuildingRequest extends FormRequest
 public function rules(): array
 {
     $rules = [
-        'building_name' => 'required|string|max:255',
+        'name' => 'required|string|max:255',
         'address' => 'required|string',
         'number_of_floors' => 'required|integer|min:1',
         'number_of_units' => 'required|integer|min:1',

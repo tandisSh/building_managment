@@ -13,7 +13,7 @@ class BuildingService
 
         return Building::create([
             'user_id' => auth()->id(),
-            'building_name' => $data['building_name'],
+            'name' => $data['name'],
             'address' => $data['address'],
             'number_of_floors' => $data['number_of_floors'],
             'number_of_units' => $data['number_of_units'],

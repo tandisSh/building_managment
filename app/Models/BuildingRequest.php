@@ -8,7 +8,7 @@ class BuildingRequest extends Model
 {
     protected $fillable = [
         'user_id',
-        'building_name',
+        'name',
         'address',
         'number_of_floors',
         'number_of_units',

@@ -17,11 +17,11 @@
                 {{-- ردیف اول --}}
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="building_name" class="form-label small">نام ساختمان *</label>
-                        <input type="text" class="form-control form-control-sm @error('building_name') is-invalid @enderror"
-                               id="building_name" name="building_name"
-                               value="{{ old('building_name', $building->building_name) }}">
-                        @error('building_name')
+                        <label for="name" class="form-label small">نام ساختمان *</label>
+                        <input type="text" class="form-control form-control-sm @error('name') is-invalid @enderror"
+                               id="name" name="name"
+                               value="{{ old('name', $building->name) }}">
+                        @error('name')
                             <div class="invalid-feedback small">{{ $message }}</div>
                         @enderror
                     </div>
