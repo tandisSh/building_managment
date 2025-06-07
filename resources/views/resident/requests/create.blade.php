@@ -17,13 +17,6 @@
             </div>
         @endif
 
-        {{-- پیام خطاهای عمومی --}}
-        @if ($errors->any())
-            <div class="alert alert-danger small">
-                لطفاً خطاهای فرم را بررسی کنید.
-            </div>
-        @endif
-
         <form action="{{ route('resident.requests.store') }}" method="POST">
             @csrf
 

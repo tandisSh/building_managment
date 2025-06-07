@@ -28,50 +28,75 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small">نوع هزینه جاری</label>
-                                <select name="title" class="form-select form-select-sm" >
+                                <select name="title" class="form-select form-select-sm">
                                     <option value="">انتخاب کنید</option>
                                     @if ($building->shared_water)
-                                        <option value="آب">آب</option>
+                                        <option value="آب" {{ old('title') == 'آب' ? 'selected' : '' }}>آب</option>
                                     @endif
                                     @if ($building->shared_electricity)
-                                        <option value="برق">برق</option>
+                                        <option value="برق" {{ old('title') == 'برق' ? 'selected' : '' }}>برق</option>
                                     @endif
                                     @if ($building->shared_gas)
-                                        <option value="گاز">گاز</option>
+                                        <option value="گاز" {{ old('title') == 'گاز' ? 'selected' : '' }}>گاز</option>
                                     @endif
-                                    <option value="شارژ ساختمان">شارژ ساختمان</option>
+                                    <option value="شارژ ساختمان" {{ old('title') == 'شارژ ساختمان' ? 'selected' : '' }}>شارژ
+                                        ساختمان</option>
                                 </select>
+                                @error('title')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label small">مبلغ</label>
-                                <input type="number" name="base_amount" class="form-control form-control-sm" >
+                                <input type="number" name="base_amount" class="form-control form-control-sm"
+                                    value="{{ old('base_amount') }}">
+                                @error('base_amount')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label small">مهلت پرداخت</label>
-                                <input type="date" name="due_date" class="form-control form-control-sm" >
+                                <input type="date" name="due_date" class="form-control form-control-sm"
+                                    value="{{ old('due_date') }}">
+                                @error('due_date')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <label for="distribution_type" class="form-label small">روش تقسیم هزینه بین واحدها</label>
-        <select name="distribution_type" id="distribution_type" class="form-select form-select-sm">
-            <option value="equal">تقسیم مساوی بین همه واحدها</option>
-            <option value="per_person">تقسیم بر اساس تعداد نفرات ساکن در هر واحد</option>
-        </select>
-    </div>
+                            <div class="col-md-6">
+                                <label for="distribution_type" class="form-label small">روش تقسیم هزینه بین واحدها</label>
+                                <select name="distribution_type" id="distribution_type" class="form-select form-select-sm">
+                                    <option value="equal" {{ old('distribution_type') == 'equal' ? 'selected' : '' }}>
+                                        تقسیم مساوی بین همه واحدها</option>
+                                    <option value="per_person"
+                                        {{ old('distribution_type') == 'per_person' ? 'selected' : '' }}>تقسیم بر اساس
+                                        تعداد نفرات ساکن در هر واحد</option>
+                                </select>
+                                @error('distribution_type')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-    <div class="col-md-6">
-        <label for="fixed_percent_input" class="form-label small">درصد پایه برای تقسیم (مثلاً 100)</label>
-        <input type="number" name="fixed_percent" id="fixed_percent_input"
-               class="form-control form-control-sm" min="1" max="100" disabled>
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <label for="fixed_percent_input" class="form-label small">درصد پایه برای تقسیم (مثلاً
+                                    100)</label>
+                                <input type="number" name="fixed_percent" id="fixed_percent_input"
+                                    class="form-control form-control-sm" min="1" max="100"
+                                    value="{{ old('fixed_percent') }}"
+                                    {{ old('distribution_type') === 'per_person' ? '' : 'disabled' }}>
+                                @error('fixed_percent')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
 
                             <div class="col-12">
                                 <label class="form-label small">توضیحات (اختیاری)</label>
-                                <textarea name="description" class="form-control form-control-sm" rows="2"></textarea>
+                                <textarea name="description" class="form-control form-control-sm" rows="2">{{ old('description') }}</textarea>
+                                @error('description')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 mt-3">
@@ -92,23 +117,39 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label small">عنوان صورتحساب ثابت</label>
-                                <input type="text" name="title" class="form-control form-control-sm" >
+                                <input type="text" name="title" class="form-control form-control-sm"
+                                    value="{{ old('title') }}">
+                                @error('title')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label small">مبلغ</label>
-                                <input type="number" name="base_amount" class="form-control form-control-sm" >
+                                <input type="number" name="base_amount" class="form-control form-control-sm"
+                                    value="{{ old('base_amount') }}">
+                                @error('base_amount')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label small">مهلت پرداخت</label>
-                                <input type="date" name="due_date" class="form-control form-control-sm" >
+                                <input type="date" name="due_date" class="form-control form-control-sm"
+                                    value="{{ old('due_date') }}">
+                                @error('due_date')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-<input type="hidden" name="distribution_type" value="equal">
+
+                            <input type="hidden" name="distribution_type" value="equal">
 
                             <div class="col-12">
                                 <label class="form-label small">توضیحات (اختیاری)</label>
-                                <textarea name="description" class="form-control form-control-sm" rows="2"></textarea>
+                                <textarea name="description" class="form-control form-control-sm" rows="2">{{ old('description') }}</textarea>
+                                @error('description')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="col-12 mt-3">
@@ -122,32 +163,29 @@
             </div>
         </div>
     </div>
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const distributionSelect = document.getElementById('distribution_type');
-    const percentInput = document.getElementById('fixed_percent_input');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const distributionSelect = document.getElementById('distribution_type');
+                const percentInput = document.getElementById('fixed_percent_input');
 
-    if (!distributionSelect || !percentInput) {
-        console.error('عناصر مورد نیاز یافت نشدند.');
-        return;
-    }
+                if (!distributionSelect || !percentInput) {
+                    console.error('عناصر مورد نیاز یافت نشدند.');
+                    return;
+                }
 
-    function handleChange() {
-        if (distributionSelect.value === 'per_person') {
-            percentInput.disabled = false;
-        } else {
-            percentInput.disabled = true;
-            percentInput.value = '';
-        }
-    }
+                function handleChange() {
+                    if (distributionSelect.value === 'per_person') {
+                        percentInput.disabled = false;
+                    } else {
+                        percentInput.disabled = true;
+                        percentInput.value = '';
+                    }
+                }
 
-    distributionSelect.addEventListener('change', handleChange);
-    handleChange(); // برای بار اول هم بررسی کن
-});
-</script>
-@endpush
-
-
-
+                distributionSelect.addEventListener('change', handleChange);
+                handleChange();
+            });
+        </script>
+    @endpush
 @endsection

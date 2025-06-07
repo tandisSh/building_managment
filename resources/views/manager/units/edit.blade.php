@@ -72,7 +72,7 @@
                 <div class="col-12 mt-4">
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('units.index', $building->id) }}" class="btn btn-sm filter-btn">
-                            <i class="bi bi-arrow-right me-1"></i> بازگشت
+                            <i class="bi bi-arrow-right me-1"></i> انصراف
                         </a>
                         <button type="submit" class="btn btn-sm add-btn">
                             <i class="bi bi-check-circle me-1"></i> ذخیره تغییرات

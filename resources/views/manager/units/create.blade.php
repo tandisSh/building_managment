@@ -13,17 +13,6 @@
             @csrf
             <input type="hidden" name="building_id" value="{{ $building->id }}">
 
-            {{-- نمایش ارورهای کلی بالای فرم --}}
-            @if ($errors->any())
-                <div class="alert alert-danger small">
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
             <div class="row g-3">
                 <div class="col-md-6">
                     <div class="form-group">
@@ -83,7 +72,7 @@
                 <div class="col-12 mt-4">
                     <div class="d-flex justify-content-end gap-2">
                         <a href="{{ route('units.index', $building->id) }}" class="btn btn-sm filter-btn">
-                            <i class="bi bi-arrow-right me-1"></i> بازگشت
+                            <i class="bi bi-arrow-right me-1"></i> انصراف
                         </a>
                         <button type="submit" class="btn btn-sm add-btn">
                             <i class="bi bi-check-circle me-1"></i> ثبت واحد

@@ -54,7 +54,7 @@
         </div>
 
         {{-- تاریخ اقامت --}}
-        <div class="compact-info-card mb-4 mx-3"> <!-- اضافه کردن margin چپ و راست -->
+        <div class="compact-info-card mb-4 mx-3">
             <i class="bi bi-calendar icon"></i>
             <div class="w-100">
                 <h6 class="text-muted mb-3">تاریخ اقامت</h6>
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="mt-4 text-end px-3"> <!-- اضافه کردن padding چپ و راست -->
+        <div class="mt-4 text-end px-3">
             <a href="{{ route('residents.index') }}" class="btn filter-btn">
                 <i class="bi bi-arrow-right me-1"></i>بازگشت
             </a>
