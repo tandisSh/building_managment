@@ -16,9 +16,8 @@ class RegisterManagerRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'regex:/^09[0-9]{9}$/', 'unique:users'],
+            'email' => ['required', 'email', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
-
 }
-

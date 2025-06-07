@@ -11,6 +11,18 @@
     <div class="admin-table-card p-4">
         <form action="{{ route('units.store', $building->id) }}" method="POST">
             @csrf
+            <input type="hidden" name="building_id" value="{{ $building->id }}">
+
+            {{-- نمایش ارورهای کلی بالای فرم --}}
+            @if ($errors->any())
+                <div class="alert alert-danger small">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
             <div class="row g-3">
                 <div class="col-md-6">

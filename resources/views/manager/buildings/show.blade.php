@@ -17,7 +17,7 @@
                         <i class="bi bi-building icon"></i>
                         <div class="d-flex align-items-center">
                             <span class="label">نام ساختمان:</span>
-                            <span class="value ms-2 fs-6">{{ $building->building_name }}</span>
+                            <span class="value ms-2 fs-6">{{ $building->name }}</span>
                         </div>
                     </div>
                 </div>

@@ -25,7 +25,7 @@
                 @forelse($requests as $i => $req)
                     <tr>
                         <td>{{ $i + 1 }}</td>
-                        <td>{{ $req->building_name }}</td>
+                        <td>{{ $req->name }}</td>
                         <td>{{ $req->address }}</td>
                         <td>{{ $req->user->name ?? '---' }}</td>
                         <td>{{ jdate($req->created_at)->format('Y/m/d') }}</td>

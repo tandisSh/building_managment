@@ -26,9 +26,10 @@ class SuperAdminController extends Controller
     {
         $req = BuildingRequest::findOrFail($id);
 
+
         $building = Building::create([
             'manager_id' => $req->user_id,
-            'building_name' => $req->building_name,
+            'name' => $req->building_name,
             'address' => $req->address,
             'shared_electricity' => $req->shared_electricity,
             'shared_water' => $req->shared_water,

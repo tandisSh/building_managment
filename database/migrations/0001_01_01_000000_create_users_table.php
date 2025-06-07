@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->unique(); // ورود با شماره
-            $table->string('email')->nullable(); // اختیاری
+            $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->timestamps();
         });

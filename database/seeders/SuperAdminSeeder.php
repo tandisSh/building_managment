@@ -15,6 +15,7 @@ class SuperAdminSeeder extends Seeder
         ], [
             'name' => 'Super Admin',
             'password' => bcrypt('supersecure123'),
+            'email' => 'superadmin@gmail.com'
         ]);
 
         $role = Role::where('name', 'super_admin')->first();

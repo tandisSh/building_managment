@@ -16,38 +16,52 @@ class ResidentService
 {
     public function create(array $data): User
     {
-        // بررسی نقش‌ها برای جلوگیری از تکرار
-        if ($data['role'] === 'both') {
+        // تبدیل مقدار role به 'both' اگر مقدار ارسال شده 'resident_owner' باشد
+        $role = $data['role'] === 'resident_owner' ? 'both' : $data['role'];
+
+        // بررسی تکراری نبودن نقش
+        if ($role === 'both') {
             $this->checkDuplicateRole($data['unit_id'], 'owner');
             $this->checkDuplicateRole($data['unit_id'], 'resident');
         } else {
-            $this->checkDuplicateRole($data['unit_id'], $data['role']);
+            $this->checkDuplicateRole($data['unit_id'], $role);
         }
 
+        // یافتن یا ایجاد کاربر
         $user = $this->findOrCreateUser($data);
 
-        // اختصاص نقش‌ها
-        if ($data['role'] === 'both') {
+        // تخصیص نقش‌ها و ثبت در unit_user
+        if ($role === 'both') {
             if (!$user->hasRole('resident')) $user->assignRole('resident');
             if (!$user->hasRole('owner')) $user->assignRole('owner');
 
-            $this->attachToUnit($user->id, array_merge($data, ['role' => 'resident']));
-            $this->attachToUnit($user->id, array_merge($data, ['role' => 'owner']));
+            // ثبت resident
+            $this->attachToUnit($user->id, array_merge($data, [
+                'role' => 'resident',
+            ]));
+
+            // ثبت owner با مقدار null برای resident_count
+            $this->attachToUnit($user->id, array_merge($data, [
+                'role' => 'owner',
+                'resident_count' => null,
+            ]));
         } else {
-            if ($data['role'] === 'resident' && !$user->hasRole('resident')) {
+            if ($role === 'resident' && !$user->hasRole('resident')) {
                 $user->assignRole('resident');
             }
-            if ($data['role'] === 'owner' && !$user->hasRole('owner')) {
+            if ($role === 'owner' && !$user->hasRole('owner')) {
                 $user->assignRole('owner');
             }
 
-            $this->attachToUnit($user->id, $data);
+            $this->attachToUnit($user->id, array_merge($data, ['role' => $role]));
         }
 
+        // ثبت در building_user
         $this->attachToBuilding($user->id, $data['unit_id']);
 
         return $user;
     }
+
 
     public function update(User $user, array $data): void
     {

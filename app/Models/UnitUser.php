@@ -13,6 +13,8 @@ class UnitUser extends Pivot
         'unit_id',
         'user_id',
         'role',
+        'resident_count',
+        'status',
         'from_date',
         'to_date',
     ];
