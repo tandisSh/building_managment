@@ -99,6 +99,16 @@
                             <div class="invalid-feedback d-block small">{{ $message }}</div>
                         @enderror
                     </div>
+<div class="col-md-6">
+    <label for="status" class="form-label small">وضعیت کاربر *</label>
+    <select name="status" id="status" class="form-select form-select-sm">
+        <option value="active" {{ old('status', $resident->status) == 'active' ? 'selected' : '' }}>فعال</option>
+        <option value="inactive" {{ old('status', $resident->status) == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
+    </select>
+    @error('status')
+        <div class="invalid-feedback d-block small">{{ $message }}</div>
+    @enderror
+</div>
 
                     <div class="col-12 mt-4 d-flex justify-content-end gap-2">
                         <a href="{{ route('residents.index') }}" class="btn btn-sm filter-btn">

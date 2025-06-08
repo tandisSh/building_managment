@@ -24,8 +24,14 @@
                     @endforeach
                 </select>
 
+           <select name="status" class="form-select form-select-sm" style="width: 150px;">
+    <option value="">وضعیت</option>
+    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>فعال</option>
+    <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
+</select>
+
                 <button type="submit" class="btn btn-sm btn-outline-primary">جستجو</button>
-                <a href="{{ route('residents.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
+                <a href="{{ route(name: 'residents.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
                 <a href="{{ route('residents.create') }}" class="btn btn-sm btn-success ms-2">افزودن ساکن</a>
             </form>
         </div>
@@ -46,6 +52,7 @@
                         <th>واحد</th>
                         <th>نقش</th>
                         <th>تاریخ ثبت</th>
+                        <th>وضعیت</th>
                         <th>عملیات</th>
                     </tr>
                 </thead>
@@ -70,6 +77,14 @@
                             </td>
 
                             <td>{{ jdate($resident->created_at)->format('Y/m/d') }}</td>
+                            <td>
+                                @if ($resident->status === 'active')
+                                    <span class="badge bg-success">فعال</span>
+                                @elseif ($resident->status === 'inactive')
+                                    <span class="badge bg-danger">غیرفعال</span>
+                                @endif
+                            </td>
+
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
                                     @if ($user)

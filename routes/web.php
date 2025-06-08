@@ -67,6 +67,8 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::post('/{resident}', [ManagerResidentController::class, 'update'])->name('update');
         Route::get('/{resident}', [ManagerResidentController::class, 'show'])->name('show');
         Route::delete('/{resident}', [ManagerResidentController::class, 'destroy'])->name('destroy');
+        Route::put('/admin/users/{user}/activate', [ManagerResidentController::class, 'activate'])->name('activate');
+        Route::put('/admin/users/{user}/deactivate', [ManagerResidentController::class, 'deactivate'])->name('deactivate');
     });
 
     //requests

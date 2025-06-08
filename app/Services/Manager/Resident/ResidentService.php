@@ -68,6 +68,7 @@ class ResidentService
             'name' => $data['name'],
             'phone' => $data['phone'],
             'email' => $data['email'],
+            'status' => $data['status'],
         ]);
 
         $unitUser = UnitUser::where('user_id', (int) $user->id)
@@ -80,6 +81,7 @@ class ResidentService
                 'from_date' => $data['from_date'],
                 'to_date' => $data['to_date'],
                 'resident_count' => $data['role'] === 'resident' ? ($data['resident_count'] ?? 1) : null,
+                'status' => $data['status'] === 'inactive' ? 'inactive' : $unitUser->status,
             ]);
         } else {
             $this->checkDuplicateRole($data['unit_id'], $data['role'], $user->id);
@@ -155,47 +157,51 @@ class ResidentService
             ]);
         }
     }
+public function getFilteredResidents($filters, $buildingId)
+{
+    $unitUsers = UnitUser::with(['user', 'unit'])
+        ->whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
+        ->when($filters['search'] ?? null, function ($q, $search) {
+            $q->whereHas('user', function ($q2) use ($search) {
+                $q2->where('name', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
+            });
+        })
+        ->when($filters['role'] ?? null, fn($q, $role) => $q->where('role', $role))
+        ->when($filters['unit_id'] ?? null, fn($q, $unitId) => $q->where('unit_id', $unitId))
+        ->when($filters['status'] ?? null, function ($q, $status) {
+            // فقط از status کاربر اصلی استفاده کنیم
+            $q->whereHas('user', fn($q2) => $q2->where('status', $status));
+        })
+        ->get();
 
-    public function getFilteredResidents($filters, $buildingId)
-    {
-        $unitUsers = UnitUser::with(['user', 'unit'])
-            ->whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
-            ->when($filters['search'] ?? null, function ($q, $search) {
-                $q->whereHas('user', function ($q2) use ($search) {
-                    $q2->where('name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%");
-                });
-            })
-            ->when($filters['role'] ?? null, fn($q, $role) => $q->where('role', $role))
-            ->when($filters['unit_id'] ?? null, fn($q, $unitId) => $q->where('unit_id', $unitId))
-            ->get();
+    // گروه‌بندی بر اساس user_id و unit_id
+    $grouped = $unitUsers
+        ->groupBy(fn($item) => $item->user_id . '-' . $item->unit_id)
+        ->map(function ($items) {
+            /** @var \Illuminate\Support\Collection $items */
+            $first = $items->first();
+            $roles = $items->pluck('role')->unique()->sort()->values();
 
-        // گروه‌بندی بر اساس user_id و unit_id تا فقط یک بار برای هر ترکیب نمایش داده شود
-        $grouped = $unitUsers
-            ->groupBy(fn($item) => $item->user_id . '-' . $item->unit_id)
-            ->map(function ($items) {
-                /** @var \Illuminate\Support\Collection $items */
-                $first = $items->first();
-                $roles = $items->pluck('role')->unique()->sort()->values();
+            $combinedRole = match (true) {
+                $roles->contains('resident') && $roles->contains('owner') => 'مالک و ساکن',
+                $roles->contains('owner') => 'مالک',
+                $roles->contains('resident') => 'ساکن',
+                default => implode('، ', $roles->toArray()),
+            };
 
-                $combinedRole = match (true) {
-                    $roles->contains('resident') && $roles->contains('owner') => 'مالک و ساکن',
-                    $roles->contains('owner') => 'مالک',
-                    $roles->contains('resident') => 'ساکن',
-                    default => implode('، ', $roles->toArray()),
-                };
+            return (object)[
+                'user' => $first->user,
+                'unit' => $first->unit,
+                'roles' => $combinedRole,
+                'created_at' => $first->created_at,
+                'from_date' => $first->from_date,
+                'to_date' => $first->to_date,
+                'status' => $first->user->status,
+                'resident_count' => $items->where('role', 'resident')->first()->resident_count ?? null,
+            ];
+        })->values();
 
-                return (object)[
-                    'user' => $first->user,
-                    'unit' => $first->unit,
-                    'roles' => $combinedRole,
-                    'created_at' => $first->created_at,
-                    'from_date' => $first->from_date,
-                    'to_date' => $first->to_date,
-                    'resident_count' => $items->where('role', 'resident')->first()->resident_count ?? null,
-                ];
-            })->values();
-
-        return $grouped;
-    }
+    return $grouped;
+}
 }

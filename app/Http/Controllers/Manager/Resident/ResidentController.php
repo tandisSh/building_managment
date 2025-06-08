@@ -12,16 +12,16 @@ use Illuminate\Support\Facades\Auth;
 
 class ResidentController extends Controller
 {
-    public function index(ResidentService $residentService)
-    {
-        $buildingId = Auth::user()->buildingUser->building_id;
+public function index(ResidentService $residentService)
+{
+    $buildingId = Auth::user()->buildingUser->building_id;
 
-        $filters = request()->only(['search', 'role', 'unit_id']);
-        $residents = $residentService->getFilteredResidents($filters, $buildingId);
-        $units = Unit::where('building_id', $buildingId)->get();
+    $filters = request()->only(['search', 'role', 'unit_id', 'status']); // اضافه کردن status
+    $residents = $residentService->getFilteredResidents($filters, $buildingId);
+    $units = Unit::where('building_id', $buildingId)->get();
 
-        return view('manager.residents.index', compact('residents', 'units'));
-    }
+    return view('manager.residents.index', compact('residents', 'units'));
+}
 
     public function show(User $resident)
     {

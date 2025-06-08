@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Resident;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ResidentRequest extends FormRequest
 {
@@ -30,6 +31,8 @@ class ResidentRequest extends FormRequest
                 'integer',
                 'min:1'
             ],
+            'status' => ['required', Rule::in(['active', 'inactive'])],
+
         ];
     }
 
