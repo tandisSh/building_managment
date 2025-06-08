@@ -157,12 +157,23 @@
                 {{-- تنظیمات --}}
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-gear me-2"></i> تنظیمات
+                        <a class="nav-link" href="{{route('reports.payments')}}">
+                            <i class="bi bi-gear me-2"></i> گزارش پرداخت‌ها
                         </a>
                     @else
                         <span class="nav-link disabled">
-                            <i class="bi bi-gear me-2"></i> تنظیمات
+                            <i class="bi bi-gear me-2"></i> گزارش پرداخت‌ها
+                        </span>
+                    @endif
+                </li>
+                  <li class="nav-item">
+                    @if ($building && $buildingRequestStatus === 'approved')
+                        <a class="nav-link" href="{{route('reports.invoices')}}">
+                            <i class="bi bi-gear me-2"></i> گزارش صورتحساب
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-gear me-2"></i> گزارش صورتحساب
                         </span>
                     @endif
                 </li>

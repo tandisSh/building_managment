@@ -10,6 +10,7 @@ use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Manager\Building\BuildingController;
+use App\Http\Controllers\Manager\Report\ReportController;
 use App\Http\Controllers\Manager\Request\RequestController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
@@ -84,6 +85,17 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::get('/{id}', [PaymentController::class, 'show'])->name('show');
         Route::get('/{payment}/receipt', [PaymentController::class, 'receipt'])->name('receipt');
     });
+
+
+    //گزارشگیری
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/payments', [ReportController::class, 'index'])->name('payments');
+        Route::get('/invoices', [ReportController::class, 'invoices'])->name('invoices');
+        Route::get('/reports/invoices/print', [ReportController::class, 'print'])->name('print');
+        Route::get('/reports/invoices/print', [ReportController::class, 'Paymentprint'])->name('payments.print');
+
+    });
+
 
     // لیست صورتحساب‌ها
     Route::get('invoices', [InvoiceController::class, 'index'])->name('manager.invoices.index');
