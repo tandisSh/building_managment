@@ -31,6 +31,9 @@ Route::post('reset-password', [ResetPasswordController::class, 'reset'])->name('
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
+Route::get('/auth', function () {
+    return view('auth.auth');
+})->name('auth');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('loginForm');
@@ -127,7 +130,6 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
     Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('admin.requests.approve');
     Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('admin.requests.reject');
 });
-
 
 Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident.')->group(function () {
     Route::get('/dashboard', [ResidentDashboardController::class, 'index'])->name('dashboard');
