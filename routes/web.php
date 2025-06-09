@@ -91,6 +91,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/payments', [ReportController::class, 'index'])->name('payments');
         Route::get('/invoices', [ReportController::class, 'invoices'])->name('invoices');
+        Route::get('/unit-debts', [ReportController::class, 'unitDebts'])->name('unit_debts');
         Route::get('/reports/invoices/print', [ReportController::class, 'print'])->name('print');
         Route::get('/reports/invoices/print', [ReportController::class, 'Paymentprint'])->name('payments.print');
 

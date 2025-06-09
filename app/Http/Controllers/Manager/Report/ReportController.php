@@ -31,6 +31,13 @@ class ReportController extends Controller
         return view('manager.reports.invoice', $data);
     }
 
+    public function unitDebts()
+    {
+        $data = $this->reportService->getUnitDebtReport();
+
+        return view('manager.reports.unit_debts', $data);
+    }
+
     public function print(Request $request)
     {
         $filters = $request->only(['date_from', 'date_to', 'status', 'type', 'unit_id']);
@@ -39,11 +46,10 @@ class ReportController extends Controller
         return view('manager.reports.print.invoice', $data);
     }
     public function Paymentprint(Request $request)
-{
-    $filters = $request->only(['date_from', 'date_to', 'unit_number']);
-    $data = $this->reportService->getPaymentReport($filters);
+    {
+        $filters = $request->only(['date_from', 'date_to', 'unit_number']);
+        $data = $this->reportService->getPaymentReport($filters);
 
-    return view('manager.reports.print.payment', $data);
-}
-
+        return view('manager.reports.print.payment', $data);
+    }
 }

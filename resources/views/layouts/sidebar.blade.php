@@ -154,7 +154,7 @@
                     @endif
                 </li>
 
-                {{-- تنظیمات --}}
+                {{-- گزارشات --}}
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link" href="{{route('reports.payments')}}">
@@ -166,6 +166,7 @@
                         </span>
                     @endif
                 </li>
+
                   <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link" href="{{route('reports.invoices')}}">
@@ -174,6 +175,18 @@
                     @else
                         <span class="nav-link disabled">
                             <i class="bi bi-gear me-2"></i> گزارش صورتحساب
+                        </span>
+                    @endif
+                </li>
+
+                     <li class="nav-item">
+                    @if ($building && $buildingRequestStatus === 'approved')
+                        <a class="nav-link" href="{{route('reports.unit_debts')}}">
+                            <i class="bi bi-gear me-2"></i> گزارش بدهی
+                        </a>
+                    @else
+                        <span class="nav-link disabled">
+                            <i class="bi bi-gear me-2"></i> گزارش بدهی
                         </span>
                     @endif
                 </li>
