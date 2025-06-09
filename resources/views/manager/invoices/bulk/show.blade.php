@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-3">
     <div class="admin-header d-flex justify-content-between align-items-center mb-4">
-        <h6 class="mb-0 fw-bold text-dark">
+        <h6 class="mb-0 fw-bold text-white">
             <i class="bi bi-collection me-2"></i>جزئیات صورتحساب کلی ({{ $bulkInvoice->type === 'fixed' ? 'ثابت' : 'جاری' }})
         </h6>
         <a href="{{ route('bulk_invoices.index') }}" class="btn filter-btn">

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark text-center"><i class="bi bi-receipt"></i> گزارش پرداخت‌ها -
+        <h6 class="mb-0 fw-bold text-white text-center"><i class="bi bi-receipt"></i> گزارش پرداخت‌ها -
             {{ $building->name ?? 'نامشخص' }}</h6>
     </div>
 

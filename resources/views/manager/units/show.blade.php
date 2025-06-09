@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mt-3">
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap" >
-        <h6 class="mb-0 fw-bold text-dark fs-6 py-2 px-3">
+        <h6 class="mb-0 fw-bold text-white fs-6 py-2 px-3">
             <i class="bi bi-house-door me-2"></i>مشاهده واحد {{ $unit->unit_number }}
         </h6>
     </div>

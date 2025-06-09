@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark text-center"><i class="bi bi-files"></i> لیست صورتحساب‌های کلی</h6>
+        <h6 class="mb-0 fw-bold text-white text-center"><i class="bi bi-files"></i> لیست صورتحساب‌های کلی</h6>
         <div class="d-flex align-items-center gap-2 mb-3 text-center" style="flex-wrap: wrap;">
             <a href="{{ route('manager.invoices.create') }}" class="btn btn-sm add-btn d-flex align-items-center text-center">
                 <i class="bi bi-plus-circle me-1"></i> افزودن صورتحساب کلی جدید

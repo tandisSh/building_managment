@@ -3,7 +3,7 @@
 @section('content')
     {{-- هدر بالا: عنوان + دکمه افزودن --}}
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark text-center">
+        <h6 class="mb-0 fw-bold text-white text-center">
             <i class="bi bi-receipt"></i> لیست صورتحساب‌ها
         </h6>
         <div class="d-flex align-items-center gap-2 mb-3 text-center" style="flex-wrap: wrap;">

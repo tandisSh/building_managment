@@ -271,17 +271,22 @@ body {
 
 /* Admin Panel Styles */
 .admin-header {
-    background-color: #ffffff;
-    border: 1px solid #e1e1e1;
-    min-height: 48px;
-    border-radius: 10px;
+    background-color: #4e3cb3;
+    color: #fff;
+    border: none;
+    min-height: 40px;
+    border-radius: 8px;
     padding: 8px 16px;
 }
 
 .search-filter-card {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 10px;
+    padding: 2px 10px;
+    width: 100%;
     height: auto;
     min-height: 40px;
-    padding: 2px 10px;
 }
 
 .tools-box {
@@ -331,8 +336,9 @@ body {
 
 .admin-table-card {
     background-color: #fff;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.03);
+    margin-bottom: 1rem;
 }
 
 .table-units th {
@@ -383,25 +389,25 @@ body {
     border-color: #f0f0f0;
 }
 
+/* تنظیم کادرهای اطلاعاتی برای صفحه جزئیات */
 .compact-info-card {
     background: #fff;
     border-radius: 8px;
-    padding: 10px 15px;
+    padding: 5px 10px;
     display: flex;
     align-items: center;
-    gap: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-    height: 100%;
-    min-height: 50px;
+    gap: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    min-height: 40px;
     border: 1px solid #e1e1e1;
 }
 
 .compact-info-card .icon {
-    font-size: 1.2rem;
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
     color: #4e3cb3;
     background: #e5ddfa;
-    width: 36px;
-    height: 36px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -410,14 +416,14 @@ body {
 }
 
 .compact-info-card .label {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #6c757d;
     white-space: nowrap;
     font-weight: 500;
 }
 
 .compact-info-card .value {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     color: #212529;
     font-weight: 600;
     white-space: nowrap;
@@ -425,8 +431,18 @@ body {
     text-overflow: ellipsis;
 }
 
-.admin-header {
-    border-radius: 8px;
+.compact-info-card .badge {
+    padding: 0 8px;
+    font-size: 0.8rem;
+}
+
+/* تنظیم فاصله‌ها در ردیف‌ها */
+.row.g-2 {
+    --bs-gutter-x: 0.5rem;
+}
+
+.card-body.p-2 {
+    padding: 0.5rem;
 }
 
 @media (max-width: 768px) {

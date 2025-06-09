@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mt-3">
         <div class="admin-header d-flex justify-content-between align-items-center mb-4">
-            <h6 class="mb-0 fw-bold text-dark">
+            <h6 class="mb-0 fw-bold text-white">
                 <i class="bi bi-wrench-adjustable-circle me-2"></i> جزئیات درخواست تعمیر
             </h6>
             <a href="{{ route('requests.index') }}" class="btn filter-btn">
