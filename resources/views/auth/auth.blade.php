@@ -13,8 +13,8 @@
 @guest
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card welcome-card text-center shadow-lg p-4">
-        <div class="card-header bg-gradient text-white mb-4">
-            <h3><i class="bi bi-building"></i> خوش آمدید!</h3>
+        <div class="card-header bg-gradient text-dark mb-4">
+            <h3> خوش آمدید!</h3>
         </div>
         <div class="card-body">
             <p class="lead mb-4">برای ادامه لطفاً وارد سیستم شوید یا ثبت‌نام کنید.</p>
