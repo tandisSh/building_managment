@@ -1,37 +1,42 @@
 @extends('layouts.app')
 
 @section('content')
-
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt"></i> لیست پرداخت‌ها</h6>
-        <form method="GET" action="{{ route('payments.index') }}" class="d-flex align-items-center gap-2">
-            <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm"
-                placeholder="نام ساکن یا عنوان صورتحساب" style="min-width: 180px;">
-            <button type="submit" class="btn btn-sm btn-outline-primary">جستجو</button>
-            @if (request()->has('search') && request('search') != '')
-                <a href="{{ route('payments.index') }}" class="btn btn-sm btn-outline-secondary">حذف </a>
-            @endif
-        </form>
+        <h6 class="mb-0 fw-bold text-dark text-center"><i class="bi bi-receipt"></i> لیست پرداخت‌ها</h6>
     </div>
 
+    <div class="card search-filter-card mb-3">
+        <div class="card-body">
+            <form method="GET" action="{{ route('payments.index') }}"
+                class="d-flex flex-wrap align-items-center gap-2 text-center">
+                <input type="text" name="search" value="{{ request('search') }}"
+                    class="form-control form-control-sm w-auto search-input" placeholder="نام ساکن یا عنوان صورتحساب"
+                    style="max-width: 200px;">
+                <button type="submit" class="btn btn-sm btn-outline-primary filter-btn">جستجو</button>
+                @if (request()->has('search') && request('search') != '')
+                    <a href="{{ route('payments.index') }}" class="btn btn-sm btn-outline-secondary filter-btn">حذف</a>
+                @endif
+            </form>
+        </div>
+    </div>
 
     <div class="card admin-table-card">
         <div class="card-body table-responsive">
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success text-center">{{ session('success') }}</div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
+                <div class="alert alert-danger text-center">{{ session('error') }}</div>
             @endif
 
-            <table class="table table-bordered table-striped align-middle small table-payments">
+            <table class="table table-bordered table-striped align-middle text-center table-units">
                 <thead>
                     <tr>
                         <th>ردیف</th>
                         <th>عنوان صورتحساب</th>
                         <th>مبلغ (تومان)</th>
                         <th>تاریخ پرداخت</th>
-                        <th class="text-center">عملیات</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -41,11 +46,13 @@
                             <td>{{ $payment->invoice->title ?? '-' }}</td>
                             <td>{{ number_format($payment->amount) }}</td>
                             <td>{{ jdate($payment->paid_at)->format('Y/m/d') }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('payments.show', $payment->id) }}" class="btn btn-sm btn-outline-primary"
-                                    title="نمایش">
-                                    <i class="bi bi-eye"></i>
-                                </a>
+                            <td>
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="{{ route('payments.show', $payment->id) }}"
+                                        class="btn btn-sm btn-outline-primary" title="نمایش">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

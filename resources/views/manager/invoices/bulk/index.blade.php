@@ -2,44 +2,49 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-files"></i> لیست صورتحساب‌های کلی</h6>
-        <a href="{{ route('manager.invoices.create') }}" class="btn btn-primary btn-sm d-flex align-items-center">
-            <i class="bi bi-plus-circle me-1"></i> افزودن صورتحساب کلی جدید
-        </a>
+        <h6 class="mb-0 fw-bold text-dark text-center"><i class="bi bi-files"></i> لیست صورتحساب‌های کلی</h6>
+        <div class="d-flex align-items-center gap-2 mb-3 text-center" style="flex-wrap: wrap;">
+            <a href="{{ route('manager.invoices.create') }}" class="btn btn-sm add-btn d-flex align-items-center text-center">
+                <i class="bi bi-plus-circle me-1"></i> افزودن صورتحساب کلی جدید
+            </a>
+        </div>
     </div>
 
-    <div class="filters-box p-3 mb-4 bg-white rounded shadow-sm">
-        <form method="GET" action="{{ route('bulk_invoices.index') }}" class="row g-2 align-items-center">
-            <div class="col-auto">
-                <input type="text" name="search" value="{{ request('search') }}" class="form-control form-control-sm"
-                    placeholder="جستجو بر اساس عنوان یا مبلغ">
-            </div>
-
-            <div class="col-auto">
-                <select name="status" class="form-select form-select-sm">
-                    <option value="">وضعیت</option>
-                    <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>تایید شده</option>
-                    <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>در انتظار تایید</option>
-                </select>
-            </div>
-
-            <div class="col-auto">
-                <button type="submit" class="btn btn-sm btn-outline-primary">اعمال فیلتر</button>
-                <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm btn-outline-secondary">حذف فیلتر</a>
-            </div>
-        </form>
+    <div class="card search-filter-card mb-3">
+        <div class="card-body">
+            <form method="GET" action="{{ route('bulk_invoices.index') }}" class="row g-2 align-items-center text-center">
+                <div class="col-auto">
+                    <input type="text" name="search" value="{{ request('search') }}"
+                        class="form-control form-control-sm w-auto search-input" placeholder="جستجو بر اساس عنوان یا مبلغ"
+                        style="max-width: 200px;">
+                </div>
+                <div class="col-auto">
+                    <select name="status" class="form-select form-select-sm search-input" style="max-width: 150px;">
+                        <option value="">وضعیت</option>
+                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>تایید شده</option>
+                        <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>در انتظار تایید
+                        </option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-outline-primary filter-btn">اعمال فیلتر</button>
+                    <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm btn-outline-secondary filter-btn">حذف
+                        فیلتر</a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div class="card admin-table-card">
         <div class="card-body table-responsive">
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success text-center">{{ session('success') }}</div>
             @endif
             @if (session('error'))
-                <div class="alert alert-danger">{{ session('error') }}</div>
+                <div class="alert alert-danger text-center">{{ session('error') }}</div>
             @endif
 
-            <table class="table table-bordered table-striped align-middle small table-units">
+            <table class="table table-bordered table-striped align-middle text-center table-units">
                 <thead>
                     <tr>
                         <th>ردیف</th>
@@ -47,7 +52,7 @@
                         <th>مبلغ کل (تومان)</th>
                         <th>تاریخ سررسید</th>
                         <th>وضعیت</th>
-                        <th class="text-center">عملیات</th>
+                        <th>عملیات</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,11 +63,12 @@
                             <td>{{ number_format($bulkInvoice->base_amount) }}</td>
                             <td>{{ jdate($bulkInvoice->due_date)->format('Y/m/d') }}</td>
                             <td>
-                                <span class="badge bg-{{ $bulkInvoice->status === 'approved' ? 'success' : 'warning' }}">
+                                <span
+                                    class="badge bg-{{ $bulkInvoice->status === 'approved' ? 'success' : 'warning' }} text-center">
                                     {{ $bulkInvoice->status === 'approved' ? 'تایید شده' : 'در انتظار تایید' }}
                                 </span>
                             </td>
-                            <td class="text-center">
+                            <td>
                                 <div class="d-flex justify-content-center gap-1">
                                     @if ($bulkInvoice->status !== 'approved')
                                         <form action="{{ route('bulk_invoices.approve', $bulkInvoice->id) }}"
@@ -78,7 +84,6 @@
                                             <i class="bi bi-check2-all"></i>
                                         </button>
                                     @endif
-
                                     <a href="{{ route('manager.bulk_invoices.show', $bulkInvoice->id) }}"
                                         class="btn btn-sm btn-outline-primary" title="نمایش">
                                         <i class="bi bi-eye"></i>

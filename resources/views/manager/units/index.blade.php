@@ -1,24 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
-
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
         <h6 class="mb-0 fw-bold text-dark">واحدهای ساختمان {{ $building->name }}</h6>
-
-   <form method="GET" class="d-flex align-items-center gap-2 mb-3" style="flex-wrap: wrap;">
-    <input type="text" name="search" class="form-control form-control-sm w-auto"
-           placeholder="شماره واحد یا نام ساکن" value="{{ request('search') }}" style="max-width: 200px;">
-
-    <button class="btn btn-sm btn-outline-primary">جستجو</button>
-
-    <a href="{{ route('units.index', $building->id) }}" class="btn btn-sm btn-outline-secondary">ریست</a>
-
-    <a href="{{ route('units.create', $building->id) }}" class="btn btn-sm add-btn">+ افزودن واحد</a>
-</form>
-
-
+        <div class="d-flex align-items-center gap-2 mb-3" style="flex-wrap: wrap;">
+            <a href="{{ route('units.create', $building->id) }}" class="btn btn-sm add-btn"> افزودن واحد + </a>
+        </div>
     </div>
 
+    <div class="card search-filter-card mb-3">
+        <div class="card-body">
+            <form method="GET" class="d-flex align-items-center gap-2 mb-3" style="flex-wrap: wrap;">
+                <input type="text" name="search" class="form-control form-control-sm w-auto search-input"
+                    placeholder="شماره واحد یا نام ساکن" value="{{ request('search') }}" style="max-width: 200px;">
+                <button class="btn btn-sm btn-outline-primary filter-btn">جستجو</button>
+                <a href="{{ route('units.index', $building->id) }}"
+                    class="btn btn-sm btn-outline-secondary filter-btn">ریست</a>
+            </form>
+        </div>
+    </div>
 
     <div class="card admin-table-card">
         <div class="card-body table-responsive">

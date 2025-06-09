@@ -1,10 +1,11 @@
 /* General Body and HTML settings */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    font-family: 'Vazirmatn', sans-serif;
+    font-family: "Vazirmatn", sans-serif;
     direction: rtl;
     text-align: right;
 }
@@ -63,7 +64,7 @@ html, body {
     list-style: none;
     flex: 1 1 auto;
     min-height: 0;
-    max-height: calc(100vh - 180px); /* Fixed height based on header (100px) and user-info (80px) */
+    max-height: calc(100vh - 180px);
 }
 
 .sidebar .custom-scroll::-webkit-scrollbar {
@@ -254,7 +255,7 @@ html, body {
 #page-content-wrapper {
     margin-right: 260px;
     transition: all 0.3s ease-in-out;
-    padding: 20px;
+    padding: 40px;
     width: calc(100% - 260px);
     overflow-x: hidden;
     flex-grow: 1;
@@ -277,6 +278,12 @@ html, body {
     padding: 8px 16px;
 }
 
+.search-filter-card {
+    height: auto;
+    min-height: 40px;
+    padding: 2px 10px;
+}
+
 .tools-box {
     display: flex;
     align-items: center;
@@ -285,9 +292,9 @@ html, body {
 }
 
 .filter-btn {
-    padding: 4px 12px;
-    font-size: 0.85rem;
-    border-radius: 6px;
+    padding: 2px 15px;
+    font-size: 0.9rem;
+    border-radius: 5px;
     border: 1px solid #ccc;
     transition: all 0.2s;
 }
@@ -301,10 +308,11 @@ html, body {
 .add-btn {
     background-color: #e5ddfa;
     color: #4e3cb3;
-    padding: 4px 14px;
-    font-size: 0.85rem;
+    padding: 3px 20px;
+    font-size: 1rem;
     border-radius: 6px;
     border: none;
+    margin-top: 10px;
     transition: all 0.2s ease-in-out;
 }
 
@@ -314,10 +322,10 @@ html, body {
 }
 
 .search-input {
-    width: 160px;
-    font-size: 0.85rem;
-    padding: 4px 8px;
-    border-radius: 6px;
+    width: 150px;
+    font-size: 0.9rem;
+    padding: 2px 10px;
+    border-radius: 5px;
     border: 1px solid #ced4da;
 }
 
@@ -328,9 +336,10 @@ html, body {
 }
 
 .table-units th {
-    background-color: #e5ddfa;
+    background-color: #4e3cb3;
     font-weight: 600;
     white-space: nowrap;
+    color: #ffffff;
 }
 
 .table-units td {
