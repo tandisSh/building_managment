@@ -99,6 +99,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::get('/reports/invoices/print', [ReportController::class, 'Paymentprint'])->name('payments.print');
         Route::get('/overdue-payments', [ReportController::class, 'overduePayments'])->name('overduePayments');
         Route::get('/financialOverview', [ReportController::class, 'financialOverview'])->name('financialOverview');
+        Route::get('/ResidentAccountStatus', [ReportController::class, 'ResidentAccountStatus'])->name('ResidentAccountStatus');
 
     });
 

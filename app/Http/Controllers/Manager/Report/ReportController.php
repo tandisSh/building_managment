@@ -82,4 +82,10 @@ class ReportController extends Controller
             'selectedMonth' => $request->month,
         ]);
     }
+
+    public function ResidentAccountStatus(Request $request)
+    {
+        $data = $this->reportService->getResidentAccountStatusReport($request);
+        return view('manager.reports.resident_account_status', $data);
+    }
 }

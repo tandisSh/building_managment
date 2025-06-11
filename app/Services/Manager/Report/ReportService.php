@@ -4,6 +4,8 @@ namespace App\Services\Manager\Report;
 
 use App\Models\Payment;
 use App\Models\Invoice;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class ReportService
 {
@@ -236,4 +238,77 @@ class ReportService
 
         return $data;
     }
+
+    public function getResidentAccountStatusReport(Request $request)
+{
+    $user = auth()->user();
+    $buildingId = $user->buildingUser?->building_id;
+
+    if (!$buildingId) {
+        return [
+            'residents' => collect(),
+            'building' => null,
+        ];
+    }
+
+    $search = $request->input('search');
+    $dateFrom = $request->input('date_from');
+    $dateTo = $request->input('date_to');
+
+    $query = User::whereHas('unitUsers.unit', function ($q) use ($buildingId) {
+        $q->where('building_id', $buildingId);
+    });
+
+    if ($search) {
+        $query->where('name', 'like', "%{$search}%");
+    }
+
+    $residents = $query->with(['unitUsers.unit', 'payments'])
+        ->get()
+        ->map(function ($resident) use ($dateFrom, $dateTo) {
+
+            $unitUsers = $resident->unitUsers ?? collect();
+
+            $unitIds = $unitUsers->pluck('unit_id')->toArray();
+
+            // فیلتر صورتحساب‌ها (بدهی) بر اساس تاریخ ایجاد، اگر تاریخ داده شده بود
+            $invoiceQuery = Invoice::whereIn('unit_id', $unitIds)
+                ->where('status', 'unpaid');
+
+            if ($dateFrom) {
+                $invoiceQuery->whereDate('created_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $invoiceQuery->whereDate('created_at', '<=', $dateTo);
+            }
+
+            $totalDebt = $invoiceQuery->sum('amount');
+
+            // فیلتر پرداخت‌ها بر اساس تاریخ پرداخت (paid_at)
+            $paymentQuery = $resident->payments()
+                ->where('status', 'success');
+
+            if ($dateFrom) {
+                $paymentQuery->whereDate('paid_at', '>=', $dateFrom);
+            }
+            if ($dateTo) {
+                $paymentQuery->whereDate('paid_at', '<=', $dateTo);
+            }
+
+            $totalPaid = $paymentQuery->sum('amount');
+
+            return [
+                'resident_name' => $resident->name,
+                'units' => $unitUsers->pluck('unit.unit_number')->toArray(),
+                'total_debt' => $totalDebt,
+                'total_paid' => $totalPaid,
+            ];
+        });
+
+    return [
+        'residents' => $residents,
+        'building' => $user->buildingUser?->building,
+    ];
+}
+
 }
