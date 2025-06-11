@@ -60,4 +60,56 @@
             @endif
         </div>
     </div>
+    @if(!empty($chartData))
+    <div class="card mb-4 mt-4">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-bar-chart-line"></i> نمودار پرداخت‌ها در ماه‌های اخیر
+        </div>
+        <div class="card-body">
+            <canvas id="financialChart" height="120"></canvas>
+        </div>
+    </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const chartData = @json($chartData);
+            const months = chartData.map(item => item.month);
+            const totalAmounts = chartData.map(item => item.total_amount);
+            const paidAmounts = chartData.map(item => item.paid_amount);
+
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'مجموع صورتحساب‌ها',
+                            data: totalAmounts,
+                            backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                        },
+                        {
+                            label: 'مبلغ پرداخت‌شده',
+                            data: paidAmounts,
+                            backgroundColor: 'rgba(75, 192, 192, 0.6)'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        title: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        </script>
+    @endpush
+@endif
+
 @endsection

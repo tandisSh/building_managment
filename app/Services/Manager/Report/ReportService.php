@@ -183,16 +183,16 @@ class ReportService
             $query->whereDate('due_date', '<=', $filters['date_to']);
         }
 
-$overdueInvoices = $query->get()->map(function ($invoice) {
-    $dueDate = \Carbon\Carbon::parse($invoice->due_date);
-    $daysOverdue = now()->diffInDays($dueDate); // این عدد صحیح برمی‌گردونه
-    return [
-        'invoice' => $invoice,
-        'days_overdue' => $daysOverdue,
-        'unit_number' => $invoice->unit->unit_number ?? 'نامشخص',
-        'amount' => $invoice->amount,
-    ];
-});
+        $overdueInvoices = $query->get()->map(function ($invoice) {
+            $dueDate = \Carbon\Carbon::parse($invoice->due_date);
+            $daysOverdue = now()->diffInDays($dueDate); // این عدد صحیح برمی‌گردونه
+            return [
+                'invoice' => $invoice,
+                'days_overdue' => $daysOverdue,
+                'unit_number' => $invoice->unit->unit_number ?? 'نامشخص',
+                'amount' => $invoice->amount,
+            ];
+        });
 
 
 
@@ -204,5 +204,36 @@ $overdueInvoices = $query->get()->map(function ($invoice) {
             'filters' => $filters,
             'building' => $user->buildingUser?->building,
         ];
+    }
+
+    public function getMonthlyFinancialSummary(int $buildingId, int $months = 6): array
+    {
+        $startDate = now()->subMonths($months)->startOfMonth();
+
+        $invoices = Invoice::with('payments')
+            ->whereHas('unit', function ($query) use ($buildingId) {
+                $query->where('building_id', $buildingId);
+            })
+            ->where('created_at', '>=', $startDate)
+            ->get()
+            ->groupBy(function ($invoice) {
+                return jdate($invoice->created_at)->format('Y/m'); // مثلا 1403/02
+            });
+
+        $data = [];
+
+        foreach ($invoices as $month => $group) {
+            $total = $group->sum('amount');
+            $paid = $group->sum(fn($invoice) => $invoice->payments->sum('amount'));
+
+            $data[] = [
+                'month' => $month,
+                'invoiced' => $total,
+                'paid' => $paid,
+                'unpaid' => $total - $paid,
+            ];
+        }
+
+        return $data;
     }
 }

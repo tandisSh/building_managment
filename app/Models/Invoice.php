@@ -16,10 +16,10 @@ class Invoice extends Model
         'title'
     ];
 
-public function getRouteKeyName()
-{
-    return 'id';
-}
+    public function getRouteKeyName()
+    {
+        return 'id';
+    }
 
     public function unit()
     {
@@ -45,5 +45,9 @@ public function getRouteKeyName()
             $this->status === 'paid' => 'paid',
             default => 'unpaid',
         };
+    }
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
     }
 }

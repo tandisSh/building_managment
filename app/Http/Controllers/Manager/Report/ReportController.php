@@ -60,4 +60,26 @@ class ReportController extends Controller
 
         return view('manager.reports.overdue_payments', $data);
     }
+
+    public function financialOverview(Request $request, ReportService $reportService)
+    {
+        $buildingId = auth()->user()->buildingUser?->building_id;
+
+        if (!$buildingId) {
+            abort(403, 'شما به هیچ ساختمانی متصل نیستید.');
+        }
+
+        $summary = $reportService->getMonthlyFinancialSummary($buildingId);
+
+        // اگر ماه خاصی انتخاب شده باشد، فقط همان را نگه داریم
+        if ($request->filled('month')) {
+            $summary = array_filter($summary, fn($item) => $item['month'] === $request->month);
+        }
+
+        return view('manager.reports.financial-overview', [
+            'summary' => $summary,
+            'months' => array_unique(array_column($reportService->getMonthlyFinancialSummary($buildingId), 'month')),
+            'selectedMonth' => $request->month,
+        ]);
+    }
 }
