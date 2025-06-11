@@ -55,7 +55,7 @@
 
         <div class="card p-3 shadow-sm">
             <canvas id="financialChart" height="200" class="w-100"></canvas>
-        </div>
+        </div>+
     @else
         <div class="alert alert-info text-center">داده‌ای برای نمایش وجود ندارد.</div>
     @endif
