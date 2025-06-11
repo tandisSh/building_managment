@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark">
+        <h6 class="mb-0 fw-bold text-white">
             <i class="bi bi-receipt"></i> لیست صورتحساب‌ها
         </h6>
     </div>
@@ -64,7 +64,7 @@
                                 </td>
                                 <td>
                                     @if ($invoice->status !== 'paid')
-                                        <form method="POST" action="{{ route('resident.invoices.pay', $invoice) }}"
+                                        <form method="POST" action="{{ route('resident.payment.fake.form.single', $invoice) }}"
                                             class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-warning" title="پرداخت">

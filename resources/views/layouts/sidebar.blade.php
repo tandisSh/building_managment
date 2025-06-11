@@ -11,70 +11,67 @@
     }
 @endphp
 
-<div class="sidebar" id="sidebar"> {{-- اضافه کردن ID برای دسترسی با JS --}}
-    {{-- div.d-flex.flex-column.h-100 برای پر کردن ارتفاع و مدیریت فلکس آیتم‌ها --}}
+<div class="sidebar" id="sidebar"> <!-- اضافه کردن ID برای دسترسی با JS -->
     <div class="d-flex flex-column h-100">
-        {{-- Sidebar Header --}}
+        <!-- Sidebar Header -->
         <div class="text-center mb-3 sidebar-header position-relative p-4">
             <h6 class="text-dark-blue mb-0">پنل مدیریت ساختمان</h6>
 
-            {{-- دکمه برای باز و بسته کردن سایدبار داخل سایدبار --}}
+            <!-- دکمه برای باز و بسته کردن سایدبار داخل سایدبار -->
             <button class="btn toggle-sidebar-btn" id="sidebarToggle">
                 <i class="bi bi-list"></i>
             </button>
         </div>
 
-        {{-- User Info --}}
+        <!-- User Info -->
         <div class="user-info text-center mb-3 pb-2 border-bottom px-4">
             <i class="bi bi-person-circle user-icon-small d-block mb-1"></i>
             <small class="mb-0 text-dark-blue fw-bold">{{ $user->name ?? 'کاربر مهمان' }}</small>
             <br><small class="text-muted text-truncate d-block">{{ $user->email ?? '' }}</small>
         </div>
 
-        {{-- Sidebar Nav Links - This is the scrollable area --}}
-        {{-- flex-grow-1 برای پر کردن فضای موجود، custom-scroll برای اسکرول و mb-auto برای چسباندن به پایین --}}
-        {{-- **نکته مهم:** px-4 را از اینجا حذف می‌کنیم و پدینگ افقی را در .nav-link مدیریت می‌کنیم. --}}
-        <ul class="nav flex-column flex-grow-1 custom-scroll">
-            {{-- سوپر ادمین --}}
+        <!-- Sidebar Nav Links - This is the scrollable area -->
+        <ul class="nav flex-column flex-grow-1 custom-scroll p-0" style="overflow-y: auto; max-height: calc(100vh - 200px);">
+            <!-- سوپر ادمین -->
             @if ($roles->contains('super_admin'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('super_admin.dashboard') ? 'active fw-bold' : '' }}"
-                        href="{{ route('super_admin.dashboard') }}">
+                       href="{{ route('super_admin.dashboard') }}">
                         <i class="bi bi-speedometer2 me-2"></i> <span>داشبورد ادمین</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('super_admin.requests') ? 'active fw-bold' : '' }}"
-                        href="{{ route('super_admin.requests') }}">
+                       href="{{ route('super_admin.requests') }}">
                         <i class="bi bi-clipboard-check me-2"></i> <span>درخواست‌ها</span>
                     </a>
                 </li>
             @endif
 
-            {{-- مدیر ساختمان --}}
+            <!-- مدیر ساختمان -->
             @if ($roles->contains('manager'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('manager.dashboard') ? 'active fw-bold' : '' }}"
-                        href="{{ route('manager.dashboard') }}">
+                       href="{{ route('manager.dashboard') }}">
                         <i class="bi bi-house-door me-2"></i> <span>داشبورد</span>
                     </a>
                 </li>
 
-                {{-- ثبت ساختمان (فقط وقتی تایید نشده) --}}
+                <!-- ثبت ساختمان (فقط وقتی تایید نشده) -->
                 @if (!in_array($buildingRequestStatus, ['pending', 'approved']))
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('manager.buildings.create') ? 'active fw-bold' : '' }}"
-                            href="{{ route('manager.buildings.create') }}">
+                           href="{{ route('manager.buildings.create') }}">
                             <i class="bi bi-building-add me-2"></i> <span>ثبت ساختمان</span>
                         </a>
                     </li>
                 @endif
 
-                {{-- اطلاعات ساختمان --}}
+                <!-- اطلاعات ساختمان -->
                 <li class="nav-item">
                     @if ($building)
                         <a class="nav-link {{ request()->routeIs('manager.building.show') ? 'active fw-bold' : '' }}"
-                            href="{{ route('manager.building.show', $building->id) }}">
+                           href="{{ route('manager.building.show', $building->id) }}">
                             <i class="bi bi-building me-2"></i> <span>اطلاعات ساختمان</span>
                         </a>
                     @else
@@ -84,11 +81,11 @@
                     @endif
                 </li>
 
-                {{-- اطلاعات واحدها --}}
+                <!-- اطلاعات واحدها -->
                 <li class="nav-item">
                     @if ($building)
                         <a class="nav-link {{ request()->routeIs('units.index') ? 'active fw-bold' : '' }}"
-                            href="{{ route('units.index', $building->id) }}">
+                           href="{{ route('units.index', $building->id) }}">
                             <i class="bi bi-door-open me-2"></i> <span>اطلاعات واحدها</span>
                         </a>
                     @else
@@ -98,11 +95,11 @@
                     @endif
                 </li>
 
-                {{-- ساکنین --}}
+                <!-- ساکنین -->
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link {{ request()->routeIs('residents.index') ? 'active fw-bold' : '' }}"
-                            href="{{ route('residents.index', $building->id) }}">
+                           href="{{ route('residents.index', $building->id) }}">
                             <i class="bi bi-people me-2"></i> <span>ساکنین</span>
                         </a>
                     @else
@@ -112,25 +109,25 @@
                     @endif
                 </li>
 
-                {{-- صورتحساب‌ها (سرگروه) --}}
+                <!-- صورتحساب‌ها (سرگروه) -->
                 <li class="nav-item dropdown">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link dropdown-toggle {{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'active fw-bold' : '' }}"
-                            href="#invoiceSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'true' : 'false' }}"
-                            aria-controls="invoiceSubmenu">
+                           href="#invoiceSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'true' : 'false' }}"
+                           aria-controls="invoiceSubmenu">
                             <i class="bi bi-receipt me-2"></i> <span>صورتحساب‌ها</span>
                         </a>
                         <div class="collapse {{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'show' : '' }}" id="invoiceSubmenu">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('manager.invoices.index') ? 'active fw-bold' : '' }}"
-                                        href="{{ route('manager.invoices.index') }}">
+                                       href="{{ route('manager.invoices.index') }}">
                                         <i class="bi bi-journals me-2"></i> <span>صورتحساب‌های واحد</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('bulk_invoices.index') ? 'active fw-bold' : '' }}"
-                                        href="{{ route('bulk_invoices.index') }}">
+                                       href="{{ route('bulk_invoices.index') }}">
                                         <i class="bi bi-file-earmark-ruled me-2"></i> <span>صورتحساب‌های کلی</span>
                                     </a>
                                 </li>
@@ -143,11 +140,11 @@
                     @endif
                 </li>
 
-                {{-- پرداخت ها --}}
+                <!-- پرداخت ها -->
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link {{ request()->routeIs('payments.index') ? 'active fw-bold' : '' }}"
-                            href="{{ route('payments.index', $building->id) }}">
+                           href="{{ route('payments.index', $building->id) }}">
                             <i class="bi bi-credit-card me-2"></i> <span>پرداخت‌ها</span>
                         </a>
                     @else
@@ -157,11 +154,11 @@
                     @endif
                 </li>
 
-                {{-- درخواست ها --}}
+                <!-- درخواست ها -->
                 <li class="nav-item">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link {{ request()->routeIs('requests.index') ? 'active fw-bold' : '' }}"
-                            href="{{ route('requests.index') }}">
+                           href="{{ route('requests.index') }}">
                             <i class="bi bi-tools me-2"></i> <span>درخواست‌ها</span>
                         </a>
                     @else
@@ -171,31 +168,37 @@
                     @endif
                 </li>
 
-                {{-- گزارشات (سرگروه) --}}
+                <!-- گزارشات (سرگروه) -->
                 <li class="nav-item dropdown">
                     @if ($building && $buildingRequestStatus === 'approved')
                         <a class="nav-link dropdown-toggle {{ request()->routeIs('reports.*') ? 'active fw-bold' : '' }}"
-                            href="#reportSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('reports.*') ? 'true' : 'false' }}"
-                            aria-controls="reportSubmenu">
+                           href="#reportSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('reports.*') ? 'true' : 'false' }}"
+                           aria-controls="reportSubmenu">
                             <i class="bi bi-graph-up-arrow me-2"></i> <span>گزارشات</span>
                         </a>
                         <div class="collapse {{ request()->routeIs('reports.*') ? 'show' : '' }}" id="reportSubmenu">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('reports.payments') ? 'active fw-bold' : '' }}"
-                                        href="{{ route('reports.payments') }}">
+                                       href="{{ route('reports.payments') }}">
                                         <i class="bi bi-file-text me-2"></i> <span>گزارش پرداخت‌ها</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('reports.invoices') ? 'active fw-bold' : '' }}"
-                                        href="{{ route('reports.invoices') }}">
+                                       href="{{ route('reports.invoices') }}">
                                         <i class="bi bi-journal-check me-2"></i> <span>گزارش صورتحساب</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('reports.unit_debts') ? 'active fw-bold' : '' }}"
-                                        href="{{ route('reports.unit_debts') }}">
+                                       href="{{ route('reports.unit_debts') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('reports.overduePayments') ? 'active fw-bold' : '' }}"
+                                       href="{{ route('reports.unit_debts') }}">
                                         <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی</span>
                                     </a>
                                 </li>
@@ -208,7 +211,7 @@
                     @endif
                 </li>
 
-                {{-- پیام وضعیت درخواست --}}
+                <!-- پیام وضعیت درخواست -->
                 @if ($buildingRequestStatus === 'pending')
                     <li class="nav-item px-3 small mt-2 text-warning">
                         <i class="bi bi-clock-history me-2"></i> <span>در انتظار تایید ادمین...</span>
@@ -220,39 +223,41 @@
                 @endif
             @endif
 
-            {{-- ساکن --}}
+            <!-- ساکن -->
             @if ($roles->contains('resident'))
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('resident.dashboard') ? 'active fw-bold' : '' }}"
-                        href="{{ route('resident.dashboard') }}">
+                       href="{{ route('resident.dashboard') }}">
                         <i class="bi bi-house-door me-2"></i> <span>داشبورد ساکن</span>
                     </a>
                 </li>
 
-                {{-- پروفایل ساکن --}}
+                <!-- پروفایل ساکن -->
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('resident.profile.show') ? 'active fw-bold' : '' }}"
-                        href="{{ route('resident.profile.show') }}">
+                       href="{{ route('resident.profile.show') }}">
                         <i class="bi bi-person me-2"></i> <span>پروفایل</span>
                     </a>
                 </li>
 
-                {{-- صورتحساب‌ها (سرگروه) --}}
+                <!-- صورتحساب‌ها (سرگروه) -->
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->routeIs('resident.invoices.*') ? 'active fw-bold' : '' }}"
-                        href="#residentInvoiceSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('resident.invoices.*') ? 'true' : 'false' }}"
-                        aria-controls="residentInvoiceSubmenu">
+                       href="#residentInvoiceSubmenu" data-bs-toggle="collapse" role="button" aria-expanded="{{ request()->routeIs('resident.invoices.*') ? 'true' : 'false' }}"
+                       aria-controls="residentInvoiceSubmenu">
                         <i class="bi bi-receipt me-2"></i> <span>صورتحساب‌ها</span>
                     </a>
                     <div class="collapse {{ request()->routeIs('resident.invoices.*') ? 'show' : '' }}" id="residentInvoiceSubmenu">
                         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                            <li><a class="nav-link sub-nav-link {{ request()->routeIs('resident.invoices.index') ? 'active fw-bold' : '' }}"
-                                    href="{{ route('resident.invoices.index') }}">
+                            <li>
+                                <a class="nav-link sub-nav-link {{ request()->routeIs('resident.invoices.index') ? 'active fw-bold' : '' }}"
+                                   href="{{ route('resident.invoices.index') }}">
                                     <i class="bi bi-journals me-2"></i> <span>لیست صورتحساب‌ها</span>
                                 </a>
                             </li>
-                            <li><a class="nav-link sub-nav-link {{ request()->routeIs('resident.invoices.unpaid') ? 'active fw-bold' : '' }}"
-                                    href="{{ route('resident.invoices.unpaid') }}">
+                            <li>
+                                <a class="nav-link sub-nav-link {{ request()->routeIs('resident.invoices.unpaid') ? 'active fw-bold' : '' }}"
+                                   href="{{ route('resident.invoices.unpaid') }}">
                                     <i class="bi bi-credit-card-fill me-2"></i> <span>پرداخت گروهی</span>
                                 </a>
                             </li>
@@ -260,25 +265,24 @@
                     </div>
                 </li>
 
-                {{-- پرداخت‌ها --}}
+                <!-- پرداخت‌ها -->
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('resident.payments.index') ? 'active fw-bold' : '' }}"
-                        href="{{ route('resident.payments.index') }}">
+                       href="{{ route('resident.payments.index') }}">
                         <i class="bi bi-credit-card me-2"></i> <span>پرداخت‌ها</span>
                     </a>
                 </li>
 
-                {{-- درخواست‌ها --}}
+                <!-- درخواست‌ها -->
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('resident.requests.index') ? 'active fw-bold' : '' }}"
-                        href="{{ route('resident.requests.index') }}">
+                       href="{{ route('resident.requests.index') }}">
                         <i class="bi bi-tools me-2"></i> <span>درخواست‌ها</span>
                     </a>
                 </li>
             @endif
 
-            {{-- خروج --}}
-            {{-- mt-auto برای چسباندن به پایین --}}
+            <!-- خروج -->
             <li class="nav-item mt-auto py-3">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -290,6 +294,7 @@
         </ul>
     </div>
 </div>
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -303,24 +308,26 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Simplified scroll area management
+    // تنظیم نوار اسکرول فقط برای سایدبار
     function setupScrollArea() {
-        customScroll.style.minHeight = '0';
+        customScroll.style.maxHeight = 'calc(100vh - 200px)'; // تنظیم ارتفاع بر اساس هدر و یوزر اینفو
         customScroll.style.overflowY = 'auto';
+        customScroll.style.overflowX = 'hidden';
+        document.body.style.overflow = 'auto'; // اطمینان از عدم اسکرول کل صفحه
     }
 
-    // Load sidebar state
+    // بارگذاری حالت سایدبار
     const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
     if (isCollapsed) {
         sidebar.classList.add('collapsed');
         pageContentWrapper.classList.add('collapsed');
     }
 
-    // Sidebar toggle event
+    // رویداد کلیک برای باز و بسته کردن سایدبار
     sidebarToggle.addEventListener('click', function() {
         const currentCollapsedState = sidebar.classList.contains('collapsed');
 
-        // Close any open dropdowns
+        // بستن منوهای باز
         document.querySelectorAll('.sidebar .nav-item.dropdown .collapse.show').forEach(openCollapse => {
             const bsCollapse = bootstrap.Collapse.getInstance(openCollapse);
             if (bsCollapse) bsCollapse.hide();
@@ -331,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('sidebarCollapsed', !currentCollapsedState);
     });
 
-    // Handle dropdowns
+    // مدیریت منوهای کشویی
     document.querySelectorAll('.sidebar .nav-item.dropdown').forEach(function(dropdownItem) {
         const dropdownToggle = dropdownItem.querySelector('.dropdown-toggle');
         const collapseElement = dropdownItem.querySelector('.collapse');
@@ -369,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close dropdowns on outside click
+    // بستن منوهای کشویی با کلیک خارج از سایدبار
     document.addEventListener('click', function(e) {
         if (sidebar.classList.contains('collapsed')) {
             let clickedInsideDropdown = false;
@@ -377,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (dropdownItem.contains(e.target)) clickedInsideDropdown = true;
             });
 
-            if (!clickedInsideDropdown) {
+            if (!clickedInsideDropdown && !sidebar.contains(e.target)) {
                 document.querySelectorAll('.sidebar .nav-item.dropdown .collapse.show').forEach(openCollapse => {
                     const bsCollapse = bootstrap.Collapse.getInstance(openCollapse);
                     if (bsCollapse) bsCollapse.hide();
@@ -386,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initialize scroll area
+    // مقداردهی اولیه نوار اسکرول
     setupScrollArea();
     window.addEventListener('resize', setupScrollArea);
 });

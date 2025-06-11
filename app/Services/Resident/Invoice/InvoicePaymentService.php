@@ -12,24 +12,23 @@ use Illuminate\Support\Facades\Log;
 
 class InvoicePaymentService
 {
-public function processSinglePayment(User $user, Invoice $invoice): void
-{
+    public function processSinglePayment(User $user, Invoice $invoice): void
+    {
+        if ($invoice->status === 'paid') return;
 
-    if ($invoice->status === 'paid') return;
+        DB::transaction(function () use ($user, $invoice) {
+            $invoice->update(['status' => 'paid']);
 
-    DB::transaction(function () use ($user, $invoice) {
-        $invoice->update(['status' => 'paid']);
-
-        Payment::create([
-            'user_id'    => $user->id,
-            'invoice_id' => $invoice->id,
-            'amount'     => $invoice->amount,
-            'paid_at'    => Carbon::now(),
-            'method'     => 'manual',
-            'status'     => 'success',
-        ]);
-    });
-}
+            Payment::create([
+                'user_id'    => $user->id,
+                'invoice_id' => $invoice->id,
+                'amount'     => $invoice->amount,
+                'paid_at'    => Carbon::now(),
+                'method'     => 'fake_gateway', // تغییر به fake_gateway برای شناسایی
+                'status'     => 'success',
+            ]);
+        });
+    }
 
     public function processMultiplePayments(User $user, array $invoiceIds): void
     {
@@ -46,11 +45,10 @@ public function processSinglePayment(User $user, Invoice $invoice): void
                     'invoice_id' => $invoice->id,
                     'amount'     => $invoice->amount,
                     'paid_at'    => Carbon::now(),
-                    'method'     => 'manual', // یا 'fake_gateway'
+                    'method'     => 'fake_gateway',
                     'status'     => 'success',
                 ]);
             }
         });
     }
 }
-

@@ -3,7 +3,7 @@
 @section('content')
     {{-- هدر بالا: عنوان و دکمه درخواست جدید --}}
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-tools"></i> درخواست‌های تعمیر ثبت‌شده من</h6>
+        <h6 class="mb-0 fw-bold text-white"><i class="bi bi-tools"></i> درخواست‌های تعمیر ثبت‌شده من</h6>
 
         <a href="{{ route('resident.requests.create') }}" class="btn add-btn">
             <i class="bi bi-plus-circle me-1"></i> درخواست جدید

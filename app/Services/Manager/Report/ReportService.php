@@ -148,4 +148,61 @@ class ReportService
             'building' => $user->buildingUser?->building,
         ];
     }
+
+    public function getOverduePaymentsReport(array $filters = [])
+    {
+        $user = auth()->user();
+        $buildingId = $user->buildingUser?->building_id;
+
+        if (!$buildingId) {
+            return [
+                'overdueInvoices' => collect(),
+                'totalOverdueAmount' => 0,
+                'filters' => $filters,
+                'building' => null,
+            ];
+        }
+
+        $query = Invoice::query()
+            ->with(['unit'])
+            ->whereHas('unit', function ($q) use ($buildingId, $filters) {
+                $q->where('building_id', $buildingId);
+
+                if (!empty($filters['unit_number'])) {
+                    $q->where('unit_number', 'like', '%' . $filters['unit_number'] . '%');
+                }
+            })
+            ->where('status', 'unpaid')
+            ->whereDate('due_date', '<', now());
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('due_date', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('due_date', '<=', $filters['date_to']);
+        }
+
+$overdueInvoices = $query->get()->map(function ($invoice) {
+    $dueDate = \Carbon\Carbon::parse($invoice->due_date);
+    $daysOverdue = now()->diffInDays($dueDate); // این عدد صحیح برمی‌گردونه
+    return [
+        'invoice' => $invoice,
+        'days_overdue' => $daysOverdue,
+        'unit_number' => $invoice->unit->unit_number ?? 'نامشخص',
+        'amount' => $invoice->amount,
+    ];
+});
+
+
+
+        $totalOverdueAmount = $overdueInvoices->sum('amount');
+
+        return [
+            'overdueInvoices' => $overdueInvoices,
+            'totalOverdueAmount' => $totalOverdueAmount,
+            'filters' => $filters,
+            'building' => $user->buildingUser?->building,
+        ];
+    }
 }

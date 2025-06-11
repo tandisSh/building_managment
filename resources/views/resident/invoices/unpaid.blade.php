@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-wallet2"></i> پرداخت گروهی صورتحساب‌ها</h6>
+        <h6 class="mb-0 fw-bold text-white"><i class="bi bi-wallet2"></i> پرداخت گروهی صورتحساب‌ها</h6>
         <a href="{{ route('resident.invoices.index') }}" class="btn btn-outline-secondary btn-sm">
             بازگشت
         </a>
@@ -10,7 +10,7 @@
 
     <div class="card admin-table-card">
         <div class="card-body">
-            <form method="POST" action="{{ route('resident.invoices.pay.multiple') }}" id="bulk-payment-form">
+            <form method="POST" action="{{ route('resident.payment.fake.form.multiple') }}" id="bulk-payment-form">
                 @csrf
 
                 <div class="alert alert-info d-flex justify-content-between align-items-center">
@@ -20,7 +20,7 @@
                         مجموع:
                         <span id="selected-total" class="fw-bold text-success">0</span> تومان
                     </div>
-                    <button type="submit" class="btn btn-success btn-sm">
+                    <button type="submit" class="btn btn-success btn-sm" id="submit-payment" disabled>
                         پرداخت انتخابی
                     </button>
                 </div>
@@ -67,18 +67,19 @@
     </div>
 @endsection
 
-
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const totalSpan = document.getElementById('selected-total');
             const countSpan = document.getElementById('selected-count');
+            const submitButton = document.getElementById('submit-payment');
 
             function updateSummary() {
                 let total = 0;
                 let count = 0;
+                const checkboxes = document.querySelectorAll('.invoice-checkbox');
 
-                document.querySelectorAll('.invoice-checkbox').forEach(cb => {
+                checkboxes.forEach(cb => {
                     if (cb.checked) {
                         count++;
                         const amount = Number(cb.dataset.amount || '0');
@@ -88,9 +89,10 @@
 
                 countSpan.textContent = count;
                 totalSpan.textContent = total.toLocaleString('fa-IR');
+                submitButton.disabled = count === 0; // غیرفعال کردن دکمه اگه هیچ‌کدوم انتخاب نشده
             }
 
-            // Listen to all changes on checkboxes
+            // گوش دادن به تغییرات چک‌باکس‌ها
             document.addEventListener('change', function(e) {
                 if (e.target.classList.contains('invoice-checkbox')) {
                     updateSummary();

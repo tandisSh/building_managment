@@ -87,11 +87,11 @@
                 <h5>درخواست تعمیرات</h5>
                 <p>ثبت و پیگیری درخواست‌های تعمیر و نگهداری</p>
             </div>
-            <div class="col-md-3 col-sm-6">
+            {{-- <div class="col-md-3 col-sm-6">
                 <i class="bi bi-chat-dots icon-feature"></i>
                 <h5>ارتباط مستقیم</h5>
                 <p>ارتباط بین مدیر و ساکنین به صورت پیام‌رسانی</p>
-            </div>
+            </div> --}}
         </div>
     </section>
 

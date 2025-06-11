@@ -52,4 +52,12 @@ class ReportController extends Controller
 
         return view('manager.reports.print.payment', $data);
     }
+
+    public function overduePayments(Request $request)
+    {
+        $filters = $request->only(['date_from', 'date_to', 'unit_number']);
+        $data = $this->reportService->getOverduePaymentsReport($filters);
+
+        return view('manager.reports.overdue_payments', $data);
+    }
 }

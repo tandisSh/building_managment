@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mt-3">
         <div class="admin-header d-flex justify-content-between align-items-center mb-4">
-            <h6 class="mb-0 fw-bold text-dark">
+            <h6 class="mb-0 fw-bold text-white">
                 <i class="bi bi-receipt me-2"></i>جزئیات پرداخت {{ $payment->invoice->id }}
             </h6>
             <a href="{{ route('resident.payments.receipt', $payment->id) }}" target="_blank" class="btn btn-outline-secondary">

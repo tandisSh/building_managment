@@ -5,7 +5,7 @@
 
     {{-- هدر صفحه --}}
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded" style="background-color: #e5ddfa;">
-        <h6 class="mb-0 fw-bold text-dark py-2 px-3">
+        <h6 class="mb-0 fw-bold text-white py-2 px-3">
             <i class="bi bi-person-vcard me-2"></i>پروفایل من
         </h6>
         <a href="{{ route('resident.profile.edit') }}" class="btn btn-sm add-btn px-3">

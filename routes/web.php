@@ -97,6 +97,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::get('/unit-debts', [ReportController::class, 'unitDebts'])->name('unit_debts');
         Route::get('/reports/invoices/print', [ReportController::class, 'print'])->name('print');
         Route::get('/reports/invoices/print', [ReportController::class, 'Paymentprint'])->name('payments.print');
+        Route::get('/overdue-payments', [ReportController::class, 'overduePayments'])->name('overduePayments');
 
     });
 
@@ -133,19 +134,24 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function
 
 Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident.')->group(function () {
     Route::get('/dashboard', [ResidentDashboardController::class, 'index'])->name('dashboard');
-    //profile
+    // profile
     Route::get('/profile', [ResidentProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ResidentProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile', [ResidentProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ResidentProfileController::class, 'updatePassword'])->name('profile.password');
-    //payment
+    // payment
+    Route::post('/pay/fake/{invoice}', [InvoicePaymentController::class, 'showFakePaymentForm'])->name('payment.fake.form.single');
+    Route::post('/pay/fake/process', [InvoicePaymentController::class, 'processFakePayment'])->name('payment.fake.process');
+
+    Route::post('/pay/fake/multiple', [InvoicePaymentController::class, 'showFakePaymentFormMultiple'])->name('payment.fake.form.multiple'); // تغییر به POST
+    Route::post('/pay/multiple', [InvoicePaymentController::class, 'payMultiple'])->name('invoices.pay.multiple');
+
     Route::post('/pay/{invoice}', [InvoicePaymentController::class, 'paySingle'])->name('invoices.pay');
-    Route::post('/pay-multiple', [InvoicePaymentController::class, 'payMultiple'])->name('invoices.pay.multiple');
 
     Route::get('/payments', [ResidentPaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [ResidentPaymentController::class, 'show'])->name('payments.show');
     Route::get('/payments/{payment}/receipt', [ResidentPaymentController::class, 'receipt'])->name('payments.receipt');
-    //requests
+    // requests
     Route::get('/requests', [RepairRequestController::class, 'index'])->name('requests.index');
     Route::get('/requests/create', [RepairRequestController::class, 'create'])->name('requests.create');
     Route::post('/requests', [RepairRequestController::class, 'store'])->name('requests.store');
@@ -153,7 +159,7 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::put('/requests/{request}', [RepairRequestController::class, 'update'])->name('requests.update');
     Route::get('/requests/{request}', [RepairRequestController::class, 'show'])->name('requests.show');
 
-    //invoices
+    // invoices
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
     Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');

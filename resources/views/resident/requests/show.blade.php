@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-eye"></i> جزئیات درخواست تعمیر</h6>
+        <h6 class="mb-0 fw-bold text-white"><i class="bi bi-eye"></i> جزئیات درخواست تعمیر</h6>
         <a href="{{ route('resident.requests.index') }}" class="btn btn-sm btn-secondary">بازگشت</a>
     </div>
 

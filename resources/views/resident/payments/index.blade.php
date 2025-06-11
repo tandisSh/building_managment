@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-dark"><i class="bi bi-receipt"></i> لیست پرداخت ها</h6>
+        <h6 class="mb-0 fw-bold text-white"><i class="bi bi-receipt"></i> لیست پرداخت ها</h6>
 
         <form method="GET" action="{{ route('resident.payments.index') }}" class="d-flex gap-2 align-items-center">
             <input type="text" name="search" value="{{ $search ?? '' }}" class="form-control form-control-sm"
