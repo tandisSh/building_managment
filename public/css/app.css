@@ -9,6 +9,26 @@ body {
     text-align: right;
 }
 
+.bg-purple-300 {
+    background-color: #e267bc54  !important;
+}
+
+.bg-purple-500 {
+    background-color: #79d8bfa3 !important;
+}
+
+.bg-purple-700 {
+    background-color: #cb7bf08d  !important;
+}
+
+.bg-purple-900 {
+    background-color: #7ac7eb94  !important;
+}
+
+.text-white {
+    color: #ffffff !important;
+}
+
 #wrapper {
     display: flex;
     min-height: 100vh;

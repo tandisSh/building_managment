@@ -4,8 +4,10 @@ namespace App\Services\Manager\Report;
 
 use App\Models\Payment;
 use App\Models\Invoice;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class ReportService
 {
@@ -240,75 +242,142 @@ class ReportService
     }
 
     public function getResidentAccountStatusReport(Request $request)
-{
-    $user = auth()->user();
-    $buildingId = $user->buildingUser?->building_id;
+    {
+        $user = auth()->user();
+        $buildingId = $user->buildingUser?->building_id;
 
-    if (!$buildingId) {
+        if (!$buildingId) {
+            return [
+                'residents' => collect(),
+                'building' => null,
+            ];
+        }
+
+        $search = $request->input('search');
+        $dateFrom = $request->input('date_from');
+        $dateTo = $request->input('date_to');
+
+        $query = User::whereHas('unitUsers.unit', function ($q) use ($buildingId) {
+            $q->where('building_id', $buildingId);
+        });
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $residents = $query->with(['unitUsers.unit', 'payments'])
+            ->get()
+            ->map(function ($resident) use ($dateFrom, $dateTo) {
+
+                $unitUsers = $resident->unitUsers ?? collect();
+
+                $unitIds = $unitUsers->pluck('unit_id')->toArray();
+
+                // فیلتر صورتحساب‌ها (بدهی) بر اساس تاریخ ایجاد، اگر تاریخ داده شده بود
+                $invoiceQuery = Invoice::whereIn('unit_id', $unitIds)
+                    ->where('status', 'unpaid');
+
+                if ($dateFrom) {
+                    $invoiceQuery->whereDate('created_at', '>=', $dateFrom);
+                }
+                if ($dateTo) {
+                    $invoiceQuery->whereDate('created_at', '<=', $dateTo);
+                }
+
+                $totalDebt = $invoiceQuery->sum('amount');
+
+                // فیلتر پرداخت‌ها بر اساس تاریخ پرداخت (paid_at)
+                $paymentQuery = $resident->payments()
+                    ->where('status', 'success');
+
+                if ($dateFrom) {
+                    $paymentQuery->whereDate('paid_at', '>=', $dateFrom);
+                }
+                if ($dateTo) {
+                    $paymentQuery->whereDate('paid_at', '<=', $dateTo);
+                }
+
+                $totalPaid = $paymentQuery->sum('amount');
+
+                return [
+                    'resident_name' => $resident->name,
+                    'units' => $unitUsers->pluck('unit.unit_number')->toArray(),
+                    'total_debt' => $totalDebt,
+                    'total_paid' => $totalPaid,
+                ];
+            });
+
         return [
-            'residents' => collect(),
-            'building' => null,
+            'residents' => $residents,
+            'building' => $user->buildingUser?->building,
         ];
     }
 
-    $search = $request->input('search');
-    $dateFrom = $request->input('date_from');
-    $dateTo = $request->input('date_to');
+    public function getDashboardStats($buildingId)
+    {
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
 
-    $query = User::whereHas('unitUsers.unit', function ($q) use ($buildingId) {
-        $q->where('building_id', $buildingId);
-    });
-
-    if ($search) {
-        $query->where('name', 'like', "%{$search}%");
+        return [
+            'unitCount' => Unit::where('building_id', $buildingId)->count(),
+            'userCount' => User::whereHas('units', fn($q) => $q->where('building_id', $buildingId))->count(),
+            'invoiceCount' => Invoice::whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
+                ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+                ->count(),
+            'totalPaid' => Payment::whereHas('invoice.unit', fn($q) => $q->where('building_id', $buildingId))
+                ->where('status', 'success')
+                ->whereBetween('paid_at', [$startOfMonth, $endOfMonth])
+                ->sum('amount'),
+        ];
     }
 
-    $residents = $query->with(['unitUsers.unit', 'payments'])
-        ->get()
-        ->map(function ($resident) use ($dateFrom, $dateTo) {
+    public function getMonthlyInvoiceAndPaymentChart($buildingId)
+    {
+        $months = [];
+        $invoices = [];
+        $payments = [];
 
-            $unitUsers = $resident->unitUsers ?? collect();
+        for ($i = 1; $i <= 12; $i++) {
+            $start = Carbon::create(null, $i, 1)->startOfMonth();
+            $end = $start->copy()->endOfMonth();
 
-            $unitIds = $unitUsers->pluck('unit_id')->toArray();
+            $months[] = jdate($start)->format('F');
 
-            // فیلتر صورتحساب‌ها (بدهی) بر اساس تاریخ ایجاد، اگر تاریخ داده شده بود
-            $invoiceQuery = Invoice::whereIn('unit_id', $unitIds)
-                ->where('status', 'unpaid');
+            $invoiceSum = Invoice::whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
+                ->whereBetween('created_at', [$start, $end])
+                ->sum('amount');
 
-            if ($dateFrom) {
-                $invoiceQuery->whereDate('created_at', '>=', $dateFrom);
-            }
-            if ($dateTo) {
-                $invoiceQuery->whereDate('created_at', '<=', $dateTo);
-            }
+            $paymentSum = Payment::whereHas('invoice.unit', fn($q) => $q->where('building_id', $buildingId))
+                ->where('status', 'success')
+                ->whereBetween('paid_at', [$start, $end])
+                ->sum('amount');
 
-            $totalDebt = $invoiceQuery->sum('amount');
+            $invoices[] = $invoiceSum;
+            $payments[] = $paymentSum;
+        }
 
-            // فیلتر پرداخت‌ها بر اساس تاریخ پرداخت (paid_at)
-            $paymentQuery = $resident->payments()
-                ->where('status', 'success');
+        return [
+            'labels' => $months,
+            'invoices' => $invoices,
+            'payments' => $payments,
+        ];
+    }
 
-            if ($dateFrom) {
-                $paymentQuery->whereDate('paid_at', '>=', $dateFrom);
-            }
-            if ($dateTo) {
-                $paymentQuery->whereDate('paid_at', '<=', $dateTo);
-            }
+    public function getExpenseTypeChart($buildingId)
+    {
+        $labels = ['شارژ', 'آب', 'برق', 'گاز'];
+        $keywords = ['شارژ', 'آب', 'برق', 'گاز'];
+        $data = [];
 
-            $totalPaid = $paymentQuery->sum('amount');
+        foreach ($keywords as $keyword) {
+            $sum = Invoice::whereHas('unit', fn($q) => $q->where('building_id', $buildingId))
+                ->where('type', 'current')
+                ->where('title', 'like', "%{$keyword}%")
+                ->sum('amount');
 
-            return [
-                'resident_name' => $resident->name,
-                'units' => $unitUsers->pluck('unit.unit_number')->toArray(),
-                'total_debt' => $totalDebt,
-                'total_paid' => $totalPaid,
-            ];
-        });
+            $data[] = $sum;
+        }
 
-    return [
-        'residents' => $residents,
-        'building' => $user->buildingUser?->building,
-    ];
-}
-
+        return ['labels' => $labels, 'values' => $data];
+    }
 }

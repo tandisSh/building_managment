@@ -1,115 +1,127 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap" >
-        <h6 class="mb-0 fw-bold text-white"><i class="bi bi-speedometer2 me-1"></i> وضعیت درخواست‌های ثبت ساختمان</h6>
-    </div>
+    <div class="container">
+        <div class="row mb-4">
+            @php
+                $cards = [
+                    [
+                        'bg' => 'bg-purple-300',
+                        'icon' => 'bi-building',
+                        'label' => 'تعداد واحدها',
+                        'value' => $stats['unitCount'],
+                    ],
+                    [
+                        'bg' => 'bg-purple-500',
+                        'icon' => 'bi-people',
+                        'label' => 'تعداد کاربران',
+                        'value' => $stats['userCount'],
+                    ],
+                    [
+                        'bg' => 'bg-purple-700',
+                        'icon' => 'bi-receipt',
+                        'label' => 'صورتحساب‌های این ماه',
+                        'value' => $stats['invoiceCount'],
+                    ],
+                    [
+                        'bg' => 'bg-purple-900',
+                        'icon' => 'bi-currency-exchange',
+                        'label' => 'پرداختی‌های این ماه',
+                        'value' => number_format($stats['totalPaid']) . ' تومان',
+                    ],
+                ];
+            @endphp
 
-    <div class="card admin-table-card">
-        <div class="card-body p-3">
-            @if($requests->isEmpty())
-                <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    شما هنوز هیچ درخواستی برای ثبت ساختمان ارسال نکرده‌اید.
+            @foreach ($cards as $card)
+                <div class="col-md-3 mb-3">
+                    <div class="card text-dark {{ $card['bg'] }} shadow rounded">
+                        <div class="card-body text-center">
+                            <i class="bi {{ $card['icon'] }} fs-2"></i>
+                            <div class="mt-2">{{ $card['label'] }}</div>
+                            <h4 class="fw-bold">{{ $card['value'] }}</h4>
+                        </div>
+                    </div>
                 </div>
-            @else
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle small table-units">
-                        <thead>
-                            <tr>
-                                <th class="text-center">#</th>
-                                <th>نام ساختمان</th>
-                                <th class="text-center">تاریخ درخواست</th>
-                                <th class="text-center">وضعیت</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($requests as $index => $request)
-                                <tr>
-                                    <td class="text-center">{{ $index + 1 }}</td>
-                                    <td>{{ $request->building_name ?? '---' }}</td>
-                                    <td class="text-center">{{ \Morilog\Jalali\Jalalian::fromDateTime($request->created_at)->format('Y/m/d') }}</td>
-                                    <td class="text-center">
-                                        @switch($request->status)
-                                            @case('approved')
-                                                <span class="badge bg-success py-2 px-3 rounded-pill">
-                                                    <i class="bi bi-check-circle me-1"></i> تایید شده
-                                                </span>
-                                                @break
-                                            @case('pending')
-                                                <span class="badge bg-warning text-dark py-2 px-3 rounded-pill">
-                                                    <i class="bi bi-hourglass-split me-1"></i> در انتظار بررسی
-                                                </span>
-                                                @break
-                                            @case('rejected')
-                                                <span class="badge bg-danger py-2 px-3 rounded-pill">
-                                                    <i class="bi bi-x-circle me-1"></i> رد شده
-                                                </span>
-                                                @break
-                                            @default
-                                                <span class="badge bg-secondary py-2 px-3 rounded-pill">
-                                                    <i class="bi bi-question-circle me-1"></i> نامشخص
-                                                </span>
-                                        @endswitch
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+            @endforeach
+        </div>
+
+        {{-- نمودارها --}}
+        <div class="row">
+            <div class="col-md-8 mb-4">
+                <div class="card shadow rounded">
+                    <div class="card-body">
+                        <h5 class="mb-3">مقایسه صورتحساب‌های صادر شده و پرداخت‌شده (۱۲ ماه گذشته)</h5>
+                        <canvas id="invoicePaymentChart" height="150"></canvas>
+                    </div>
                 </div>
-            @endif
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow rounded">
+                    <div class="card-body">
+                        <h5 class="mb-3">سهم آیتم‌های هزینه‌ای</h5>
+                        <canvas id="expenseChart" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    @if(!empty($chartData))
-    <div class="card mb-4 mt-4">
-        <div class="card-header bg-primary text-white">
-            <i class="bi bi-bar-chart-line"></i> نمودار پرداخت‌ها در ماه‌های اخیر
-        </div>
-        <div class="card-body">
-            <canvas id="financialChart" height="120"></canvas>
-        </div>
-    </div>
+@endsection
 
-    @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            const chartData = @json($chartData);
-            const months = chartData.map(item => item.month);
-            const totalAmounts = chartData.map(item => item.total_amount);
-            const paidAmounts = chartData.map(item => item.paid_amount);
-
-            const ctx = document.getElementById('financialChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: months,
-                    datasets: [
-                        {
-                            label: 'مجموع صورتحساب‌ها',
-                            data: totalAmounts,
-                            backgroundColor: 'rgba(255, 99, 132, 0.6)'
-                        },
-                        {
-                            label: 'مبلغ پرداخت‌شده',
-                            data: paidAmounts,
-                            backgroundColor: 'rgba(75, 192, 192, 0.6)'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                        },
-                        title: {
-                            display: false
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // نمودار صورتحساب vs پرداخت
+        const ctx1 = document.getElementById('invoicePaymentChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: {!! json_encode($monthlyChart['labels']) !!},
+                datasets: [{
+                        label: 'صورتحساب‌ها',
+                        data: {!! json_encode($monthlyChart['invoices']) !!},
+                        backgroundColor: 'rgba(255, 165, 0, 0.7)',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'پرداخت‌ها',
+                        data: {!! json_encode($monthlyChart['payments']) !!},
+                        backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: value => value.toLocaleString()
                         }
                     }
                 }
-            });
-        </script>
-    @endpush
-@endif
+            }
+        });
 
-@endsection
+        // نمودار دایره‌ای هزینه‌ها
+        const ctx2 = document.getElementById('expenseChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($expenseChart['labels']) !!},
+                datasets: [{
+                    data: {!! json_encode($expenseChart['values']) !!},
+                    backgroundColor: ['#f39c12', '#3498db', '#9b59b6', '#2ecc71']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    </script>
+@endpush
