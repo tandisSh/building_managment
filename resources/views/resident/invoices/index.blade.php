@@ -64,7 +64,7 @@
                                 </td>
                                 <td>
                                     @if ($invoice->status !== 'paid')
-                                        <form method="POST" action="{{ route('resident.payment.fake.form.single', $invoice) }}"
+                                        <form method="GET" action="{{ route('resident.payment.fake.form.single', $invoice) }}"
                                             class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-warning" title="پرداخت">

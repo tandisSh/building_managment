@@ -41,7 +41,6 @@ class InvoicePaymentController extends Controller
 
     public function showFakePaymentFormMultiple(Request $request)
     {
-        dd($request->all());
         $invoiceIds = $request->input('invoice_ids', []);
         if (!$invoiceIds || empty($invoiceIds)) {
             return redirect()->route('resident.invoices.unpaid')->with('error', 'هیچ صورتحساب انتخاب نشده است.');
@@ -53,7 +52,7 @@ class InvoicePaymentController extends Controller
     {
         $request->validate([
             'card_number' => 'required|digits:16',
-            'expiry_date' => 'required|regex:/^(0[1-9]|1[0-2])\/\d{2}$/',
+            'expiry_date' => ['required', 'regex:/^(0[1-9]|1[0-2])\/\d{2}$/'],
             'cvv' => 'required|digits:3',
         ]);
 

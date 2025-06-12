@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Manager\Payment\PaymentController;
+use App\Http\Controllers\Resident\InvoicePaymentController as ResidentInvoicePaymentController;
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\Unit\UnitController;
@@ -14,7 +16,6 @@ use App\Http\Controllers\Manager\Report\ReportController;
 use App\Http\Controllers\Manager\Request\RequestController;
 use App\Http\Controllers\Resident\ResidentController as ResidentDashboardController;
 use App\Http\Controllers\Manager\Resident\ResidentController as ManagerResidentController;
-use App\Http\Controllers\Resident\InvoicePaymentController;
 use App\Http\Controllers\Resident\RepairRequestController;
 use App\Http\Controllers\Resident\ResidentProfileController;
 use App\Http\Controllers\Resident\ResidentInvoiceController;
@@ -95,12 +96,11 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::get('/payments', [ReportController::class, 'index'])->name('payments');
         Route::get('/invoices', [ReportController::class, 'invoices'])->name('invoices');
         Route::get('/unit-debts', [ReportController::class, 'unitDebts'])->name('unit_debts');
-        Route::get('/reports/invoices/print', [ReportController::class, 'print'])->name('print');
-        Route::get('/reports/invoices/print', [ReportController::class, 'Paymentprint'])->name('payments.print');
+        Route::get('/reports/invoices/print', [ReportController::class, 'print'])->name('invoices.print');
+        Route::get('/reports/payments/print', [ReportController::class, 'Paymentprint'])->name('payments.print');
         Route::get('/overdue-payments', [ReportController::class, 'overduePayments'])->name('overduePayments');
         Route::get('/financialOverview', [ReportController::class, 'financialOverview'])->name('financialOverview');
         Route::get('/ResidentAccountStatus', [ReportController::class, 'ResidentAccountStatus'])->name('ResidentAccountStatus');
-
     });
 
 
@@ -142,13 +142,15 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::post('/profile', [ResidentProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile/password', [ResidentProfileController::class, 'updatePassword'])->name('profile.password');
     // payment
-    Route::post('/pay/fake/{invoice}', [InvoicePaymentController::class, 'showFakePaymentForm'])->name('payment.fake.form.single');
-    Route::post('/pay/fake/process', [InvoicePaymentController::class, 'processFakePayment'])->name('payment.fake.process');
+    Route::get('/pay/fake/{invoice}', [ResidentInvoicePaymentController::class, 'showFakePaymentForm'])->name('payment.fake.form.single');
 
-    Route::post('/pay/fake/multiple', [InvoicePaymentController::class, 'showFakePaymentFormMultiple'])->name('payment.fake.form.multiple'); // تغییر به POST
-    Route::post('/pay/multiple', [InvoicePaymentController::class, 'payMultiple'])->name('invoices.pay.multiple');
+    Route::post('pay/fake/process', [ResidentInvoicePaymentController::class, 'processFakePayment'])->name('payment.fake.process');
 
-    Route::post('/pay/{invoice}', [InvoicePaymentController::class, 'paySingle'])->name('invoices.pay');
+    Route::post('/pay/fake/multiple', [ResidentInvoicePaymentController::class, 'showFakePaymentFormMultiple'])->name('payment.fake.form.multiple'); // تغییر به POST
+    Route::post('/pay/multiple', [ResidentInvoicePaymentController::class, 'processMultiplePayment'])->name('payment.process.multiple');
+
+
+    Route::post('/pay/{invoice}', [ResidentInvoicePaymentController::class, 'paySingle'])->name('invoices.pay');
 
     Route::get('/payments', [ResidentPaymentController::class, 'index'])->name('payments.index');
     Route::get('/payments/{id}', [ResidentPaymentController::class, 'show'])->name('payments.show');

@@ -24,7 +24,6 @@ class InvoicePaymentService
                 'invoice_id' => $invoice->id,
                 'amount'     => $invoice->amount,
                 'paid_at'    => Carbon::now(),
-                'method'     => 'fake_gateway', // تغییر به fake_gateway برای شناسایی
                 'status'     => 'success',
             ]);
         });
@@ -45,7 +44,6 @@ class InvoicePaymentService
                     'invoice_id' => $invoice->id,
                     'amount'     => $invoice->amount,
                     'paid_at'    => Carbon::now(),
-                    'method'     => 'fake_gateway',
                     'status'     => 'success',
                 ]);
             }
