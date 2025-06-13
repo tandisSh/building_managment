@@ -25,15 +25,19 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        View::composer('*', function ($view) {
-            if (auth()->check()) {
-                $user = auth()->user();
-                $building = optional($user->buildingUser)->building;
-                $buildingRequestStatus = optional($user->buildingRequest)->status;
+     View::composer('*', function ($view) {
+    if (auth()->check()) {
+        $data = $view->getData();
+        if (!array_key_exists('building', $data)) {
+            $user = auth()->user();
+            $building = optional($user->buildingUser)->building;
+            $buildingRequestStatus = optional($user->buildingRequest)->status;
 
-                $view->with(compact('building', 'buildingRequestStatus'));
-            }
-        });
+            $view->with(compact('building', 'buildingRequestStatus'));
+        }
+    }
+});
+
 
     }
 

@@ -3,13 +3,12 @@
 namespace App\Services\Admin\Building;
 
 use App\Models\Building;
-use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BuildingService
 {
-
-
     public function getFilteredBuildings(Request $request)
     {
         $query = Building::query();
@@ -62,5 +61,28 @@ class BuildingService
             Storage::delete($building->document_path);
         }
         $building->delete();
+    }
+
+    /**
+     * گرفتن مدیرانی که به ساختمان دیگری اختصاص ندارند، به جز مدیر فعلی (برای فرم ایجاد یا ویرایش ساختمان)
+     */
+    public function getAvailableManagersForAssign(?int $currentManagerId = null)
+    {
+        $assignedManagerIds = Building::whereNotNull('manager_id')
+            ->when($currentManagerId, function ($query) use ($currentManagerId) {
+                $query->where('manager_id', '!=', $currentManagerId);
+            })
+            ->pluck('manager_id')
+            ->toArray();
+
+        $query = User::whereHas('roles', function ($q) {
+            $q->where('name', 'manager');
+        })->whereNotIn('id', $assignedManagerIds);
+
+        if ($currentManagerId) {
+            $query->orWhere('id', $currentManagerId);
+        }
+
+        return $query->orderBy('name')->get();
     }
 }

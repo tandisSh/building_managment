@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Manager\Payment\PaymentController;
 use App\Http\Controllers\Resident\InvoicePaymentController as ResidentInvoicePaymentController;
 
+use App\Http\Controllers\SuperAdmin\BuildingManager\BuildingManagerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\Unit\UnitController;
@@ -171,11 +172,14 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('buildings', [AdminBuildingController::class, 'index'])->name('buildings.index');
     Route::get('buildings/create', [AdminBuildingController::class, 'create'])->name('buildings.create');
     Route::post('buildings', [AdminBuildingController::class, 'store'])->name('buildings.store');
-Route::get('buildings/{building}', [AdminBuildingController::class, 'show'])->name('buildings.show');
+    Route::get('buildings/{building}', [AdminBuildingController::class, 'show'])->name('buildings.show');
     Route::get('buildings/{building}/edit', [AdminBuildingController::class, 'edit'])->name('buildings.edit');
     Route::put('buildings/{building}', [AdminBuildingController::class, 'update'])->name('buildings.update');
     Route::delete('buildings/{building}', [AdminBuildingController::class, 'destroy'])->name('buildings.destroy');
-
+    // مدیریت مدیران ساختمان
+    Route::get('building-managers', [BuildingManagerController::class, 'index'])->name('building_managers.index');
+    Route::get('building-managers/{building}/edit', [BuildingManagerController::class, 'edit'])->name('building_managers.edit');
+    Route::put('building-managers/{building}', [BuildingManagerController::class, 'update'])->name('building_managers.update');
     //  درخواست‌های ساختمان
     Route::get('/requests', [SuperAdminController::class, 'requests'])->name('requests');
     Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('requests.approve');

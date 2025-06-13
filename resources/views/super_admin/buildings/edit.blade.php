@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
     <div class="container mt-3">
         <div class="admin-header d-flex justify-content-between align-items-center mb-4" style="background-color: #e5ddfa;">
             <h6 class="mb-0 fw-bold text-dark py-2 px-3">

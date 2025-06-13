@@ -52,6 +52,12 @@
                         <i class="bi bi-clipboard-check me-2"></i> <span>ساختمان ها</span>
                     </a>
                 </li>
+                    <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('superadmin.building_managers.index') ? 'active fw-bold' : '' }}"
+                       href="{{ route('superadmin.building_managers.index') }}">
+                        <i class="bi bi-clipboard-check me-2"></i> <span> مدیران ساختمان </span>
+                    </a>
+                </li>
             @endif
 
             <!-- مدیر ساختمان -->
