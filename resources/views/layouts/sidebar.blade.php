@@ -35,15 +35,21 @@
             <!-- سوپر ادمین -->
             @if ($roles->contains('super_admin'))
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('super_admin.dashboard') ? 'active fw-bold' : '' }}"
-                       href="{{ route('super_admin.dashboard') }}">
+                    <a class="nav-link {{ request()->routeIs('superadmin.dashboard') ? 'active fw-bold' : '' }}"
+                       href="{{ route('superadmin.dashboard') }}">
                         <i class="bi bi-speedometer2 me-2"></i> <span>داشبورد ادمین</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('super_admin.requests') ? 'active fw-bold' : '' }}"
-                       href="{{ route('super_admin.requests') }}">
+                    <a class="nav-link {{ request()->routeIs('superadmin.requests') ? 'active fw-bold' : '' }}"
+                       href="{{ route('superadmin.requests') }}">
                         <i class="bi bi-clipboard-check me-2"></i> <span>درخواست‌ها</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('superadmin.buildings.index') ? 'active fw-bold' : '' }}"
+                       href="{{ route('superadmin.buildings.index') }}">
+                        <i class="bi bi-clipboard-check me-2"></i> <span>ساختمان ها</span>
                     </a>
                 </li>
             @endif

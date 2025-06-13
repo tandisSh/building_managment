@@ -51,7 +51,7 @@
                                 <!-- مودال رد -->
                                 <div class="modal fade" id="rejectModal{{ $req->id }}" tabindex="-1">
                                     <div class="modal-dialog">
-                                        <form method="POST" action="{{ route('admin.requests.reject', $req->id) }}">
+                                        <form method="POST" action="{{ route('superadmin..requests.reject', $req->id) }}">
                                             @csrf
                                             <div class="modal-content">
                                                 <div class="modal-header">

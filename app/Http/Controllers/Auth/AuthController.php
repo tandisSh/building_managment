@@ -25,7 +25,7 @@ class AuthController extends Controller
             $user = Auth::user();
 
             return match (true) {
-                $user->hasRole('super_admin') => redirect()->route('super_admin.dashboard'),
+                $user->hasRole('super_admin') => redirect()->route('superadmin.dashboard'),
                 $user->hasRole('manager') => redirect()->route('manager.dashboard'),
                 $user->hasRole('resident') => redirect()->route('resident.dashboard'),
                 default => redirect('/')

@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Building extends Model
 {
+    protected $table = 'buildings';
+
     protected $fillable =
     [
         'manager_id',
@@ -24,6 +26,7 @@ class Building extends Model
     {
         return $this->belongsTo(User::class, 'manager_id');
     }
+    
 
     public function users()
     {

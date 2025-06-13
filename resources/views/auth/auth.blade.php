@@ -32,7 +32,7 @@
 @else
 <script>
     window.location.href = "@auth {{
-        auth()->user()->hasRole('super_admin') ? route('super_admin.dashboard') :
+        auth()->user()->hasRole('super_admin') ? route('superadmin.dashboard') :
         (auth()->user()->hasRole('manager') ? route('manager.dashboard') : route('resident.dashboard'))
     }} @endauth";
 </script>

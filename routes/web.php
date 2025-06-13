@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\Unit\UnitController;
 use App\Http\Controllers\Manager\Invoice\InvoiceController;
-use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Manager\Building\BuildingController;
@@ -20,6 +19,8 @@ use App\Http\Controllers\Resident\RepairRequestController;
 use App\Http\Controllers\Resident\ResidentProfileController;
 use App\Http\Controllers\Resident\ResidentInvoiceController;
 use App\Http\Controllers\Resident\ResidentPaymentController;
+use App\Http\Controllers\SuperAdmin\Building\BuildingController as AdminBuildingController;
+use App\Http\Controllers\SuperAdmin\SuperAdminController;
 
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -125,15 +126,6 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::get('invoice/show/{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
 });
 
-Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->group(function () {
-    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super_admin.dashboard');
-
-    // مدیریت درخواست‌های ساختمان
-    Route::get('/requests', [SuperAdminController::class, 'requests'])->name('super_admin.requests');
-    Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('admin.requests.approve');
-    Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('admin.requests.reject');
-});
-
 Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident.')->group(function () {
     Route::get('/dashboard', [ResidentDashboardController::class, 'index'])->name('dashboard');
     // profile
@@ -167,4 +159,25 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::get('/invoices', [ResidentInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/unpaid', [ResidentInvoiceController::class, 'unpaid'])->name('invoices.unpaid');
     Route::get('/{invoice}', [ResidentInvoiceController::class, 'show'])->name('invoices.show');
+});
+
+
+Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadmin.')->group(function () {
+
+    // داشبورد سوپر ادمین
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+
+    //  ساختمان‌
+    Route::get('buildings', [AdminBuildingController::class, 'index'])->name('buildings.index');
+    Route::get('buildings/create', [AdminBuildingController::class, 'create'])->name('buildings.create');
+    Route::post('buildings', [AdminBuildingController::class, 'store'])->name('buildings.store');
+Route::get('buildings/{building}', [AdminBuildingController::class, 'show'])->name('buildings.show');
+    Route::get('buildings/{building}/edit', [AdminBuildingController::class, 'edit'])->name('buildings.edit');
+    Route::put('buildings/{building}', [AdminBuildingController::class, 'update'])->name('buildings.update');
+    Route::delete('buildings/{building}', [AdminBuildingController::class, 'destroy'])->name('buildings.destroy');
+
+    //  درخواست‌های ساختمان
+    Route::get('/requests', [SuperAdminController::class, 'requests'])->name('requests');
+    Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('requests.approve');
+    Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('requests.reject');
 });
