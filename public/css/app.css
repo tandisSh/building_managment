@@ -41,9 +41,9 @@ body {
     width: 260px;
     min-width: 260px;
     height: 100vh;
-    position: fixed;
+    /* position: fixed;
     top: 0;
-    right: 0;
+    right: 0; */
     background-color: #ffffff;
     border-left: 1px solid #e1e1e1;
     transition: all 0.3s ease-in-out;
@@ -58,7 +58,8 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 0;
-    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .sidebar-header {
@@ -78,13 +79,14 @@ body {
 /* Scrollable area for sidebar menu items */
 .sidebar .custom-scroll {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    /* overflow-y: auto; */
+    /* overflow-x: hidden; */
     padding: 0 0 10px;
     margin: 0;
     list-style: none;
-    min-height: 0;
-    max-height: calc(100vh - 180px); /* محدودیت ارتفاع برای اسکرول */
+    /* min-height: 0;
+    max-height: calc(100vh - 180px); */
+     /* محدودیت ارتفاع برای اسکرول */
 }
 
 .sidebar .custom-scroll::-webkit-scrollbar {
@@ -235,11 +237,11 @@ body {
     border-radius: 0.25rem;
 }
 
-.sidebar .nav-item {
+/* .sidebar .nav-item {
     margin-bottom: 0.25rem;
     display: block;
     width: 100%;
-}
+} */
 
 .sidebar .nav-link span {
     margin-right: 0.5rem;
@@ -274,7 +276,7 @@ body {
 
 /* Main Content Styles */
 #page-content-wrapper {
-    margin-right: 260px;
+    /* margin-right: 260px; */
     transition: all 0.3s ease-in-out;
     padding: 40px;
     width: calc(100% - 260px);
