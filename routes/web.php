@@ -5,6 +5,7 @@ use App\Http\Controllers\Manager\Payment\PaymentController;
 use App\Http\Controllers\Resident\InvoicePaymentController as ResidentInvoicePaymentController;
 
 use App\Http\Controllers\SuperAdmin\BuildingManager\BuildingManagerController;
+use App\Http\Controllers\Superadmin\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\Unit\UnitController;
@@ -21,8 +22,9 @@ use App\Http\Controllers\Resident\ResidentProfileController;
 use App\Http\Controllers\Resident\ResidentInvoiceController;
 use App\Http\Controllers\Resident\ResidentPaymentController;
 use App\Http\Controllers\SuperAdmin\Building\BuildingController as AdminBuildingController;
+use App\Http\Controllers\SuperAdmin\Invoice\SuperAdminInvoiceController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
-
+use App\Models\Building;
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -184,4 +186,24 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('/requests', [SuperAdminController::class, 'requests'])->name('requests');
     Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('requests.approve');
     Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('requests.reject');
+
+    //  کاربران
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
+    Route::get('get-units/{building}', [UserController::class, 'getUnits'])->name('users.getUnits');
+    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+  // صورتحساب‌های تکی
+    Route::get('/invoices', [SuperAdminInvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('/invoices/create-single', [SuperAdminInvoiceController::class, 'createSingle'])->name('invoices.create-single');
+    Route::post('/invoices/store-single', [SuperAdminInvoiceController::class, 'storeSingle'])->name('invoices.store-single');
+    Route::get('/invoices/{invoice}/edit-single', [SuperAdminInvoiceController::class, 'editSingle'])->name('invoices.edit-single');
+    Route::put('/invoices/{invoice}/update-single', [SuperAdminInvoiceController::class, 'updateSingle'])->name('invoices.update-single');
+    Route::get('/invoices/{invoiceId}', [SuperAdminInvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/unit/{unit}', [SuperAdminInvoiceController::class, 'unitInvoices'])->name('invoices.unit');
+    Route::get('/invoices/get-units/{building}', [SuperAdminInvoiceController::class, 'getUnits'])->name('invoices.get-units');
 });
