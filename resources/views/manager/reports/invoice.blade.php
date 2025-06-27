@@ -54,7 +54,7 @@
             <strong>مجموع مبلغ این صفحه:</strong> {{ number_format($totalAmount) }} تومان
         </div>
         <div>
-            <a href="{{ route('reports.payments.print', request()->query()) }}" target="_blank"
+            <a href="{{ route('reports.invoices.print', request()->query()) }}" target="_blank"
                 class="btn btn-info btn-sm">چاپ گزارش</a>
         </div>
     </div>

@@ -73,7 +73,7 @@
 
                 <div class="col-12 mt-4">
                     <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm filter-btn">
+                        <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm cancel-btn">
                             <i class="bi bi-x-circle me-1"></i> انصراف
                         </a>
                         <button type="submit" class="btn btn-sm add-btn">

@@ -33,6 +33,8 @@
                 <thead>
                     <tr>
                         <th>ردیف</th>
+                        <th>ساکن</th>
+                        <th>واحد</th>
                         <th>عنوان صورتحساب</th>
                         <th>مبلغ (تومان)</th>
                         <th>تاریخ پرداخت</th>
@@ -43,6 +45,8 @@
                     @forelse($payments as $index => $payment)
                         <tr>
                             <td>{{ $index + 1 }}</td>
+                            <td>{{ $payment->user->name }}</td>
+                            <td>{{ $payment->invoice->unit->unit_number ?? '-' }}</td>
                             <td>{{ $payment->invoice->title ?? '-' }}</td>
                             <td>{{ number_format($payment->amount) }}</td>
                             <td>{{ jdate($payment->paid_at)->format('Y/m/d') }}</td>

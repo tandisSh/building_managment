@@ -100,23 +100,24 @@
 
                     {{-- تاریخ پایان --}}
                     <div class="col-md-6">
-                        <label class="form-label small">تاریخ پایان سکونت (اختیاری)</label>
-                        <input type="date" name="to_date" value="{{ old('to_date') }}"
-                            class="form-control form-control-sm @error('to_date') is-invalid @enderror">
+                        <label class="form-label small">تاریخ پایان سکونت </label>
+                        <input type="date" name="to_date" value="{{ old('to_date') }}" 
+                            class="form-control form-control-sm @error('to_date') is-invalid @enderror"
+                             >
                         @error('to_date')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                     <div class="col-12 mt-4">
-                    <div class="d-flex justify-content-end gap-2">
-                        <a href="{{ route('residents.index') }}" class="btn btn-sm filter-btn">
-                            <i class="bi bi-x-circle me-1"></i> انصراف
-                        </a>
-                        <button type="submit" class="btn btn-sm add-btn">
-                            <i class="bi bi-check-circle me-1"></i>  ثبت ساکن
-                        </button>
+                    <div class="col-12 mt-4">
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{{ route('residents.index') }}" class="btn btn-sm cancel-btn">
+                                <i class="bi bi-x-circle me-1"></i> انصراف
+                            </a>
+                            <button type="submit" class="btn btn-sm add-btn">
+                                <i class="bi bi-check-circle me-1"></i> ثبت ساکن
+                            </button>
+                        </div>
                     </div>
-                </div>
                 </div>
             </form>
         </div>
@@ -128,15 +129,22 @@
         function handleResidentsCountField() {
             const role = document.getElementById('role').value;
             const countInput = document.getElementById('resident_count');
+            const toDate = document.getElementById('to_date');
 
             if (role === 'owner' || role === '') {
                 countInput.disabled = true;
                 countInput.value = 1;
+                // toDate.disabled = true;
+            } else if (role === 'resident_owner') {
+                countInput.disabled = false;
+                // toDate.disabled = true;
             } else {
                 countInput.disabled = false;
+                // toDate.disabled = false;
+                // toDate.required = true;
             }
-        }
 
+        }
         document.addEventListener('DOMContentLoaded', function() {
             handleResidentsCountField();
             document.getElementById('role').addEventListener('change', handleResidentsCountField);

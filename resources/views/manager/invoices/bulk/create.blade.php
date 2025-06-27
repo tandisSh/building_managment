@@ -98,11 +98,15 @@
                                     <div class="text-danger small mt-1">{{ $message }}</div>
                                 @enderror
                             </div>
-
-                            <div class="col-12 mt-3">
-                                <button type="submit" class="btn btn-sm add-btn w-100 py-2">
-                                    <i class="bi bi-check-circle me-1"></i> ثبت صورتحساب جاری
-                                </button>
+                            <div class="col-12 mt-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm cancel-btn">
+                                        <i class="bi bi-x-circle me-1"></i> انصراف
+                                    </a>
+                                    <button type="submit" class="btn btn-sm add-btn">
+                                        <i class="bi bi-check-circle me-1"></i> ثبت صورتحساب جاری
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -152,10 +156,15 @@
                                 @enderror
                             </div>
 
-                            <div class="col-12 mt-3">
-                                <button type="submit" class="btn btn-sm add-btn w-100 py-2">
-                                    <i class="bi bi-check-circle me-1"></i> ثبت صورتحساب ثابت
-                                </button>
+                            <div class="col-12 mt-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a href="{{ route('bulk_invoices.index') }}" class="btn btn-sm cancel-btn">
+                                        <i class="bi bi-x-circle me-1"></i> انصراف
+                                    </a>
+                                    <button type="submit" class="btn btn-sm add-btn">
+                                        <i class="bi bi-check-circle me-1"></i> ثبت صورتحساب ثابت
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </form>

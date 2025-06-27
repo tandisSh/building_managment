@@ -14,8 +14,8 @@
                 <input type="text" name="search" class="form-control form-control-sm w-auto search-input"
                     placeholder="شماره واحد یا نام ساکن" value="{{ request('search') }}" style="max-width: 200px;">
                 <button class="btn btn-sm btn-outline-primary filter-btn">جستجو</button>
-                <a href="{{ route('units.index', $building->id) }}"
-                    class="btn btn-sm btn-outline-secondary filter-btn">ریست</a>
+                <a href="{{ route('units.index', $building->id) }}" class="btn btn-sm btn-outline-secondary filter-btn">حذف
+                    فیلتر</a>
             </form>
         </div>
     </div>
@@ -66,15 +66,38 @@
                                     class="btn btn-sm btn-outline-warning" title="ویرایش">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
+
                                 <form action="{{ route('units.destroy', [$building->id, $unit->id]) }}" method="POST"
                                     class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button class="btn btn-sm btn-outline-danger" title="حذف"
-                                        onclick="return confirm('آیا مطمئنید؟')">
+                                        @disabled($unit->isDeletable()) onclick="return confirm('آیا مطمئنید؟')">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </td>
                         </tr>
                     @empty

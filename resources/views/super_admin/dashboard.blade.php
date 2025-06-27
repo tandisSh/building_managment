@@ -66,7 +66,7 @@
                         @forelse($requests as $index => $request)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $request->building_name }}</td>
+                                <td>{{ $request->name }}</td>
                                 <td>{{ $request->user->name ?? '-' }}</td>
                                 <td>{{ jdate($request->created_at)->format('Y/m/d') }}</td>
                                 <td>

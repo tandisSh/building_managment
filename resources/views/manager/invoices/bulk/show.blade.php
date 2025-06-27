@@ -6,9 +6,6 @@
         <h6 class="mb-0 fw-bold text-white">
             <i class="bi bi-collection me-2"></i>جزئیات صورتحساب کلی ({{ $bulkInvoice->type === 'fixed' ? 'ثابت' : 'جاری' }})
         </h6>
-        <a href="{{ route('bulk_invoices.index') }}" class="btn filter-btn">
-            <i class="bi bi-arrow-right me-1"></i>بازگشت به لیست
-        </a>
     </div>
 
     <div class="admin-table-card p-4">
@@ -103,6 +100,12 @@
                 </table>
             </div>
         </div>
+
+            <div class="mt-4 text-end px-3">
+                <a href="{{ route('bulk_invoices.index') }}" class="btn cancel-btn">
+                    <i class="bi bi-arrow-right me-1"></i>بازگشت
+                </a>
+            </div>
     </div>
 </div>
 @endsection

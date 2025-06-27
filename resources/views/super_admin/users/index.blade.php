@@ -45,8 +45,6 @@
                     <tr>
                         <th>#</th>
                         <th>نام</th>
-                        <th>موبایل</th>
-                        <th>ایمیل</th>
                         <th>ساختمان</th>
                         <th>واحد</th>
                         <th>نقش در واحد</th>
@@ -61,8 +59,6 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $user->name ?? '-' }}</td>
-                            <td>{{ $user->phone ?? '-' }}</td>
-                            <td>{{ $user->email ?? '-' }}</td>
                             <td>
                                 @foreach($user->units as $unit)
                                     {{ $unit->building->name ?? '-' }}
@@ -103,7 +99,11 @@
                             </td>
                             <td>
                                 <div class="d-flex justify-content-center gap-2">
-                                    <a href="{{ route('superadmin.users.edit', $user->id) }}"
+                                    <a href="{{ route('superadmin.users.show', $user->id) }}"
+                                        class="btn btn-sm btn-outline-primary" title="نمایش">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ route('superadmin.users.show', $user->id) }}"
                                         class="btn btn-sm btn-outline-warning" title="ویرایش">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>

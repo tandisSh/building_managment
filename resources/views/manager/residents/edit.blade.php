@@ -92,26 +92,28 @@
                     </div>
 
                     <div class="col-md-6">
-                        <label for="to_date" class="form-label small">تاریخ پایان سکونت (اختیاری)</label>
-                        <input type="date" name="to_date" id="to_date" class="form-control form-control-sm"
+                        <label for="to_date" class="form-label small">تاریخ پایان سکونت </label>
+                        <input type="date" name="to_date" id="to_date" class="form-control form-control-sm" disabled
                             value="{{ old('to_date', $resident->to_date) }}">
                         @error('to_date')
                             <div class="invalid-feedback d-block small">{{ $message }}</div>
                         @enderror
                     </div>
-<div class="col-md-6">
-    <label for="status" class="form-label small">وضعیت کاربر *</label>
-    <select name="status" id="status" class="form-select form-select-sm">
-        <option value="active" {{ old('status', $resident->status) == 'active' ? 'selected' : '' }}>فعال</option>
-        <option value="inactive" {{ old('status', $resident->status) == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
-    </select>
-    @error('status')
-        <div class="invalid-feedback d-block small">{{ $message }}</div>
-    @enderror
-</div>
+                    <div class="col-md-6">
+                        <label for="status" class="form-label small">وضعیت کاربر *</label>
+                        <select name="status" id="status" class="form-select form-select-sm">
+                            <option value="active" {{ old('status', $resident->status) == 'active' ? 'selected' : '' }}>
+                                فعال</option>
+                            <option value="inactive"
+                                {{ old('status', $resident->status) == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
+                        </select>
+                        @error('status')
+                            <div class="invalid-feedback d-block small">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <div class="col-12 mt-4 d-flex justify-content-end gap-2">
-                        <a href="{{ route('residents.index') }}" class="btn btn-sm filter-btn">
+                        <a href="{{ route('residents.index') }}" class="btn btn-sm cancel-btn">
                             <i class="bi bi-x-circle me-1"></i> انصراف
                         </a>
                         <button type="submit" class="btn btn-sm add-btn">
@@ -129,12 +131,19 @@
         function handleResidentsCountField() {
             const role = document.getElementById('role').value;
             const countInput = document.getElementById('resident_count');
+            const toDate = document.getElementById('to_date');
 
             if (role === 'owner' || role === '') {
                 countInput.disabled = true;
                 countInput.value = 1;
+                toDate.disabled = true;
+            } else if (role === 'resident_owner') {
+                countInput.disabled = false;
+                toDate.disabled = true;
             } else {
                 countInput.disabled = false;
+                toDate.disabled = false;
+                toDate.required = true;
             }
         }
 

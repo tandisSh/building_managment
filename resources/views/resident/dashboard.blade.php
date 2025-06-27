@@ -6,9 +6,9 @@
             <i class="bi bi-house-door me-1"></i> داشبورد ساکن
         </h6>
     </div>
-@if($unit)
+{{-- @if($unit)
     {{ $unit->name }}
-@endif
+@endif --}}
 
     {{-- اطلاعیه‌ها --}}
     {{-- <div class="card admin-table-card mb-4">
@@ -37,17 +37,17 @@
 
     {{-- صورتحساب‌های پرداخت‌نشده --}}
     <div class="card admin-table-card">
-        <div class="card-header bg-light fw-bold">
+        <div class="card-body table-responsive">
             <i class="bi bi-receipt-cutoff me-1"></i> صورتحساب‌های پرداخت‌نشده
         </div>
         <div class="card-body p-3">
-            @if($invoices->isEmpty())
+            {{-- @if($invoices->isEmpty())
                 <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i> صورتحساب پرداخت‌نشده‌ای ندارید.
                 </div>
-            @else
+            @else --}}
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle small">
+                    <table class="table table-bordered table-striped align-middle  small table-units">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -58,7 +58,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($invoices as $index => $invoice)
+                            @foreach($Invoices as $index => $invoice)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
                                     <td>{{ $invoice->title }}</td>
@@ -70,9 +70,10 @@
                                 </tr>
                             @endforeach
                         </tbody>
+
                     </table>
                 </div>
-            @endif
+            {{-- @endif --}}
         </div>
     </div>
 @endsection

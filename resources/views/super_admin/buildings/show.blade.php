@@ -40,34 +40,38 @@
                 </div>
 
                 {{-- تعداد طبقات --}}
-                {{-- <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="compact-info-card">
                         <i class="bi bi-sort-numeric-up icon"></i>
                         <div><strong>تعداد طبقات:</strong> {{ $building->number_of_floors }}</div>
                     </div>
-                </div> --}}
+                </div>
 
                 {{-- تعداد واحدها --}}
-                {{-- <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="compact-info-card">
                         <i class="bi bi-house-door icon"></i>
                         <div><strong>تعداد واحدها:</strong> {{ $building->number_of_units }}</div>
                     </div>
-                </div> --}}
+                </div>
 
                 {{-- وضعیت منابع مشترک --}}
-                {{-- <div class="col-12 col-md-4">
+                <div class="col-12 col-md-6">
                     <div class="compact-info-card">
                         <i class="bi bi-sliders icon"></i>
-                        <div>
-                            <strong>منابع مشترک:</strong><br>
-                            <span class="badge bg-{{ $building->shared_water ? 'primary' : 'secondary' }} mx-1">آب</span>
-                            <span class="badge bg-{{ $building->shared_gas ? 'primary' : 'secondary' }} mx-1">گاز</span>
-                            <span
-                                class="badge bg-{{ $building->shared_electricity ? 'primary' : 'secondary' }} mx-1">برق</span>
-                        </div>
+                        <strong>منابع مشترک:</strong><br>
+                        <span class="badge bg-{{ $building->shared_water ? 'primary' : 'secondary' }} mx-1">آب</span>
+                        <span class="badge bg-{{ $building->shared_gas ? 'primary' : 'secondary' }} mx-1">گاز</span>
+                        <span class="badge bg-{{ $building->shared_electricity ? 'primary' : 'secondary' }} mx-1">برق</span>
                     </div>
-                </div> --}}
+                </div>
+
+                   <div class="d-flex justify-content-end gap-2">
+
+                <a href="{{ route('superadmin.buildings.index') }}" class="btn cancel-btn">
+                    <i class="bi bi-arrow-right me-1"></i>بازگشت
+                </a>
+            </div>
             </div>
         </div>
     </div>

@@ -43,7 +43,7 @@
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <table class="table table-bordered table-striped align-middle small">
+            <table class="table table-bordered table-striped align-middle  small table-units text-center">
                 <thead>
                     <tr>
                         <th>ردیف</th>
@@ -80,7 +80,9 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
                                 @else
-                                    <span class="text-muted small">غیرقابل ویرایش</span>
+                                    <button disabled class="btn btn-sm btn-outline-warning" title="ویرایش">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
                                 @endif
                             </td>
                         </tr>

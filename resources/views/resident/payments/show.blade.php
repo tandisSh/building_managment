@@ -6,12 +6,6 @@
             <h6 class="mb-0 fw-bold text-white">
                 <i class="bi bi-receipt me-2"></i>جزئیات پرداخت {{ $payment->invoice->id }}
             </h6>
-            <a href="{{ route('resident.payments.receipt', $payment->id) }}" target="_blank" class="btn btn-outline-secondary">
-                <i class="bi bi-printer me-1"></i>چاپ رسید
-            </a>
-            <a href="{{ route('resident.payments.index') }}" class="btn filter-btn">
-                <i class="bi bi-arrow-right me-1"></i>بازگشت به لیست
-            </a>
         </div>
 
         <div class="admin-table-card p-4">
@@ -52,6 +46,18 @@
                     </div>
                 </div>
             </div>
+            <br>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a href="{{ route('resident.payments.receipt', $payment->id) }}" target="_blank" class="btn cancel-btn">
+                    <i class="bi me-1"></i>چاپ رسید
+                </a>
+                <a href="{{ route('resident.payments.index') }}" class="btn cancel-btn">
+                    <i class="bi bi-arrow-right me-1"></i>بازگشت
+                </a>
+            </div>
+            
         </div>
+    </div>
     </div>
 @endsection

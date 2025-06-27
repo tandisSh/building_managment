@@ -37,6 +37,16 @@
                         <option value="fixed" {{ request('type') == 'fixed' ? 'selected' : '' }}>ثابت</option>
                     </select>
                 </div>
+                 <div class="col-auto">
+                    <select name="building_id" class="form-select form-select-sm search-input" style="max-width: 150px;">
+                        <option value="">همه ساختمان ها</option>
+                        @foreach ($buildings as $building)
+                            <option value="{{ $building->id }}" {{ request('building_id') == $building->id ? 'selected' : '' }}>
+                                ساختمان {{ $building->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="col-auto">
                     <select name="unit_id" class="form-select form-select-sm search-input" style="max-width: 150px;">
                         <option value="">همه واحدها</option>

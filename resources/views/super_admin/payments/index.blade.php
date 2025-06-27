@@ -34,6 +34,7 @@
                     <tr>
                         <th>ردیف</th>
                         <th>عنوان صورتحساب</th>
+                        <th>نام ساکن</th>
                         <th>مبلغ (تومان)</th>
                         <th>تاریخ پرداخت</th>
                         <th>عملیات</th>
@@ -44,6 +45,7 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $payment->invoice->title ?? '-' }}</td>
+                            <td>{{ $payment->user->name ?? '-' }}</td>
                             <td>{{ number_format($payment->amount) }}</td>
                             <td>{{ jdate($payment->paid_at)->format('Y/m/d') }}</td>
                             <td>

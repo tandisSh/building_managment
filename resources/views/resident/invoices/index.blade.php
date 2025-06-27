@@ -7,24 +7,29 @@
         </h6>
     </div>
 
-    <div class="card admin-table-card shadow-sm mb-4">
+
+    {{-- کادر فیلترها و جستجو --}}
+    <div class="card search-filter-card mb-3">
         <div class="card-body">
-            <form method="GET" class="row g-2 align-items-center">
-                <div class="col-md-5">
-                    <input type="text" name="title" class="form-control form-control-sm"
-                        placeholder="جستجوی عنوان صورتحساب..." value="{{ request('title') }}">
+            <form method="GET" action="{{ route('resident.invoices.index') }}"
+                class="row g-2 align-items-center text-center">
+                <div class="col-auto">
+                    <input type="text" name="title" value="{{ request('title') }}"
+                        class="form-control form-control-sm w-auto search-input" placeholder="  عنوان صورتحساب.."
+                        style="max-width: 200px;">
                 </div>
-                <div class="col-md-4">
-                    <select name="status" class="form-select form-select-sm">
-                        <option value="">همه وضعیت‌ها</option>
-                        <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>پرداخت شده</option>
-                        <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>پرداخت نشده</option>
+                <div class="col-auto">
+                    <select name="status" class="form-select form-select-sm search-input" style="max-width: 150px;">
+                        <option value="">وضعیت پرداخت</option>
+                        <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>پرداخت‌شده</option>
+                        <option value="unpaid" {{ request('status') === 'unpaid' ? 'selected' : '' }}>پرداخت‌نشده</option>
                     </select>
                 </div>
-                <div class="col-md-3">
-                    <button type="submit" class="btn btn-sm btn-outline-primary w-100">
-                        <i class="bi bi-search"></i> جستجو
-                    </button>
+
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-sm btn-outline-primary filter-btn">اعمال فیلتر</button>
+                    <a href="{{ route('resident.invoices.index') }}" class="btn btn-sm btn-outline-secondary filter-btn">حذف
+                        فیلتر</a>
                 </div>
             </form>
         </div>
@@ -64,13 +69,19 @@
                                 </td>
                                 <td>
                                     @if ($invoice->status !== 'paid')
-                                        <form method="GET" action="{{ route('resident.payment.fake.form.single', $invoice) }}"
+                                        <form method="GET"
+                                            action="{{ route('resident.payment.fake.form.single', $invoice) }}"
                                             class="d-inline">
                                             @csrf
                                             <button type="submit" class="btn btn-sm btn-outline-warning" title="پرداخت">
                                                 <i class="bi bi-credit-card"></i>
                                             </button>
                                         </form>
+                                    @endif
+                                    @if ($invoice->status == 'paid')
+                                        <button class="btn btn-sm btn-outline-warning" disabled title="پرداخت">
+                                            <i class="bi bi-credit-card"></i>
+                                        </button>
                                     @endif
                                     <a href="{{ route('resident.invoices.show', $invoice->id) }}"
                                         class="btn btn-sm btn-outline-primary" title="نمایش">

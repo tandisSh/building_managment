@@ -92,6 +92,44 @@
                                         class="btn btn-sm btn-outline-warning" title="ویرایش">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>
+
+
+
+
+                                            @if ($bulkInvoice->status !== 'approved')
+                                        <form action="{{ route('manager.bulk_invoices.destroy', $bulkInvoice->id) }}"
+                                            method="POST"
+                                            onsubmit="return confirm('آیا مطمئن هستید می‌خواهید این صورتحساب کلی را حذف کنید؟  ');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button class="btn btn-sm btn-outline-danger" disabled title=" تایید شده و قابل حذف نیست.">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    @endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 </div>
                             </td>
                         </tr>

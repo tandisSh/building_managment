@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container mt-3">
-    <div class="admin-header d-flex justify-content-between align-items-center mb-4" style="background-color: #e5ddfa;">
-        <h6 class="mb-0 fw-bold text-dark py-2 px-3">
+    <div class="admin-header d-flex justify-content-between align-items-center mb-3 rounded flex-wrap" style="background-color: #4e3cb3; color: #fff; padding: 8px 16px;">
+        <h6 class="mb-0 fw-bold text-white py-2 px-3">
             <i class="bi bi-building-gear me-2"></i>ویرایش اطلاعات ساختمان
         </h6>
     </div>
@@ -113,9 +113,14 @@
 
                 {{-- دکمه ثبت --}}
                 <div class="col-12 mt-4">
-                    <button type="submit" class="btn btn-sm add-btn w-100 py-2">
-                        <i class="bi bi-check-circle me-1"></i> ثبت تغییرات
-                    </button>
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ route('manager.building.show') }}" class="btn btn-sm cancel-btn">
+                            <i class="bi bi-x-circle me-1"></i> انصراف
+                        </a>
+                        <button type="submit" class="btn btn-sm add-btn">
+                            <i class="bi bi-check-circle me-1"></i> ذخیره تغییرات
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>

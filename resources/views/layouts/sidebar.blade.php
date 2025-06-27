@@ -49,20 +49,75 @@
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('superadmin.buildings.index') ? 'active fw-bold' : '' }}"
                         href="{{ route('superadmin.buildings.index') }}">
-                        <i class="bi bi-clipboard-check me-2"></i> <span>ساختمان ها</span>
+                        <i class="bi bi- bi-building me-2"></i> <span>ساختمان ها</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('superadmin.building_managers.index') ? 'active fw-bold' : '' }}"
                         href="{{ route('superadmin.building_managers.index') }}">
-                        <i class="bi bi-clipboard-check me-2"></i> <span> مدیران ساختمان </span>
+                        <i class="bi bi-person me-2"></i> <span> مدیران ساختمان </span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('superadmin.users.index') ? 'active fw-bold' : '' }}"
                         href="{{ route('superadmin.users.index') }}">
-                        <i class="bi bi-clipboard-check me-2"></i> <span>  کاربران </span>
+                        <i class="bi bi-people me-2"></i> <span>  کاربران </span>
                     </a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('superadmin.invoices.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('superadmin.invoices.index') }}">
+                        <i class="bi bi-receipt me-2"></i> <span>  صورتحساب‌ها </span>
+                    </a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('superadmin.payments.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('superadmin.payments.index') }}">
+                        <i class="bi bi-credit-card me-2"></i> <span>  پرداخت‌ها </span>
+                    </a>
+                </li>
+                    <!-- گزارشات (سرگروه) -->
+                <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {{ request()->routeIs('reports.*') ? 'active fw-bold' : '' }}"
+                            href="#reportSubmenu" data-bs-toggle="collapse" role="button"
+                            aria-expanded="{{ request()->routeIs('reports.*') ? 'true' : 'false' }}"
+                            aria-controls="reportSubmenu">
+                            <i class="bi bi-graph-up-arrow me-2"></i> <span>گزارشات</span>
+                        </a>
+                        <div class="collapse {{ request()->routeIs('reports.*') ? 'show' : '' }}" id="reportSubmenu">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.overall_payments') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.overall_payments') }}">
+                                        <i class="bi bi-file-text me-2"></i> <span>گزارش پرداخت‌ها</span>
+                                    </a>
+                                </li>
+                                {{-- <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.aggregate_invoices') }}">
+                                        <i class="bi bi-journal-check me-2"></i> <span>گزارش صورتحساب</span>
+                                    </a>
+                                </li> --}}
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.system_debts') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.system_debts') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span > گزارش بدهی سیستم</span>
+                                    </a>
+                                </li>
+                                {{-- <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.overdue_payments') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.overdue_payments') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی تاریخ گذشته</span>
+                                    </a>
+                                </li> --}}
+                                  {{-- <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.annual_summary') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.annual_summary') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش  سالانه</span>
+                                    </a>
+                                </li> --}}
+                            </ul>
+                        </div>
                 </li>
             @endif
 
@@ -214,13 +269,25 @@
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('reports.unit_debts') ? 'active fw-bold' : '' }}"
                                         href="{{ route('reports.unit_debts') }}">
-                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی</span>
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی واحدها</span>
                                     </a>
                                 </li>
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('reports.overduePayments') ? 'active fw-bold' : '' }}"
-                                        href="{{ route('reports.unit_debts') }}">
-                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی</span>
+                                        href="{{ route('reports.overduePayments') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی تاریخ گذشته</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('reports.financialOverview') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('reports.financialOverview') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش مالی ماهانه</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('reports.ResidentAccountStatus') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('reports.ResidentAccountStatus') }}">
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش وضعیت حساب ساکنین</span>
                                     </a>
                                 </li>
                             </ul>
