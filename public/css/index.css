@@ -1,340 +1,341 @@
+@font-face {
+    font-family: "IRANSans";
+    src: url("fonts/IRANSansWeb(FaNum).eot");
+    src: url("fonts/IRANSansWeb(FaNum).eot?#iefix") format("embedded-opentype"),
+        url("fonts/IRANSansWeb(FaNum).woff2") format("woff2"),
+        url("fonts/IRANSansWeb(FaNum).woff") format("woff"),
+        url("fonts/IRANSansWeb(FaNum).ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
 
-        @font-face {
-         font-family: 'IRANSans';
-         src: url('fonts/IRANSansWeb(FaNum).eot');
-         src: url('fonts/IRANSansWeb(FaNum).eot?#iefix') format('embedded-opentype'),
-         url('fonts/IRANSansWeb(FaNum).woff2') format('woff2'),
-         url('fonts/IRANSansWeb(FaNum).woff') format('woff'),
-         url('fonts/IRANSansWeb(FaNum).ttf') format('truetype');
-         font-weight: normal;
-         font-style: normal;
-         }
+:root {
+    /* Theme Colors: Light Grey background with Purple Accents */
+    --primary-bg: #f8f8f8; /* Very Light Grey - Main background */
+    --secondary-bg: #e0e0e0; /* Light Grey - Header/Footer/Light Accents */
+    --accent-bg: #400386; /* A noticeable purple - Darker Accents/Hover/Borders */
+    --text-dark: #3a3a3a; /* Dark Grey - Main text */
+    --text-light: #6a6a6a; /* Medium Grey - Lighter/Hover text */
+    --white: #fff;
+    --black: #000;
+}
 
+body {
+    background-color: var(--primary-bg);
+    font-family: "IRANSans", "Tahoma", sans-serif;
+    font-size: 1rem;
+    color: var(--text-dark);
+    scroll-behavior: smooth; /* Smooth Scroll */
+    line-height: 1.7;
+    margin: 0; /* اطمینان از حذف مارجین پیش‌فرض مرورگر */
+    padding: 0; /* اطمینان از حذف پدینگ پیش‌فرض مرورگر */
+}
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-dark);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
 
-        :root {
-            /* Theme Colors: Light Grey background with Purple Accents */
-            --primary-bg: #f8f8f8; /* Very Light Grey - Main background */
-            --secondary-bg: #e0e0e0; /* Light Grey - Header/Footer/Light Accents */
-            --accent-bg: #9A6ECB; /* A noticeable purple - Darker Accents/Hover/Borders */
-            --text-dark: #3a3a3a; /* Dark Grey - Main text */
-            --text-light: #6a6a6a; /* Medium Grey - Lighter/Hover text */
-            --white: #fff;
-            --black: #000;
-        }
+a {
+    color: var(--white);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
 
-        body {
-            background-color: var(--primary-bg);
-            font-family: 'IRANSans', 'Tahoma', sans-serif;
-            font-size: 1rem;
-            color: var(--text-dark);
-            scroll-behavior: smooth; /* Smooth Scroll */
-            line-height: 1.7;
-            margin: 0; /* اطمینان از حذف مارجین پیش‌فرض مرورگر */
-            padding: 0; /* اطمینان از حذف پدینگ پیش‌فرض مرورگر */
-        }
+a:hover {
+    color: var(--white);
+    text-decoration: none;
+}
 
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--text-dark);
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-        }
+/* استایل هدر */
+header {
+    background-color: rgb(205 196 213);
+    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
-        a {
-            color: var(--text-dark); /* Default link color */
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
+header .container {
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        a:hover {
-            color: var(--text-light); /* Hover link color */
-            text-decoration: none;
-        }
+header img {
+    height: 40px; /* کاهش اندازه لوگو */
+    width: auto;
+}
 
-        /* استایل هدر */
-        header {
-            background-color: var(--secondary-bg);
-            padding: 10px 0; /* نازک‌تر کردن نوار هدر */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
+header h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0;
+    font-weight: 700;
+}
 
-        header .container {
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.btn-custom {
+    background-color:  var(--accent-bg);
+    color: white;
+    border: 1px solid var(--text-light);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: 500;
+}
 
-        header img {
-            height: 40px; /* کاهش اندازه لوگو */
-            width: auto;
-        }
+.btn-custom:hover {
+    color: var(--white);
+    background-color:rgb(127, 56, 137);
+}
 
-        header h1 {
-            font-size: 1.3rem; /* کوچکتر کردن عنوان هدر */
-            margin-bottom: 0;
-            font-weight: 700;
-        }
+/* استایل منوی سریع */
+.nav-quick {
+    background-color: var(--white);
+    text-align: center;
+    border-bottom: 1px solid var(--secondary-bg);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
-        .btn-custom {
-            background-color: var(--secondary-bg);
-            color: var(--text-dark);
-            border: 1px solid var(--text-light);
-            padding: 0.5rem 1rem; /* کوچکتر کردن پدینگ دکمه */
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            font-weight: 500;
-        }
+.nav-quick a {
+    color: var(--text-dark);
+    padding: 0.7rem 1.2rem;
+    display: inline-block;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
 
-        .btn-custom:hover {
-            background-color: var(--accent-bg);
-            color: var(--white);
-        }
+.nav-quick a:hover {
+    color: rgb(127, 56, 137); /* بنفش هنگام هاور */
+}
 
-        /* استایل منوی سریع */
-        .nav-quick {
-            background-color: var(--white);
-            text-align: center;
-            border-bottom: 1px solid var(--secondary-bg);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+/* استایل کلی بخش‌ها و انیمیشن Fade-in */
+section {
+    padding: 6rem 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Smooth fade-in on scroll */
+}
 
-        .nav-quick a {
-            color: var(--text-dark);
-            padding: 0.7rem 1.2rem;
-            display: inline-block;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
+section.visible {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
 
-        .nav-quick a:hover {
-            color: var(--accent-bg); /* بنفش هنگام هاور */
-        }
+/* استایل اسلایدر (بخش اول) - تمام عرض و متن روی عکس */
+.slider {
+    position: relative;
+    width: 100%;
+    height: 750px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--white);
+}
 
-        /* استایل کلی بخش‌ها و انیمیشن Fade-in */
-        section {
-            padding: 6rem 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* Smooth fade-in on scroll */
-        }
+.slider img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    filter: brightness(0.6);
+}
 
-        section.visible {
-            opacity: 1 !important;
-            transform: translateY(0) !important;
-        }
+.slider-content {
+    position: relative;
+    z-index: 2;
+    max-width: 900px; /* افزایش عرض محتوا برای مطابقت با اسلایدر بزرگتر */
+    padding: 2.5rem; /* افزایش پدینگ */
+    background: rgba(0, 0, 0, 0.25); /* پس زمینه تیره برای خوانایی متن سفید */
+    border-radius: 10px; /* کمی گردتر */
+}
 
-        /* استایل اسلایدر (بخش اول) - تمام عرض و متن روی عکس */
-        .slider {
-            position: relative;
-            width: 100%;
-            height: 750px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--white);
-        }
+.slider h2 {
+    font-size: 2rem; /* بزرگتر کردن عنوان */
+    margin-bottom: 1.5rem;
+    color: var(--white);
+}
 
-        .slider img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 1;
-            filter: brightness(0.6);
-        }
+.slider p {
+    font-size: 1.75rem; /* بزرگتر کردن پاراگراف */
+    color: var(--white);
+    margin-bottom: 0;
+}
 
-        .slider-content {
-            position: relative;
-            z-index: 2;
-            max-width: 900px; /* افزایش عرض محتوا برای مطابقت با اسلایدر بزرگتر */
-            padding: 2.5rem; /* افزایش پدینگ */
-            background: rgba(0, 0, 0, 0.25); /* پس زمینه تیره برای خوانایی متن سفید */
-            border-radius: 10px; /* کمی گردتر */
-        }
+/* استایل درباره ما */
+#about {
+    background-color: var(--primary-bg);
+}
 
-        .slider h2 {
-            font-size: 2rem; /* بزرگتر کردن عنوان */
-            margin-bottom: 1.5rem;
-            color: var(--white);
-        }
+#about .row {
+    align-items: center;
+}
 
-        .slider p {
-            font-size: 1.75rem; /* بزرگتر کردن پاراگراف */
-            color: var(--white);
-            margin-bottom: 0;
-        }
+#about h2 {
+    margin-bottom: 2rem;
+}
 
-        /* استایل درباره ما */
-        #about {
-            background-color: var(--primary-bg);
-        }
+#about img {
+    width: 70%;
+    height: auto;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+    margin: 0 auto;
+}
 
-        #about .row {
-            align-items: center;
-        }
+/* استایل ساختمان‌های همکار */
+#buildings {
+    background-color: var(--primary-bg);
+}
 
-        #about h2 {
-            margin-bottom: 2rem;
-        }
+#buildings h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
 
-        #about img {
-            width: 70%;
-            height: auto;
-            border-radius: 0.25rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: block;
-            margin: 0 auto;
-        }
+#buildings .col-md-3 {
+    margin-bottom: 2rem;
+}
 
-        /* استایل ساختمان‌های همکار */
-        #buildings {
-            background-color: var(--primary-bg);
-        }
+#buildings img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
 
-        #buildings h2 {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+#buildings img:hover {
+    transform: scale(1.05);
+}
 
-        #buildings .col-md-3 {
-            margin-bottom: 2rem;
-        }
+#buildings .building-name {
+    text-align: center;
+    margin-top: 0.75rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 1.1rem;
+}
 
-        #buildings img {
-            width: 100%;
-            height: 420px;
-            object-fit: cover;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-        }
+/* استایل امکانات */
+#features {
+    background-color: var(--primary-bg);
+    text-align: center;
+}
 
-        #buildings img:hover {
-            transform: scale(1.05);
-        }
+#features h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
 
-        #buildings .building-name {
-            text-align: center;
-            margin-top: 0.75rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            font-size: 1.1rem;
-        }
+#features .icon-feature {
+    font-size: 2.5rem;
+    color: var(--accent-bg); /* رنگ بنفش برای آیکون‌ها */
+    margin-bottom: 0.75rem;
+}
 
-        /* استایل امکانات */
-        #features {
-            background-color: var(--primary-bg);
-            text-align: center;
-        }
+#features h5 {
+    font-size: 1.2rem;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
 
-        #features h2 {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+#features p {
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
 
-        #features .icon-feature {
-            font-size: 2.5rem;
-            color: var(--accent-bg); /* رنگ بنفش برای آیکون‌ها */
-            margin-bottom: 0.75rem;
-        }
+/* استایل سوالات متداول */
+.faq {
+    background-color: var(--primary-bg);
+}
 
-        #features h5 {
-            font-size: 1.2rem;
-            color: var(--text-dark);
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
+.faq h2 {
+    text-align: center;
+    margin-bottom: 3rem;
+}
 
-        #features p {
-            color: var(--text-dark);
-            font-size: 0.9rem;
-        }
+.faq .accordion-item {
+    margin-bottom: 0.5rem;
+    border: none;
+    background-color: transparent;
+}
 
-        /* استایل سوالات متداول */
-        .faq {
-            background-color: var(--primary-bg);
-        }
+.faq .accordion-header {
+    background-color: transparent;
+}
 
-        .faq h2 {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
+.faq .accordion-button {
+    background-color: var(--white);
+    color: var(--text-dark);
+    border: 1px solid var(--secondary-bg); /* حاشیه روشن‌تر */
+    border-radius: 0.25rem;
+    font-weight: 500;
+    box-shadow: none;
+    padding: 1rem 1.25rem;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
 
-        .faq .accordion-item {
-            margin-bottom: 0.5rem;
-            border: none;
-            background-color: transparent;
-        }
+.faq .accordion-button:not(.collapsed) {
+    background-color: var(--accent-bg); /* پس زمینه بنفش وقتی باز است */
+    color: var(--white); /* متن سفید برای کنتراست */
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
 
-        .faq .accordion-header {
-            background-color: transparent;
-        }
+.faq .accordion-body {
+    background-color: var(--white);
+    border: 1px solid var(--secondary-bg); /* حاشیه روشن‌تر */
+    border-top: none;
+    border-radius: 0 0 0.25rem 0.25rem;
+    padding: 1rem;
+    color: var(--text-dark);
+}
+.accordion-body > div {
+    padding-right: var(--bs-gutter-x, 1.5rem) !important;
+    padding-left: var(--bs-gutter-x, 1.5rem) !important;
+}
 
-        .faq .accordion-button {
-            background-color: var(--white);
-            color: var(--text-dark);
-            border: 1px solid var(--secondary-bg); /* حاشیه روشن‌تر */
-            border-radius: 0.25rem;
-            font-weight: 500;
-            box-shadow: none;
-            padding: 1rem 1.25rem;
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-        }
+/* استایل فوتر */
+footer {
+    background-color: var(--secondary-bg);
+    color: var(--text-dark);
+    text-align: center;
+    padding: 2rem 0;
+    font-size: 0.9rem;
+}
 
-        .faq .accordion-button:not(.collapsed) {
-            background-color: var(--accent-bg); /* پس زمینه بنفش وقتی باز است */
-            color: var(--white); /* متن سفید برای کنتراست */
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
+footer .social-icons a {
+    color: var(--text-dark);
+    font-size: 1.5rem;
+    margin: 0 0.75rem;
+    transition: color 0.3s ease;
+}
 
-        .faq .accordion-body {
-            background-color: var(--white);
-            border: 1px solid var(--secondary-bg); /* حاشیه روشن‌تر */
-            border-top: none;
-            border-radius: 0 0 0.25rem 0.25rem;
-            padding: 1rem;
-            color: var(--text-dark);
-        }
-        .accordion-body > div {
-            padding-right: var(--bs-gutter-x, 1.5rem) !important;
-            padding-left: var(--bs-gutter-x, 1.5rem) !important;
-        }
+footer .social-icons a:hover {
+    color: var(--accent-bg); /* بنفش هنگام هاور */
+}
 
-        /* استایل فوتر */
-        footer {
-            background-color: var(--secondary-bg);
-            color: var(--text-dark);
-            text-align: center;
-            padding: 2rem 0;
-            font-size: 0.9rem;
-        }
-
-        footer .social-icons a {
-            color: var(--text-dark);
-            font-size: 1.5rem;
-            margin: 0 0.75rem;
-            transition: color 0.3s ease;
-        }
-
-        footer .social-icons a:hover {
-            color: var(--accent-bg); /* بنفش هنگام هاور */
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
+footer p {
+    margin-bottom: 0.5rem;
+}

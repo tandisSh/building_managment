@@ -15,6 +15,20 @@ class Unit extends Model
         'storerooms',
     ];
 
+    protected static function booted(): void
+    {
+        static::deleting(function (Unit $unit) {
+            if ($unit->isDeletable()) {
+                abort(403, 'این واحد دارای ساکن بوده و قابل حذف نمی‌باشد.');
+            }
+        });
+    }
+    public function isDeletable(): bool
+    {
+        return $this->users()->exists();
+    }
+
+
     public function building()
     {
         return $this->belongsTo(Building::class);
@@ -54,5 +68,9 @@ class Unit extends Model
     public function totalResidentsCount()
     {
         return $this->residents()->sum('unit_user.resident_count');
+    }
+    public function unitUsers()
+    {
+        return $this->hasMany(UnitUser::class);
     }
 }

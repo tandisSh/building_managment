@@ -22,7 +22,7 @@ class BuildingRequestService
     public function storeRequest(User $user, array $data, $file)
     {
         $path = $file->store('building_documents');
-
+// dd($data);
         return BuildingRequest::create([
             'user_id' => $user->id,
             'name' => $data['name'],

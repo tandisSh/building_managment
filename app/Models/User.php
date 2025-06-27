@@ -23,7 +23,7 @@ class User extends Authenticatable
         'phone',
         'email',
         'password',
-        'role_id',
+        // 'role_id',
         'status'
     ];
 
@@ -108,5 +108,9 @@ class User extends Authenticatable
      public function unitUsers()
     {
         return $this->hasMany(UnitUser::class);
+    }
+      public function buildingUsers()
+    {
+        return $this->hasMany(BuildingUser::class, 'user_id');
     }
 }

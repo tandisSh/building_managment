@@ -72,6 +72,7 @@ class InvoiceController extends Controller
     //فرم ویرایش صورتحساب کلی
     public function editBulkInvoice(BulkInvoice $bulkInvoice)
     {
+
         try {
             // فقط اجازه میدیم فرم ویرایش برای bulk invoice با وضعیت pending باز بشه
             if ($bulkInvoice->status !== 'pending') {
@@ -101,7 +102,14 @@ class InvoiceController extends Controller
         $bulkInvoice = BulkInvoice::with('invoices.unit')->findOrFail($id);
         return view('manager.invoices.bulk.show', compact('bulkInvoice'));
     }
+    //حذف صورتحساب کلی
+  public function destroyBulk($id)
+    {
+        $doctor = BulkInvoice::findOrFail($id);
+        $doctor->delete();
 
+        return redirect()->route('bulk_invoices.index')->with('success', 'صورتحساب با موفقیت حذف شد.');
+    }
 
     //single invoices
 
@@ -170,8 +178,7 @@ class InvoiceController extends Controller
     //نمایش صورتحساب های یک واحد خاص
     public function unitInvoices(Unit $unit)
     {
-        $invoices = $this->invoiceService->getUnitInvoices($unit->id);
-        // dd($invoices);
+        $invoices = $this->invoiceService->getUnitInvoices($unit->id, request()->all());
         return view('manager.invoices.unit_index', compact('invoices', 'unit'));
     }
 }

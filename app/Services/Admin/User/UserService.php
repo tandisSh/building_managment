@@ -2,18 +2,17 @@
 
 namespace App\Services\Admin\User;
 
-use App\Models\User;
+use App\Mail\SendInitialPasswordMail;
 use App\Models\Building;
-use App\Models\Unit;
-use App\Models\UnitUser;
 use App\Models\BuildingUser;
 use App\Models\Role;
+use App\Models\UnitUser;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Validator;
 
 class UserService
 {
@@ -34,11 +33,13 @@ class UserService
             ->when($filters['role'] ?? null, function ($query, $role) {
                 $query->whereHas('unitUsers', function ($q) use ($role) {
                     if ($role === 'owner') {
-                        $q->where('role', 'مالک');
+                        $q->where('role', 'owner');
                     } elseif ($role === 'resident') {
-                        $q->where('role', 'ساکن');
+                        $q->where('role', 'resident');
                     } elseif ($role === 'resident_owner') {
-                        $q->where('role', 'مالک و ساکن');
+                        $q->where(function ($q2) {
+                            $q2->where('role', 'resident')->orWhere('role', 'owner');
+                        });
                     }
                 });
             })
@@ -51,231 +52,185 @@ class UserService
         return Building::all();
     }
 
-    // public function createUser(array $data): User
-    // {
-    //     return DB::transaction(function () use ($data) {
-    //         // ایجاد یا یافتن کاربر
-    //         $user = $this->findOrCreateUser($data);
-
-    //         // تخصیص نقش سیستمی
-    //         $this->assignSystemRole($user, $data['system_role']);
-
-    //         // اگر کاربر عادی است (نقش 3)
-    //         if ($data['system_role'] == 3) {
-    //             $this->processRegularUser($user, $data);
-    //         }
-    //         // اگر مدیر ساختمان است (نقش 2)
-    //         elseif ($data['system_role'] == 2) {
-    //             $this->processBuildingManager($user, $data);
-    //         }
-
-    //         return $user;
-    //     });
-    // }
-
-
-    // private function assignSystemRole(User $user, int $roleId): void
-    // {
-    //     $user->roles()->sync([$roleId]);
-    // }
-
-    // private function processRegularUser(User $user, array $data): void
-    // {
-    //     // تبدیل نقش به فرمت مناسب
-    //     $role = $data['unit_role'] === 'resident_owner' ? 'both' : $data['unit_role'];
-
-    //     // بررسی تکراری نبودن نقش
-    //     if ($role === 'both') {
-    //         $this->checkDuplicateRole($data['unit_id'], 'owner');
-    //         $this->checkDuplicateRole($data['unit_id'], 'resident');
-    //     } else {
-    //         $this->checkDuplicateRole($data['unit_id'], $role);
-    //     }
-
-    //     // تخصیص نقش‌های واحد
-    //     if ($role === 'both') {
-    //         // ثبت resident
-    //         $this->attachToUnit($user->id, array_merge($data, [
-    //             'role' => 'resident',
-    //         ]));
-
-    //         // ثبت owner
-    //         $this->attachToUnit($user->id, array_merge($data, [
-    //             'role' => 'owner',
-    //             'resident_count' => null,
-    //         ]));
-    //     } else {
-    //         $this->attachToUnit($user->id, array_merge($data, ['role' => $role]));
-    //     }
-
-    //     // ثبت در building_user
-    //     $this->attachToBuilding($user->id, $data['unit_id']);
-    // }
-
-    // private function processBuildingManager(User $user, array $data): void
-    // {
-    //     // فقط برای مدیر ساختمان، ساختمان را ثبت می‌کنیم
-    //     foreach ($data['building_id'] as $buildingId) {
-    //         BuildingUser::create([
-    //             'building_id' => $buildingId,
-    //             'user_id' => $user->id,
-    //             'role' => 'manager'
-    //         ]);
-    //     }
-    // }
-
-
-    // private function attachToUnit($userId, array $data): void
-    // {
-    //     $unitData = [
-    //         'unit_id' => $data['unit_id'],
-    //         'user_id' => $userId,
-    //         'role' => $data['role'],
-    //         'from_date' => $data['from_date'] ?? now(),
-    //         'status' => 'active'
-    //     ];
-
-    //     if ($data['role'] === 'resident') {
-    //         $unitData['resident_count'] = $data['resident_count'];
-    //     }
-
-    //     UnitUser::create($unitData);
-    // }
-
-    // private function attachToBuilding($userId, $unitId): void
-    // {
-    //     $unit = Unit::find($unitId);
-    //     if ($unit && $unit->building_id) {
-    //         BuildingUser::firstOrCreate([
-    //             'building_id' => $unit->building_id,
-    //             'user_id' => $userId,
-    //             'role' => 'resident'
-    //         ]);
-    //     }
-    // }
-
-    // private function findOrCreateUser(array $data): User
-    // {
-    //     $user = User::where('phone', $data['phone'])->first();
-
-    //     if (!$user) {
-    //         $password = Str::random(10);
-    //         $user = User::create([
-    //             'name' => $data['name'],
-    //             'phone' => $data['phone'],
-    //             'email' => $data['email'],
-    //             'password' => Hash::make($password),
-    //             'status' => 'active'
-    //         ]);
-
-    //         Mail::to($user->email)->send(new \App\Mail\SendInitialPasswordMail($user, $password));
-    //     }
-
-    //     return $user;
-    // }
-
-    // private function processUnitAssignment(User $user, array $data): void
-    // {
-    //     $role = $data['unit_role'];
-
-    //     if ($role === 'resident_owner') {
-    //         $this->checkDuplicateRole($data['unit_id'], 'owner');
-    //         $this->checkDuplicateRole($data['unit_id'], 'resident');
-
-    //         // ثبت مالک
-    //         UnitUser::create([
-    //             'unit_id' => $data['unit_id'],
-    //             'user_id' => $user->id,
-    //             'role' => 'owner',
-    //             'from_date' => $data['from_date'],
-    //             'status' => 'active'
-    //         ]);
-
-    //         // ثبت ساکن
-    //         UnitUser::create([
-    //             'unit_id' => $data['unit_id'],
-    //             'user_id' => $user->id,
-    //             'role' => 'resident',
-    //             'resident_count' => $data['resident_count'],
-    //             'from_date' => $data['from_date'],
-    //             'to_date' => $data['to_date'],
-    //             'status' => 'active'
-    //         ]);
-    //     } else {
-    //         $this->checkDuplicateRole($data['unit_id'], $role);
-
-    //         $unitData = [
-    //             'unit_id' => $data['unit_id'],
-    //             'user_id' => $user->id,
-    //             'role' => $role,
-    //             'from_date' => $data['from_date'],
-    //             'status' => 'active'
-    //         ];
-
-    //         if ($role === 'resident') {
-    //             $unitData['resident_count'] = $data['resident_count'];
-    //             $unitData['to_date'] = $data['to_date'];
-    //         }
-
-    //         UnitUser::create($unitData);
-    //     }
-    // }
-
-    // private function checkDuplicateRole($unitId, $role): void
-    // {
-    //     if (UnitUser::where('unit_id', $unitId)
-    //                ->where('role', $role)
-    //                ->exists()) {
-    //         $validator = Validator::make([], []);
-    //         $label = $role === 'owner' ? 'مالک' : 'ساکن';
-    //         $validator->errors()->add('role', "قبلاً یک {$label} برای این واحد ثبت شده است.");
-    //         throw new ValidationException($validator);
-    //     }
-    // }
-
-    public function getUserForEdit(string $id): User
+    public function create(array $data)
     {
-        return User::with(['roles', 'units'])->findOrFail($id);
+        return DB::transaction(function () use ($data) {
+            $userType = $data['user_type'] ?? 'normal';
+            $password = Str::random(10);
+
+            $user = User::firstOrCreate(
+                ['phone' => $data['phone']],
+                [
+                    'name' => $data['name'],
+                    'email' => $data['email'],
+                    'password' => Hash::make($password),
+                    'status' => 'active',
+                ]
+            );
+
+            if ($userType === 'manager') {
+                $this->processBuildingManager($user, $data);
+            } else {
+                $this->processRegularUser($user, $data);
+            }
+
+            Mail::to($user->email)->send(new SendInitialPasswordMail($user, $password));
+
+            return $user;
+        });
     }
 
-    public function updateUser(string $id, array $data): void
+    private function processBuildingManager($user, array $data)
+    {
+        $role = Role::where('id', 2)->firstOrFail(); // نقش مدیر
+        $user->roles()->sync([$role->id]);
+
+        BuildingUser::firstOrCreate([
+            'building_id' => $data['building_id'],
+            'user_id' => $user->id,
+            'role' => 'manager',
+        ]);
+    }
+
+    private function processRegularUser($user, array $data)
+    {
+        $role = Role::where('id', 3)->firstOrFail(); // نقش کاربر عادی
+        $user->roles()->sync([$role->id]);
+
+        $unitRole = $data['role'];
+        $this->checkDuplicateRole($data['unit_id'], $unitRole);
+
+        if ($unitRole === 'both') {
+            UnitUser::create([
+                'unit_id' => $data['unit_id'],
+                'user_id' => $user->id,
+                'role' => 'owner',
+                'status' => 'active',
+                'from_date' => $data['from_date'],
+            ]);
+            UnitUser::create([
+                'unit_id' => $data['unit_id'],
+                'user_id' => $user->id,
+                'role' => 'resident',
+                'resident_count' => $data['resident_count'] ?? null,
+                'from_date' => $data['from_date'],
+                'to_date' => $data['to_date'] ?? null,
+                'status' => 'active',
+            ]);
+        } else {
+            UnitUser::create([
+                'unit_id' => $data['unit_id'],
+                'user_id' => $user->id,
+                'role' => $unitRole,
+                'resident_count' => $unitRole === 'resident' ? $data['resident_count'] : null,
+                'from_date' => $data['from_date'],
+                'to_date' => $unitRole === 'resident' ? $data['to_date'] : null,
+                'status' => 'active',
+            ]);
+        }
+
+        // حذف ردیف building_user برای کاربران عادی، چون فقط برای manager نیازه
+        // اگر بخوای برای کاربران عادی از 'other' استفاده کنی، می‌تونی این خط رو فعال کنی:
+        // BuildingUser::firstOrCreate([
+        //     'building_id' => $data['building_id'],
+        //     'user_id' => $user->id,
+        //     'role' => 'other',
+        // ]);
+    }
+
+    private function checkDuplicateRole($unitId, $role)
+    {
+        $existingRoles = ['resident', 'owner'];
+        if ($role === 'both') {
+            foreach ($existingRoles as $r) {
+                if (UnitUser::where('unit_id', $unitId)->where('role', $r)->where('status', 'active')->exists()) {
+                    throw ValidationException::withMessages(['role' => "قبلاً یک {$r} برای این واحد ثبت شده است."]);
+                }
+            }
+        } else {
+            if (UnitUser::where('unit_id', $unitId)->where('role', $role)->where('status', 'active')->exists()) {
+                throw ValidationException::withMessages(['role' => "قبلاً یک {$role} برای این واحد ثبت شده است."]);
+            }
+        }
+    }
+
+    public function getUserForEdit($id)
+    {
+        return User::with(['roles', 'unitUsers.unit', 'buildingUsers'])->findOrFail($id);
+    }
+
+    public function updateUser($id, array $data)
     {
         DB::transaction(function () use ($id, $data) {
             $user = User::findOrFail($id);
-
+            $userType = $data['user_type'] ?? 'normal';
             $user->update([
                 'name' => $data['name'],
                 'phone' => $data['phone'],
                 'email' => $data['email'],
-                'status' => $data['status']
+                'status' => $data['status'] ?? 'active',
             ]);
 
             if (!empty($data['password'])) {
-                $user->update([
-                    'password' => Hash::make($data['password']),
-                ]);
+                $user->update(['password' => Hash::make($data['password'])]);
             }
 
-            // Update roles
-            if (!empty($data['role_id'])) {
-                $user->roles()->sync([$data['role_id']]);
-            }
+            if ($userType === 'manager') {
+                $user->buildingUsers()->updateOrCreate(
+                    ['building_id' => $data['building_id']],
+                    ['role' => 'manager']
+                );
+            } else {
+                $unitRole = $data['role'];
+                $user->unitUsers()->delete(); // حذف نقش‌های قبلی
+                $this->checkDuplicateRole($data['unit_id'], $unitRole);
 
-            // Update units
-            if (!empty($data['unit_id'])) {
-                $user->units()->sync([$data['unit_id'] => [
-                    'role' => $data['unit_role'],
-                    'status' => $data['status']
-                ]]);
+                if ($unitRole === 'both') {
+                    UnitUser::create([
+                        'unit_id' => $data['unit_id'],
+                        'user_id' => $user->id,
+                        'role' => 'owner',
+                        'status' => 'active',
+                        'from_date' => $data['from_date'],
+                    ]);
+                    UnitUser::create([
+                        'unit_id' => $data['unit_id'],
+                        'user_id' => $user->id,
+                        'role' => 'resident',
+                        'resident_count' => $data['resident_count'],
+                        'from_date' => $data['from_date'],
+                        'to_date' => $data['to_date'],
+                        'status' => 'active',
+                    ]);
+                } else {
+                    UnitUser::create([
+                        'unit_id' => $data['unit_id'],
+                        'user_id' => $user->id,
+                        'role' => $unitRole,
+                        'resident_count' => $unitRole === 'resident' ? $data['resident_count'] : null,
+                        'from_date' => $data['from_date'],
+                        'to_date' => $unitRole === 'resident' ? $data['to_date'] : null,
+                        'status' => 'active',
+                    ]);
+                }
+
+                // حذف یا به‌روزرسانی building_user برای کاربران عادی
+                $user->buildingUsers()->where('user_id', $user->id)->delete();
+                // اگر بخوای 'other' برای کاربران عادی ثبت کنی، این خط رو فعال کن:
+                // $user->buildingUsers()->updateOrCreate(
+                //     ['building_id' => $data['building_id']],
+                //     ['role' => 'other']
+                // );
             }
         });
     }
 
-    public function deleteUser(string $id): void
+    public function deleteUser($id)
     {
         $user = User::findOrFail($id);
         $user->roles()->detach();
-        $user->units()->detach();
+        $user->unitUsers()->delete();
+        $user->buildingUsers()->delete();
         $user->delete();
     }
 }

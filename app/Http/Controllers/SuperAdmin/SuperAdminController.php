@@ -22,6 +22,44 @@ class SuperAdminController extends Controller
         return view('super_admin.requests', compact('requests'));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function approveRequest($id)
     {
         $req = BuildingRequest::findOrFail($id);

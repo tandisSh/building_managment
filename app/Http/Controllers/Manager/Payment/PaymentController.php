@@ -32,7 +32,7 @@ class PaymentController extends Controller
     public function show($id)
     {
         $payment = Payment::with('invoice')->findOrFail($id);
-        return view('resident.payments.show', compact('payment'));
+        return view('manager.payments.show', compact('payment'));
     }
 
     public function receipt($id)

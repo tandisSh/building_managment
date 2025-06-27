@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin\Invoice;
 
+use App\Models\Building;
 use App\Models\Invoice;
 use App\Models\Unit;
 use App\Models\User;
@@ -22,6 +23,7 @@ class SingleInvoiceService
     public function getSuperAdminInvoices(User $superAdmin, $filters = [])
     {
         $query = Invoice::with('unit.building');
+$qo=Building::with('units');
 
         if (!empty($filters['search'])) {
             $query->whereHas('unit', function ($q) use ($filters) {
@@ -39,7 +41,9 @@ class SingleInvoiceService
         if (!empty($filters['type'])) {
             $query->where('type', $filters['type']);
         }
-
+ if (!empty($filters['building_id'])) {
+            $qo->where('id', $filters['building_id']);
+        }
         if (!empty($filters['unit_id'])) {
             $query->where('unit_id', $filters['unit_id']);
         }

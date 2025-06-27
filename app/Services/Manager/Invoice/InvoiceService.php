@@ -12,12 +12,25 @@ use Illuminate\Support\Carbon;
 class InvoiceService
 {
     //دریافت صورتحساب های یک واحد خاص
-    public function getUnitInvoices($unitId)
+    public function getUnitInvoices($unitId, $filters = [])
     {
-        return Invoice::where('unit_id', $unitId)
-            ->with('unit')
-            ->latest()
-            ->get();
+        $query = Invoice::where('unit_id', $unitId)
+            ->with('unit');
+
+        if (!empty($filters['search'])) {
+            $query->where('title', 'like', '%' . $filters['search'] . '%');
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['type'])) {
+            $query->where('type', $filters['type']);
+        }
+
+
+        return $query->latest()->get();
     }
 
     // دریافت تمام صورتحساب‌های واحدهای ساختمان مدیر
@@ -41,7 +54,7 @@ class InvoiceService
         }
 
         if (!empty($filters['type'])) {
-            $query->where('type', $filters['type']); // فرض بر اینکه فیلد `type` در جدول invoices هست
+            $query->where('type', $filters['type']);
         }
 
         if (!empty($filters['unit_id'])) {

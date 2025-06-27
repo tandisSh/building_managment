@@ -349,6 +349,23 @@ body {
     color: #3b2c9e;
 }
 
+.cancel-btn {
+    background-color: #ffffff;
+    color: #4e3cb3;
+    padding: 3px 20px;
+    font-size: 1rem;
+    border-radius: 6px;
+    border-color: #495057;
+    border: grey 1px ridge;
+    margin-top: 10px;
+    transition: all 0.2s ease-in-out;
+}
+
+.cancel-btn:hover {
+    background-color: #d8cefa;
+    color: #3b2c9e;
+}
+
 .search-input {
     width: 150px;
     font-size: 0.9rem;

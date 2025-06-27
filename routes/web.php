@@ -5,6 +5,7 @@ use App\Http\Controllers\Manager\Payment\PaymentController;
 use App\Http\Controllers\Resident\InvoicePaymentController as ResidentInvoicePaymentController;
 
 use App\Http\Controllers\SuperAdmin\BuildingManager\BuildingManagerController;
+use App\Http\Controllers\SuperAdmin\Payment\SuperAdminPaymentController;
 use App\Http\Controllers\Superadmin\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Resident\ResidentInvoiceController;
 use App\Http\Controllers\Resident\ResidentPaymentController;
 use App\Http\Controllers\SuperAdmin\Building\BuildingController as AdminBuildingController;
 use App\Http\Controllers\SuperAdmin\Invoice\SuperAdminInvoiceController;
+use App\Http\Controllers\SuperAdmin\Report\SuperAdminReportController;
 use App\Http\Controllers\SuperAdmin\SuperAdminController;
 use App\Models\Building;
 
@@ -85,13 +87,11 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::post('/requests/{repairRequest}', [RequestController::class, 'updateStatus'])->name('requests.update');
     Route::get('/requests/{repairrequest}', [RequestController::class, 'show'])->name('requests.show');
 
-
-
     // مدیریت پرداخت ها
     Route::prefix('payments')->name('payments.')->group(function () {
         Route::get('/', [PaymentController::class, 'index'])->name('index');
-        Route::get('/{id}', [PaymentController::class, 'show'])->name('show');
-        Route::get('/{payment}/receipt', [PaymentController::class, 'receipt'])->name('receipt');
+        Route::get('/show/{id}', [PaymentController::class, 'show'])->name('show');
+        Route::get('/receipt/{payment}/receipt', [PaymentController::class, 'receipt'])->name('receipt');
     });
 
 
@@ -117,9 +117,10 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::post('invoices', [InvoiceController::class, 'storebulk'])->name('manager.invoices.store');
     Route::get('bulk-invoices', [InvoiceController::class, 'bulkindex'])->name('bulk_invoices.index');
     Route::post('bulk-invoices/{bulkInvoice}/approve', [InvoiceController::class, 'approve'])->name('bulk_invoices.approve');
-    Route::get('manager/bulk_invoices/{bulkInvoice}/edit', [InvoiceController::class, 'editBulkInvoice'])->name('manager.bulk_invoices.edit');
-    Route::post('manager/bulk_invoices/{bulkInvoice}', [InvoiceController::class, 'updateBulkInvoice'])->name('manager.bulk_invoices.update');
-    Route::get('manager/bulk_invoices/{bulkInvoice}', [InvoiceController::class, 'showBulk'])->name('manager.bulk_invoices.show');
+    Route::get('/bulk_invoices/{bulkInvoice}/edit', [InvoiceController::class, 'editBulkInvoice'])->name('manager.bulk_invoices.edit');
+    Route::put('/bulk_invoices/{bulkInvoice}', [InvoiceController::class, 'updateBulkInvoice'])->name('manager.bulk_invoices.update');
+    Route::get('/bulk_invoices/{bulkInvoice}', [InvoiceController::class, 'showBulk'])->name('manager.bulk_invoices.show');
+    Route::delete('/bulk_invoices/{bulkInvoice}', [InvoiceController::class, 'destroyBulk'])->name('manager.bulk_invoices.destroy');
 
     // صورتحساب تکی (single)
     Route::get('invoices/single/create', [InvoiceController::class, 'createSingle'])->name('invoices.single.create');
@@ -166,11 +167,10 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
 
 
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadmin.')->group(function () {
-
     // داشبورد سوپر ادمین
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
 
-    //  ساختمان‌
+    // ساختمان‌ها
     Route::get('buildings', [AdminBuildingController::class, 'index'])->name('buildings.index');
     Route::get('buildings/create', [AdminBuildingController::class, 'create'])->name('buildings.create');
     Route::post('buildings', [AdminBuildingController::class, 'store'])->name('buildings.store');
@@ -178,26 +178,28 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('buildings/{building}/edit', [AdminBuildingController::class, 'edit'])->name('buildings.edit');
     Route::put('buildings/{building}', [AdminBuildingController::class, 'update'])->name('buildings.update');
     Route::delete('buildings/{building}', [AdminBuildingController::class, 'destroy'])->name('buildings.destroy');
+
     // مدیریت مدیران ساختمان
     Route::get('building-managers', [BuildingManagerController::class, 'index'])->name('building_managers.index');
     Route::get('building-managers/{building}/edit', [BuildingManagerController::class, 'edit'])->name('building_managers.edit');
     Route::put('building-managers/{building}', [BuildingManagerController::class, 'update'])->name('building_managers.update');
-    //  درخواست‌های ساختمان
+
+    // درخواست‌های ساختمان
     Route::get('/requests', [SuperAdminController::class, 'requests'])->name('requests');
     Route::post('/building-requests/{id}/approve', [SuperAdminController::class, 'approveRequest'])->name('requests.approve');
     Route::post('/building-requests/{id}/reject', [SuperAdminController::class, 'rejectRequest'])->name('requests.reject');
 
-    //  کاربران
+    // کاربران
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/create', [UserController::class, 'create'])->name('users.create');
     Route::post('users', [UserController::class, 'store'])->name('users.store');
-    Route::get('get-units/{building}', [UserController::class, 'getUnits'])->name('users.getUnits');
-    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::get('users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::get('users/{user}', [UserController::class, 'show'])->name('users.show');
     Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::get('get-building-units/{building}', [UserController::class, 'getBuildingUnits'])->name('users.getBuildingUnits');
     Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-  // صورتحساب‌های تکی
+    // صورتحساب‌های تکی
     Route::get('/invoices', [SuperAdminInvoiceController::class, 'index'])->name('invoices.index');
     Route::get('/invoices/create-single', [SuperAdminInvoiceController::class, 'createSingle'])->name('invoices.create-single');
     Route::post('/invoices/store-single', [SuperAdminInvoiceController::class, 'storeSingle'])->name('invoices.store-single');
@@ -206,4 +208,23 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('/invoices/{invoiceId}', [SuperAdminInvoiceController::class, 'show'])->name('invoices.show');
     Route::get('/invoices/unit/{unit}', [SuperAdminInvoiceController::class, 'unitInvoices'])->name('invoices.unit');
     Route::get('/invoices/get-units/{building}', [SuperAdminInvoiceController::class, 'getUnits'])->name('invoices.get-units');
+
+    // پرداخت‌ها
+    Route::get('/payments', [SuperAdminPaymentController::class, 'index'])->name('payments.index');
+    Route::get('/payments/{id}', [SuperAdminPaymentController::class, 'show'])->name('payments.show');
+    Route::get('/payments/{id}/receipt', [SuperAdminPaymentController::class, 'receipt'])->name('payments.receipt');
+
+    // گزارشات سوپر ادمین
+    Route::get('reports/overall-payments', [SuperAdminReportController::class, 'overallPayments'])->name('reports.overall_payments');
+    Route::get('reports/aggregate-invoices', [SuperAdminReportController::class, 'aggregateInvoices'])->name('reports.aggregate_invoices');
+    Route::get('reports/system-debts', [SuperAdminReportController::class, 'systemDebts'])->name('reports.system_debts');
+    Route::get('reports/overdue-payments', [SuperAdminReportController::class, 'systemOverduePayments'])->name('reports.overdue_payments');
+    Route::get('reports/annual-summary', [SuperAdminReportController::class, 'annualFinancialSummary'])->name('reports.annual_summary');
+
+    // روت‌های چاپ گزارشات
+    Route::get('reports/overall-payments/print', [SuperAdminReportController::class, 'overallPayments'])->name('reports.overall_payments.print');
+    Route::get('reports/aggregate-invoices/print', [SuperAdminReportController::class, 'aggregateInvoices'])->name('reports.aggregate_invoices.print');
+    Route::get('reports/system-debts/print', [SuperAdminReportController::class, 'systemDebts'])->name('reports.system_debts.print');
+    Route::get('reports/overdue-payments/print', [SuperAdminReportController::class, 'systemOverduePayments'])->name('reports.overdue_payments.print');
+    Route::get('reports/annual-summary/print', [SuperAdminReportController::class, 'annualFinancialSummary'])->name('reports.annual_summary.print');
 });

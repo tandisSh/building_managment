@@ -3,6 +3,7 @@
 namespace App\Services\Manager\Invoice;
 
 use App\Models\BulkInvoice;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 
 class BulkInvoiceService
@@ -58,7 +59,6 @@ class BulkInvoiceService
         if ($bulkInvoice->status !== 'pending') {
             throw new \Exception('این صورتحساب کلی قبلاً تایید شده و قابل ویرایش نیست.');
         }
-
         $bulkInvoice->update([
             'title' => $data['title'],
             'base_amount' => $data['base_amount'],
@@ -66,7 +66,10 @@ class BulkInvoiceService
             'type' => $data['type'],
             'description' => $data['description'] ?? null,
             'distribution_type' => $data['distribution_type'] ?? 'equal',
+            'fixed_precent' => $data['fixed_precent'] ?? null,
+           
 
         ]);
+
     }
 }

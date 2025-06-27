@@ -21,7 +21,8 @@ class SuperAdminInvoiceController extends Controller
     {
         $invoices = $this->singleInvoiceService->getSuperAdminInvoices(Auth::user(), request()->all());
         $units = Unit::with('building')->get();
-        return view('super_admin.invoices.index', compact('invoices', 'units'));
+        $buildings = Building::get();
+        return view('super_admin.invoices.index', compact('invoices', 'units' , 'buildings'));
     }
 
     // نمایش جزئیات یک صورتحساب

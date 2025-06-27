@@ -16,7 +16,6 @@ class Building extends Model
         'shared_electricity',
         'shared_water',
         'shared_gas',
-        // 'has_elevator', 'has_guard', 'has_cctv',
         'number_of_floors',
         'number_of_units',
         'is_residential'
@@ -26,7 +25,7 @@ class Building extends Model
     {
         return $this->belongsTo(User::class, 'manager_id');
     }
-    
+
 
     public function users()
     {

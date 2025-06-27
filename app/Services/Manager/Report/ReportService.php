@@ -131,7 +131,7 @@ class ReportService
         }
 
         // دریافت تمام واحدهای ساختمان
-        $units = \App\Models\Unit::where('building_id', $buildingId)
+        $units = Unit::where('building_id', $buildingId)
             ->with(['invoices' => function ($q) {
                 $q->where('status', 'unpaid');
             }])

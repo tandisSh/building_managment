@@ -2,25 +2,20 @@
 
 namespace App\Services\Resident\Dashboard;
 
+use App\Models\Invoice;
 use App\Models\User;
 
 class DashboardService
 {
- public function getDashboardData(User $user): array
+ public function getDashboardData(User $user)
 {
-    $unit = $user->unit;
 
-    $invoices = collect();
+ $upcomingInvoices = Invoice::with('unit.users')
+            ->where('status', 'unpaid')
+            ->whereDate('due_date', '<=', now()->addDays(7))
+            ->orderBy('due_date')
+            ->get();
 
-    if ($unit) {
-        $invoices = $unit->invoices()->where('status', 'unpaid')->latest()->take(5)->get();
-    }
-
-    return [
-        'user' => $user,
-        'unit' => $unit,
-        'invoices' => $invoices,
-    ];
+            return $upcomingInvoices;
 }
-
 }
