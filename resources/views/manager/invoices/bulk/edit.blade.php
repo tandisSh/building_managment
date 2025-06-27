@@ -10,6 +10,15 @@
 
     <div class="admin-table-card p-4">
         <form action="{{ route('manager.bulk_invoices.update', $bulkInvoice->id) }}" method="POST">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             @csrf
             @method('PUT')
 
@@ -56,7 +65,7 @@
         </select>
     </div>
 
-    <div class="col-md-6 {{ $bulkInvoice->distribution_type === 'by_person_count' ? '' : 'd-none' }}" id="fixed_percent_wrapper">
+    <div class="col-md-6" id="fixed_percent_wrapper">
         <label class="form-label small">درصد پایه برای تقسیم (مثلاً 100)</label>
         <input type="number" name="fixed_percent" id="fixed_percent_input"
                class="form-control form-control-sm"
@@ -90,15 +99,13 @@
 <script>
     function toggleFixedPercentField() {
         const distType = document.querySelector('[name="distribution_type"]').value;
-        const percentWrapper = document.getElementById('fixed_percent_wrapper');
-
+        const percentInput = document.getElementById('fixed_percent_input');
         if (distType === 'by_person_count') {
-            percentWrapper.classList.remove('d-none');
+            percentInput.disabled = false;
         } else {
-            percentWrapper.classList.add('d-none');
+            percentInput.disabled = true;
         }
     }
-
     document.addEventListener('DOMContentLoaded', () => {
         toggleFixedPercentField();
         const select = document.querySelector('[name="distribution_type"]');

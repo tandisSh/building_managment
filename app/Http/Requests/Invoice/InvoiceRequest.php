@@ -18,8 +18,14 @@ class InvoiceRequest extends FormRequest
             'base_amount' => ['required', 'numeric'],
             'due_date' => ['required', 'date'],
             'type' => ['required', 'in:current,fixed'],
-            'distribution_type' => ['required', 'in:equal,per_person'],
-            'fixed_percent' => ['required_if:distribution_type,per_person', 'numeric', 'min:1', 'max:100'],
+            'distribution_type' => ['required', 'in:equal,by_person_count'],
+            'fixed_percent' => [
+                'nullable',
+                'required_if:distribution_type,by_person_count',
+                'numeric',
+                'min:1',
+                'max:100',
+            ],
             'description' => ['nullable', 'string'],
         ];
     }
