@@ -197,7 +197,7 @@ public function getFilteredResidents($filters, $buildingId)
                 'created_at' => $first->created_at,
                 'from_date' => $first->from_date,
                 'to_date' => $first->to_date,
-                'status' => $first->user->status,
+                'status' => $first->user->status ?? null,
                 'resident_count' => $items->where('role', 'resident')->first()->resident_count ?? null,
             ];
         })->values();
