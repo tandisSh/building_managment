@@ -9,8 +9,18 @@
         </div>
 
         <div class="admin-table-card p-4">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <form action="{{ route('residents.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="status" value="active">
 
                 <div class="row g-3">
                     {{-- واحد --}}
@@ -129,7 +139,7 @@
         function handleResidentsCountField() {
             const role = document.getElementById('role').value;
             const countInput = document.getElementById('resident_count');
-            const toDate = document.getElementById('to_date');
+            // const toDate = document.getElementById('to_date');
 
             if (role === 'owner' || role === '') {
                 countInput.disabled = true;
@@ -143,7 +153,6 @@
                 // toDate.disabled = false;
                 // toDate.required = true;
             }
-
         }
         document.addEventListener('DOMContentLoaded', function() {
             handleResidentsCountField();
