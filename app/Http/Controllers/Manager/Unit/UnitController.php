@@ -53,7 +53,9 @@ class UnitController extends Controller
     public function update(UnitRequest $request, $buildingId, $unitId)
     {
         $unit = Unit::findOrFail($unitId);
-        $this->service->updateUnit($unit, $request->validated());
+        $data = $request->validated();
+        $data['building_id'] = auth()->user()->buildingUser->building_id;
+        $this->service->updateUnit($unit, $data);
         return redirect()->route('units.index', $buildingId)->with('success', 'واحد با موفقیت ویرایش شد.');
     }
 

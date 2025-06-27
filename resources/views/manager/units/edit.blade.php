@@ -12,6 +12,7 @@
         <form action="{{ route('units.update', [$building->id, $unit->id]) }}" method="POST">
             @csrf
             @method('PUT')
+            <input type="hidden" name="building_id" value="{{ $building->id }}">
 
             <div class="row g-3">
                 <div class="col-md-6">

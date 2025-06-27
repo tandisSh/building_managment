@@ -75,7 +75,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
         Route::get('/create', [ManagerResidentController::class, 'create'])->name('create');
         Route::post('/', [ManagerResidentController::class, 'store'])->name('store');
         Route::get('/{resident}/edit', [ManagerResidentController::class, 'edit'])->name('edit');
-        Route::post('/{resident}', [ManagerResidentController::class, 'update'])->name('update');
+        Route::put('/{resident}', [ManagerResidentController::class, 'update'])->name('update');
         Route::get('/{resident}', [ManagerResidentController::class, 'show'])->name('show');
         Route::delete('/{resident}', [ManagerResidentController::class, 'destroy'])->name('destroy');
         Route::put('/admin/users/{user}/activate', [ManagerResidentController::class, 'activate'])->name('activate');

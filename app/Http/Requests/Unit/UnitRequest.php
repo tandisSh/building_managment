@@ -14,6 +14,7 @@ class UnitRequest extends FormRequest
 
     public function rules(): array
     {
+        $unitId = $this->route('unit');
         return [
             'building_id'    => ['required', 'exists:buildings,id'],
             'unit_number'    => [
@@ -22,7 +23,7 @@ class UnitRequest extends FormRequest
                 'max:255',
                 Rule::unique('units')->where(function ($query) {
                     return $query->where('building_id', $this->building_id);
-                }),
+                })->ignore($unitId),
             ],
             'floor'          => 'required|integer',
             'area'           => 'required|numeric|min:0',
