@@ -103,7 +103,7 @@
                                         class="btn btn-sm btn-outline-primary" title="نمایش">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('superadmin.users.show', $user->id) }}"
+                                    <a href="{{ route('superadmin.users.edit', $user->id) }}"
                                         class="btn btn-sm btn-outline-warning" title="ویرایش">
                                         <i class="bi bi-pencil-square"></i>
                                     </a>

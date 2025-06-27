@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Unit\UnitRequest;
 use App\Models\Building;
 use App\Models\Unit;
+use App\Models\User;
 use App\Services\Manager\Unit\UnitService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class UnitController extends Controller
 {
@@ -27,8 +30,9 @@ class UnitController extends Controller
     {
         $building = Building::findOrFail($buildingId);
         $unit = Unit::with(['owner', 'resident'])->findOrFail($unitId);
+        $resident = User::with('unit')->findOrFail($unit->resident_id);
 
-        return view('manager.units.show', compact('building', 'unit'));
+        return view('manager.units.show', compact('building', 'unit', 'resident'));
     }
 
     public function create(Building $building)
@@ -64,5 +68,21 @@ class UnitController extends Controller
         $unit = Unit::findOrFail($unitId);
         $this->service->deleteUnit($unit);
         return redirect()->route('units.index', $buildingId)->with('success', 'واحد با موفقیت حذف شد.');
+    }
+
+    public function getBuildingUnits(Building $building): JsonResponse
+    {
+        try {
+            $units = $building->units()
+                ->whereDoesntHave('unitUsers', function ($query) {
+                    $query->where('status', 'active');
+                })
+                ->get(['id', 'unit_number', 'floor']);
+
+            return response()->json($units);
+        } catch (\Exception $e) {
+            Log::error('Error fetching units: ' . $e->getMessage());
+            return response()->json(['error' => 'خطا در بارگذاری واحدها'], 500);
+        }
     }
 }

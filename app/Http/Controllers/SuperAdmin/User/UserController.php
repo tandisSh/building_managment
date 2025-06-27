@@ -60,26 +60,29 @@ class UserController extends Controller
    public function show($id)
     {
 $resident=User::with('unit')->where('id',$id);
-        // $user = $this->userService->getUserForEdit($id);
-        // $unitUser = UnitUser::with('unit.building')
-        //     ->where('user_id', $resident->id)
-        //     ->orderByDesc('from_date')
-        //     ->first();
+        $user = $this->userService->getUserForEdit($id);
+        $unitUser = UnitUser::with('unit.building')
+            ->where('user_id', $resident->id)
+            ->orderByDesc('from_date')
+            ->first();
 
         return view('super_admin.users.show', compact('resident'));
     }
-    public function getBuildingUnits(Building $building): JsonResponse
+    public function getBuildingUnits(Building $building, \Illuminate\Http\Request $request): \Illuminate\Http\JsonResponse
     {
         try {
-            $units = $building->units()
+            $selectedUnitId = $request->query('selected_unit_id');
+            $unitsQuery = $building->units()
                 ->whereDoesntHave('unitUsers', function ($query) {
                     $query->where('status', 'active');
-                })
-                ->get(['id', 'unit_number', 'floor']);
-
+                });
+            if ($selectedUnitId) {
+                $unitsQuery->orWhere('id', $selectedUnitId);
+            }
+            $units = $unitsQuery->get(['id', 'unit_number', 'floor']);
             return response()->json($units);
         } catch (\Exception $e) {
-            Log::error('Error fetching units: ' . $e->getMessage());
+            \Log::error('Error fetching units: ' . $e->getMessage());
             return response()->json(['error' => 'خطا در بارگذاری واحدها'], 500);
         }
     }

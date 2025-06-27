@@ -10,6 +10,15 @@
 
           <div class="admin-table-card p-4">
               <form action="{{ route('superadmin.users.update', $user->id) }}" method="POST">
+                  @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
                   @csrf
                   @method('PUT')
                   <input type="hidden" name="user_type" value="{{ $user->roles->first()->id === 2 ? 'manager' : 'normal' }}">
@@ -40,6 +49,13 @@
                                   @endforeach
                               </select>
                           </div>
+                          <div class="col-md-6">
+    <label class="form-label small">وضعیت کاربر</label>
+    <select name="status" class="form-select form-select-sm">
+        <option value="active" {{ old('status', $user->status ?? 'active') == 'active' ? 'selected' : '' }}>فعال</option>
+        <option value="inactive" {{ old('status', $user->status ?? 'active') == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
+    </select>
+</div>
                           <div class="col-12 mt-3">
                               <button type="submit" class="btn btn-sm btn-primary w-100 py-2">
                                   <i class="bi bi-check-circle me-1"></i> به‌روزرسانی مدیر
@@ -80,11 +96,25 @@
                           </div>
                           <div class="col-md-6">
                               <label class="form-label small">نقش</label>
+                              @php
+                                  $role = old('role');
+                                  if (!$role) {
+                                      $isResident = $user->unitUsers->where('role', 'resident')->first();
+                                      $isOwner = $user->unitUsers->where('role', 'owner')->first();
+                                      if ($isResident && $isOwner) {
+                                          $role = 'both';
+                                      } elseif ($isResident) {
+                                          $role = 'resident';
+                                      } elseif ($isOwner) {
+                                          $role = 'owner';
+                                      }
+                                  }
+                              @endphp
                               <select name="role" id="role_select" class="form-select form-select-sm" required>
                                   <option value="">انتخاب نقش</option>
-                                  <option value="resident" {{ old('role', $user->unitUsers->where('role', 'resident')->first() ? 'resident' : '') }}>ساکن</option>
-                                  <option value="owner" {{ old('role', $user->unitUsers->where('role', 'owner')->first() ? 'owner' : '') }}>مالک</option>
-                                  <option value="both" {{ old('role', $user->unitUsers->where('role', 'resident')->first() && $user->unitUsers->where('role', 'owner')->first() ? 'both' : '') }}>ساکن و مالک</option>
+                                  <option value="resident" {{ $role == 'resident' ? 'selected' : '' }}>ساکن</option>
+                                  <option value="owner" {{ $role == 'owner' ? 'selected' : '' }}>مالک</option>
+                                  <option value="both" {{ $role == 'both' ? 'selected' : '' }}>ساکن و مالک</option>
                               </select>
                           </div>
                           <div class="col-md-6">
@@ -98,6 +128,13 @@
                           <div class="col-md-6">
                               <label class="form-label small">تاریخ پایان سکونت</label>
                               <input type="date" name="to_date" class="form-control form-control-sm" id="to_date" value="{{ old('to_date', $user->unitUsers->where('role', 'resident')->first()->to_date ?? '') }}" disabled>
+                          </div>
+                          <div class="col-md-6">
+                              <label class="form-label small">وضعیت کاربر</label>
+                              <select name="status" class="form-select form-select-sm">
+                                  <option value="active" {{ old('status', $user->status ?? 'active') == 'active' ? 'selected' : '' }}>فعال</option>
+                                  <option value="inactive" {{ old('status', $user->status ?? 'active') == 'inactive' ? 'selected' : '' }}>غیرفعال</option>
+                              </select>
                           </div>
                           <div class="col-12 mt-3">
                               <button type="submit" class="btn btn-sm btn-primary w-100 py-2">
@@ -119,11 +156,20 @@
               const residentCount = document.getElementById('resident_count');
               const toDate = document.getElementById('to_date');
 
-              // لود اولیه واحد بر اساس ساختمان کاربر
               const initialBuildingId = '{{ old('building_id', $user->units->first()->building_id ?? '') }}';
-              if (initialBuildingId) {
-                  buildingSelect.value = initialBuildingId;
-                  fetch(`{{ route('superadmin.users.getBuildingUnits', ['building' => ':buildingId']) }}`.replace(':buildingId', initialBuildingId))
+              const initialUnitId = '{{ old('unit_id', $user->units->first()->id ?? '') }}';
+              const initialRole = '{{ $role }}';
+
+              function loadUnits(buildingId, selectedUnitId = null) {
+                  if (!buildingId) {
+                      unitSelect.innerHTML = '<option value="">ابتدا ساختمان را انتخاب کنید</option>';
+                      return;
+                  }
+                  let url = `/admin/get-building-units/${buildingId}`;
+                  if (selectedUnitId) {
+                      url += `?selected_unit_id=${selectedUnitId}`;
+                  }
+                  fetch(url)
                       .then(response => response.json())
                       .then(data => {
                           unitSelect.innerHTML = '<option value="">انتخاب واحد</option>';
@@ -131,41 +177,47 @@
                               console.error('Server Error:', data.error);
                           } else {
                               data.forEach(unit => {
-                                  unitSelect.innerHTML += `<option value="${unit.id}" ${old('unit_id', $user->units->first()->id ?? '') == unit.id ? 'selected' : ''}>واحد ${unit.unit_number} - طبقه ${unit.floor}</option>`;
+                                  unitSelect.innerHTML += `<option value="${unit.id}" ${(selectedUnitId && selectedUnitId == unit.id) ? 'selected' : ''}>واحد ${unit.unit_number} - طبقه ${unit.floor}</option>`;
                               });
                           }
                       })
                       .catch(error => console.error('Error fetching units:', error));
               }
 
+              // لود اولیه واحدها اگر ساختمان انتخاب شده باشد
+              if (initialBuildingId) {
+                  buildingSelect.value = initialBuildingId;
+                  loadUnits(initialBuildingId, initialUnitId);
+              }
+              // مقداردهی اولیه نقش
+              if (initialRole) {
+                  roleSelect.value = initialRole;
+              }
+
               buildingSelect.addEventListener('change', function () {
-                  const buildingId = this.value;
-                  if (buildingId) {
-                      fetch(`{{ route('superadmin.users.getBuildingUnits', ['building' => ':buildingId']) }}`.replace(':buildingId', buildingId))
-                          .then(response => response.json())
-                          .then(data => {
-                              unitSelect.innerHTML = '<option value="">انتخاب واحد</option>';
-                              if (data.error) {
-                                  console.error('Server Error:', data.error);
-                              } else {
-                                  data.forEach(unit => {
-                                      unitSelect.innerHTML += `<option value="${unit.id}">واحد ${unit.unit_number} - طبقه ${unit.floor}</option>`;
-                                  });
-                              }
-                          })
-                          .catch(error => console.error('Error fetching units:', error));
-                  } else {
-                      unitSelect.innerHTML = '<option value="">ابتدا ساختمان را انتخاب کنید</option>';
-                  }
+                  loadUnits(this.value);
               });
 
-              roleSelect.addEventListener('change', function () {
-                  const role = this.value;
-                  if (role === 'resident' || role === 'both') {
+              function handleRoleFields() {
+                  const role = roleSelect.value;
+                  if (role === 'owner') {
+                      residentCount.disabled = true;
+                      residentCount.value = '';
+                      residentCount.required = false;
+                      toDate.disabled = true;
+                      toDate.value = '';
+                      toDate.required = false;
+                  } else if (role === 'resident') {
                       residentCount.disabled = false;
                       residentCount.required = true;
                       toDate.disabled = false;
                       toDate.required = true;
+                  } else if (role === 'both') {
+                      residentCount.disabled = false;
+                      residentCount.required = true;
+                      toDate.disabled = true;
+                      toDate.value = '';
+                      toDate.required = false;
                   } else {
                       residentCount.disabled = true;
                       residentCount.value = '';
@@ -174,7 +226,10 @@
                       toDate.value = '';
                       toDate.required = false;
                   }
-              });
+              }
+
+              roleSelect.addEventListener('change', handleRoleFields);
+              handleRoleFields();
           });
       </script>
       @endpush

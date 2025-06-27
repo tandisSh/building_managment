@@ -12,6 +12,15 @@
         <div class="admin-table-card p-4">
             <form method="POST" action="{{ route('superadmin.buildings.update', $building->id) }}"
                 enctype="multipart/form-data">
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 @csrf
                 @method('PUT')
 

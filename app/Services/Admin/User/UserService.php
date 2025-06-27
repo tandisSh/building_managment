@@ -168,7 +168,7 @@ class UserService
                 'name' => $data['name'],
                 'phone' => $data['phone'],
                 'email' => $data['email'],
-                'status' => $data['status'] ?? 'active',
+                'status' => $data['status'],
             ]);
 
             if (!empty($data['password'])) {

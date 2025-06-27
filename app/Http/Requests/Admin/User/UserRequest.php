@@ -23,6 +23,7 @@ class UserRequest extends FormRequest
 
     private function managerRules()
     {
+        $userId = $this->route('user');
         return [
             'building_id' => ['required', 'exists:buildings,id', function ($attribute, $value, $fail) {
                 $managerExists = \App\Models\BuildingUser::where('building_id', $value)
@@ -33,23 +34,26 @@ class UserRequest extends FormRequest
                 }
             }],
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email',
-            'phone' => 'nullable|string|unique:users,phone',
+            'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'phone' => ['nullable', 'string', Rule::unique('users', 'phone')->ignore($userId)],
+            'status' => ['required', Rule::in(['active', 'inactive'])], // اضافه کردن status برای مدیر
         ];
     }
 
     private function normalRules()
     {
+        $userId = $this->route('user');
         return [
             'building_id' => 'required|exists:buildings,id',
             'unit_id' => 'required|exists:units,id',
             'role' => ['required', Rule::in(['resident', 'owner', 'both'])],
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email',
-            'phone' => 'nullable|string|unique:users,phone',
+            'email' => ['nullable', 'email', Rule::unique('users', 'email')->ignore($userId)],
+            'phone' => ['nullable', 'string', Rule::unique('users', 'phone')->ignore($userId)],
             'resident_count' => ['nullable', 'integer', 'min:1', 'required_if:role,resident,both'],
             'from_date' => ['required', 'date'],
             'to_date' => ['nullable', 'date', 'after:from_date', 'required_if:role,resident,both'],
+            'status' => ['required', Rule::in(['active', 'inactive'])], // اصلاح قانون status
         ];
     }
 
@@ -72,6 +76,8 @@ class UserRequest extends FormRequest
             'from_date.required' => 'تاریخ شروع سکونت الزامی است.',
             'to_date.required_if' => 'تاریخ پایان سکونت برای نقش ساکن الزامی است.',
             'to_date.after' => 'تاریخ پایان باید بعد از تاریخ شروع باشد.',
+            'status.required' => 'وضعیت کاربر الزامی است.',
+            'status.in' => 'وضعیت کاربر باید یکی از مقادیر فعال یا غیرفعال باشد.',
         ];
     }
 }
