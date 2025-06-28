@@ -92,6 +92,12 @@
                                         <i class="bi bi-file-text me-2"></i> <span>گزارش پرداخت‌ها</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.building_performance') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.building_performance') }}">
+                                        <i class="bi bi-graph-up me-2"></i> <span>عملکرد ساختمان‌ها</span>
+                                    </a>
+                                </li>
                                 {{-- <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">

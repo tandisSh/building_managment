@@ -99,4 +99,20 @@ class SuperAdminReportController extends Controller
             'summary' => $summary,
         ]);
     }
+
+    public function buildingPerformance(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date']);
+        $data = $this->reportService->getBuildingPerformanceReport($filters);
+
+        return view('super_admin.reports.building_performance', $data);
+    }
+
+    public function printBuildingPerformance(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date']);
+        $data = $this->reportService->getBuildingPerformanceReport($filters);
+
+        return view('super_admin.reports.print.building_performance', $data);
+    }
 }

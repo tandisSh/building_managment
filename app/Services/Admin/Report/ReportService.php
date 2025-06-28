@@ -120,4 +120,114 @@ class ReportService
 
         return $data;
     }
+
+    public function getBuildingPerformanceReport(array $filters = [])
+    {
+        $query = \App\Models\Building::with([
+            'units',
+            'units.unitUsers',
+            'units.invoices',
+            'units.invoices.payments',
+            'manager'
+        ]);
+
+        // فیلتر بر اساس تاریخ
+        if (!empty($filters['start_date'])) {
+            $query->whereHas('units.invoices', function ($q) use ($filters) {
+                $q->whereDate('created_at', '>=', $filters['start_date']);
+            });
+        }
+
+        if (!empty($filters['end_date'])) {
+            $query->whereHas('units.invoices', function ($q) use ($filters) {
+                $q->whereDate('created_at', '<=', $filters['end_date']);
+            });
+        }
+
+        $buildings = $query->get()->map(function ($building) use ($filters) {
+            $startDate = $filters['start_date'] ?? now()->subYear()->startOfYear();
+            $endDate = $filters['end_date'] ?? now();
+
+            // محاسبه آمار واحدها
+            $totalUnits = $building->units->count();
+            $occupiedUnits = $building->units->filter(function ($unit) {
+                return $unit->unitUsers->count() > 0;
+            })->count();
+            $occupancyRate = $totalUnits > 0 ? round(($occupiedUnits / $totalUnits) * 100, 2) : 0;
+
+            // محاسبه آمار فاکتورها
+            $invoices = $building->units->flatMap(function ($unit) use ($startDate, $endDate) {
+                return $unit->invoices->filter(function ($invoice) use ($startDate, $endDate) {
+                    return $invoice->created_at >= $startDate && $invoice->created_at <= $endDate;
+                });
+            });
+
+            $totalInvoiced = $invoices->sum('amount');
+            $paidInvoices = $invoices->where('status', 'paid');
+            $totalPaid = $paidInvoices->sum('amount');
+            $totalUnpaid = $totalInvoiced - $totalPaid;
+            $paymentRate = $totalInvoiced > 0 ? round(($totalPaid / $totalInvoiced) * 100, 2) : 0;
+
+            // محاسبه بدهی‌های معوق
+            $overdueInvoices = $building->units->flatMap(function ($unit) {
+                return $unit->invoices->where('status', 'unpaid')->where('due_date', '<', now());
+            });
+            $totalOverdue = $overdueInvoices->sum('amount');
+
+            // محاسبه درآمد ماهانه
+            $monthlyRevenue = $building->units->flatMap(function ($unit) use ($startDate, $endDate) {
+                return $unit->invoices->where('status', 'paid')->filter(function ($invoice) use ($startDate, $endDate) {
+                    return $invoice->created_at >= $startDate && $invoice->created_at <= $endDate;
+                });
+            })->sum('amount');
+
+            // محاسبه امتیاز عملکرد (Performance Score)
+            $performanceScore = 0;
+            $performanceScore += $occupancyRate * 0.3; // 30% وزن اشغال
+            $performanceScore += $paymentRate * 0.4;   // 40% وزن پرداخت
+            $performanceScore += ($totalOverdue == 0 ? 100 : max(0, 100 - ($totalOverdue / $totalInvoiced * 100))) * 0.3; // 30% وزن بدهی
+
+            return [
+                'id' => $building->id,
+                'name' => $building->name,
+                'address' => $building->address,
+                'manager_name' => $building->manager->name ?? 'نامشخص',
+                'total_units' => $totalUnits,
+                'occupied_units' => $occupiedUnits,
+                'occupancy_rate' => $occupancyRate,
+                'total_invoiced' => $totalInvoiced,
+                'total_paid' => $totalPaid,
+                'total_unpaid' => $totalUnpaid,
+                'payment_rate' => $paymentRate,
+                'total_overdue' => $totalOverdue,
+                'monthly_revenue' => $monthlyRevenue,
+                'performance_score' => round($performanceScore, 2),
+                'status' => $this->getPerformanceStatus($performanceScore),
+            ];
+        });
+
+        // مرتب‌سازی بر اساس امتیاز عملکرد
+        $buildings = $buildings->sortByDesc('performance_score');
+
+        return [
+            'buildings' => $buildings,
+            'filters' => $filters,
+            'summary' => [
+                'total_buildings' => $buildings->count(),
+                'average_occupancy' => $buildings->avg('occupancy_rate'),
+                'average_payment_rate' => $buildings->avg('payment_rate'),
+                'average_performance_score' => $buildings->avg('performance_score'),
+                'total_revenue' => $buildings->sum('total_paid'),
+                'total_overdue' => $buildings->sum('total_overdue'),
+            ]
+        ];
+    }
+
+    private function getPerformanceStatus($score)
+    {
+        if ($score >= 80) return 'عالی';
+        if ($score >= 60) return 'خوب';
+        if ($score >= 40) return 'متوسط';
+        return 'ضعیف';
+    }
 }

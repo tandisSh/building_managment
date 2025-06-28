@@ -220,6 +220,7 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('reports/system-debts', [SuperAdminReportController::class, 'systemDebts'])->name('reports.system_debts');
     Route::get('reports/overdue-payments', [SuperAdminReportController::class, 'systemOverduePayments'])->name('reports.overdue_payments');
     Route::get('reports/annual-summary', [SuperAdminReportController::class, 'annualFinancialSummary'])->name('reports.annual_summary');
+    Route::get('reports/building-performance', [SuperAdminReportController::class, 'buildingPerformance'])->name('reports.building_performance');
 
     // روت‌های چاپ گزارشات
     Route::get('reports/overall-payments/print', [SuperAdminReportController::class, 'overallPayments'])->name('reports.overall_payments.print');
@@ -227,4 +228,5 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('reports/system-debts/print', [SuperAdminReportController::class, 'systemDebts'])->name('reports.system_debts.print');
     Route::get('reports/overdue-payments/print', [SuperAdminReportController::class, 'systemOverduePayments'])->name('reports.overdue_payments.print');
     Route::get('reports/annual-summary/print', [SuperAdminReportController::class, 'annualFinancialSummary'])->name('reports.annual_summary.print');
+    Route::get('reports/building-performance/print', [SuperAdminReportController::class, 'printBuildingPerformance'])->name('reports.building_performance.print');
 });
