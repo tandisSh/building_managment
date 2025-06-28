@@ -436,4 +436,115 @@ class ReportService
             ]
         ];
     }
+
+    public function getRevenueAnalysisReport(array $filters = [])
+    {
+        $startDate = $filters['start_date'] ?? now()->subYear()->startOfYear();
+        $endDate = $filters['end_date'] ?? now();
+
+        // دریافت تمام پرداخت‌های موفق در بازه زمانی
+        $payments = Payment::with(['user', 'invoice.unit.building'])
+            ->where('status', 'success')
+            ->whereBetween('paid_at', [$startDate, $endDate])
+            ->get();
+
+        // فیلتر بر اساس ساختمان
+        if (!empty($filters['building_id'])) {
+            $payments = $payments->filter(function ($payment) use ($filters) {
+                return $payment->invoice->unit->building_id == $filters['building_id'];
+            });
+        }
+
+        // تحلیل درآمد ماهانه
+        $monthlyRevenue = $payments->groupBy(function ($payment) {
+            return $payment->paid_at->format('Y-m');
+        })->map(function ($monthPayments) {
+            return [
+                'total_amount' => $monthPayments->sum('amount'),
+                'payment_count' => $monthPayments->count(),
+                'average_amount' => $monthPayments->avg('amount'),
+            ];
+        })->sortKeys();
+
+        // تحلیل درآمد بر اساس ساختمان
+        $buildingRevenue = $payments->groupBy(function ($payment) {
+            return $payment->invoice->unit->building->name ?? 'نامشخص';
+        })->map(function ($buildingPayments) {
+            return [
+                'total_amount' => $buildingPayments->sum('amount'),
+                'payment_count' => $buildingPayments->count(),
+                'average_amount' => $buildingPayments->avg('amount'),
+                'units_count' => $buildingPayments->pluck('invoice.unit_id')->unique()->count(),
+            ];
+        })->sortByDesc('total_amount');
+
+        // تحلیل درآمد بر اساس نوع فاکتور
+        $invoiceTypeRevenue = $payments->groupBy(function ($payment) {
+            return $payment->invoice->type ?? 'عمومی';
+        })->map(function ($typePayments) {
+            return [
+                'total_amount' => $typePayments->sum('amount'),
+                'payment_count' => $typePayments->count(),
+                'average_amount' => $typePayments->avg('amount'),
+            ];
+        })->sortByDesc('total_amount');
+
+
+        // تحلیل درآمد بر اساس کاربران
+        $userRevenue = $payments->groupBy('user_id')->map(function ($userPayments) {
+            $user = $userPayments->first()->user;
+            return [
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'total_amount' => $userPayments->sum('amount'),
+                'payment_count' => $userPayments->count(),
+                'average_amount' => $userPayments->avg('amount'),
+                'last_payment' => $userPayments->max('paid_at'),
+            ];
+        })->sortByDesc('total_amount')->take(20);
+
+        // محاسبه آمار کلی
+        $totalRevenue = $payments->sum('amount');
+        $totalPayments = $payments->count();
+        $averagePayment = $payments->avg('amount');
+        $uniqueUsers = $payments->pluck('user_id')->unique()->count();
+        $uniqueBuildings = $payments->pluck('invoice.unit.building_id')->unique()->count();
+
+        // محاسبه رشد درآمد
+        $currentMonthRevenue = $payments->filter(function ($payment) {
+            return $payment->paid_at->format('Y-m') === now()->format('Y-m');
+        })->sum('amount');
+
+        $previousMonthRevenue = $payments->filter(function ($payment) {
+            return $payment->paid_at->format('Y-m') === now()->subMonth()->format('Y-m');
+        })->sum('amount');
+
+        $revenueGrowth = $previousMonthRevenue > 0 ?
+            (($currentMonthRevenue - $previousMonthRevenue) / $previousMonthRevenue) * 100 : 0;
+
+        // پیش‌بینی درآمد آینده (بر اساس میانگین ۳ ماه گذشته)
+        $lastThreeMonths = $payments->filter(function ($payment) {
+            return $payment->paid_at >= now()->subMonths(3);
+        })->sum('amount') / 3;
+
+        return [
+            'filters' => $filters,
+            'summary' => [
+                'total_revenue' => $totalRevenue,
+                'total_payments' => $totalPayments,
+                'average_payment' => $averagePayment,
+                'unique_users' => $uniqueUsers,
+                'unique_buildings' => $uniqueBuildings,
+                'current_month_revenue' => $currentMonthRevenue,
+                'previous_month_revenue' => $previousMonthRevenue,
+                'revenue_growth' => $revenueGrowth,
+                'forecast_next_month' => $lastThreeMonths,
+            ],
+            'monthly_revenue' => $monthlyRevenue,
+            'building_revenue' => $buildingRevenue,
+            'invoice_type_revenue' => $invoiceTypeRevenue,
+            'top_users' => $userRevenue,
+            'payments' => $payments->sortByDesc('paid_at')->take(50),
+        ];
+    }
 }

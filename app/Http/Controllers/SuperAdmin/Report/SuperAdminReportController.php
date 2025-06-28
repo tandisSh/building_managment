@@ -147,4 +147,20 @@ class SuperAdminReportController extends Controller
 
         return view('super_admin.reports.print.building_requests', $data);
     }
+
+    public function revenueAnalysis(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'building_id']);
+        $data = $this->reportService->getRevenueAnalysisReport($filters);
+
+        return view('super_admin.reports.revenue_analysis', $data);
+    }
+
+    public function printRevenueAnalysis(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'building_id']);
+        $data = $this->reportService->getRevenueAnalysisReport($filters);
+
+        return view('super_admin.reports.print.revenue_analysis', $data);
+    }
 }

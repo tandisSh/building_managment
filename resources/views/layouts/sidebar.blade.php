@@ -110,6 +110,12 @@
                                         <i class="bi bi-building-add me-2"></i> <span>درخواست‌های ساختمان</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.revenue_analysis') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.revenue_analysis') }}">
+                                        <i class="bi bi-graph-up me-2"></i> <span>تحلیل درآمد</span>
+                                    </a>
+                                </li>
                                 {{-- <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">
