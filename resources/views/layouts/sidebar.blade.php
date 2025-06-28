@@ -104,6 +104,12 @@
                                         <i class="bi bi-people-fill me-2"></i> <span>فعالیت کاربران</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.building_requests') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.building_requests') }}">
+                                        <i class="bi bi-building-add me-2"></i> <span>درخواست‌های ساختمان</span>
+                                    </a>
+                                </li>
                                 {{-- <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">

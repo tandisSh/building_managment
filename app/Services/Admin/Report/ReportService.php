@@ -358,11 +358,82 @@ class ReportService
     private function getActivityStatus($score, $lastLogin)
     {
         $daysSinceLastLogin = now()->diffInDays($lastLogin);
-        
+
         if ($score >= 100 && $daysSinceLastLogin <= 7) return 'خیلی فعال';
         if ($score >= 50 && $daysSinceLastLogin <= 30) return 'فعال';
         if ($score >= 20 && $daysSinceLastLogin <= 90) return 'متوسط';
         if ($daysSinceLastLogin > 90) return 'غیرفعال';
         return 'کم‌فعال';
+    }
+
+    public function getBuildingRequestsReport(array $filters = [])
+    {
+        $query = \App\Models\BuildingRequest::with([
+            'user'
+        ]);
+
+        // فیلتر بر اساس تاریخ
+        if (!empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (!empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        // فیلتر بر اساس وضعیت
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        $requests = $query->get()->map(function ($request) {
+            // محاسبه مدت زمان در انتظار
+            $waitingDays = 0;
+            if ($request->status === 'pending') {
+                $waitingDays = now()->diffInDays($request->created_at);
+            }
+
+            // محاسبه مدت زمان بررسی
+            $processingDays = 0;
+            if ($request->status === 'approved' || $request->status === 'rejected') {
+                $processingDays = $request->updated_at->diffInDays($request->created_at);
+            }
+
+            return [
+                'id' => $request->id,
+                'user_name' => $request->user->name,
+                'user_email' => $request->user->email,
+                'user_phone' => $request->user->phone,
+                'building_name' => $request->name,
+                'building_address' => $request->address,
+                'total_units' => $request->number_of_units,
+                'description' => $request->description,
+                'status' => $request->status,
+                'document_path' => $request->document_path,
+                'created_at' => $request->created_at,
+                'updated_at' => $request->updated_at,
+                'waiting_days' => $waitingDays,
+                'processing_days' => $processingDays,
+                'has_document' => !empty($request->document_path),
+            ];
+        });
+
+        // مرتب‌سازی بر اساس تاریخ ایجاد (جدیدترین اول)
+        $requests = $requests->sortByDesc('created_at');
+
+        return [
+            'requests' => $requests,
+            'filters' => $filters,
+            'summary' => [
+                'total_requests' => $requests->count(),
+                'pending_requests' => $requests->where('status', 'pending')->count(),
+                'approved_requests' => $requests->where('status', 'approved')->count(),
+                'rejected_requests' => $requests->where('status', 'rejected')->count(),
+                'average_processing_days' => $requests->where('status', '!=', 'pending')->avg('processing_days'),
+                'average_waiting_days' => $requests->where('status', 'pending')->avg('waiting_days'),
+                'total_units_requested' => $requests->sum('total_units'),
+                'requests_with_documents' => $requests->where('has_document', true)->count(),
+            ]
+        ];
     }
 }

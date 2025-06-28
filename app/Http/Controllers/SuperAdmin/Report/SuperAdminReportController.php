@@ -131,4 +131,20 @@ class SuperAdminReportController extends Controller
 
         return view('super_admin.reports.print.user_activity', $data);
     }
+
+    public function buildingRequests(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'status', 'building_type']);
+        $data = $this->reportService->getBuildingRequestsReport($filters);
+
+        return view('super_admin.reports.building_requests', $data);
+    }
+
+    public function printBuildingRequests(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'status', 'building_type']);
+        $data = $this->reportService->getBuildingRequestsReport($filters);
+
+        return view('super_admin.reports.print.building_requests', $data);
+    }
 }
