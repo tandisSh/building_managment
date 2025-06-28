@@ -230,4 +230,139 @@ class ReportService
         if ($score >= 40) return 'متوسط';
         return 'ضعیف';
     }
+
+    public function getUserActivityReport(array $filters = [])
+    {
+        $query = User::with([
+            'roles',
+            'unitUsers.unit.building',
+            'payments',
+            'repairRequests',
+            'notifications'
+        ]);
+
+        // فیلتر بر اساس نقش
+        if (!empty($filters['role'])) {
+            $query->whereHas('roles', function ($q) use ($filters) {
+                $q->where('name', $filters['role']);
+            });
+        }
+
+        // فیلتر بر اساس وضعیت
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        // فیلتر بر اساس ساختمان
+        if (!empty($filters['building_id'])) {
+            $query->whereHas('unitUsers.unit', function ($q) use ($filters) {
+                $q->where('building_id', $filters['building_id']);
+            });
+        }
+
+        $users = $query->get()->map(function ($user) use ($filters) {
+            $startDate = $filters['start_date'] ?? now()->subMonth()->startOfMonth();
+            $endDate = $filters['end_date'] ?? now();
+
+            // محاسبه آمار پرداخت‌ها
+            $payments = $user->payments->filter(function ($payment) use ($startDate, $endDate) {
+                return $payment->paid_at >= $startDate && $payment->paid_at <= $endDate;
+            });
+            $totalPayments = $payments->count();
+            $totalPaidAmount = $payments->sum('amount');
+
+            // محاسبه آمار درخواست‌های تعمیر
+            $repairRequests = $user->repairRequests->filter(function ($request) use ($startDate, $endDate) {
+                return $request->created_at >= $startDate && $request->created_at <= $endDate;
+            });
+            $totalRepairRequests = $repairRequests->count();
+            $pendingRepairRequests = $repairRequests->where('status', 'pending')->count();
+            $completedRepairRequests = $repairRequests->where('status', 'completed')->count();
+
+            // محاسبه آمار اعلان‌ها
+            $notifications = $user->notifications->filter(function ($notification) use ($startDate, $endDate) {
+                return $notification->created_at >= $startDate && $notification->created_at <= $endDate;
+            });
+            $totalNotifications = $notifications->count();
+            $unreadNotifications = $notifications->where('read_at', null)->count();
+
+            // محاسبه آمار واحدها
+            $totalUnits = $user->unitUsers->count();
+            $activeUnits = $user->unitUsers->where('status', 'active')->count();
+            $ownerUnits = $user->unitUsers->where('role', 'owner')->count();
+            $residentUnits = $user->unitUsers->where('role', 'resident')->count();
+
+            // محاسبه آخرین فعالیت
+            $lastPayment = $payments->max('paid_at');
+            $lastRepairRequest = $repairRequests->max('created_at');
+            $lastLogin = $user->last_login_at ?? $user->created_at;
+
+            // محاسبه امتیاز فعالیت
+            $activityScore = 0;
+            $activityScore += $totalPayments * 10; // هر پرداخت ۱۰ امتیاز
+            $activityScore += $totalRepairRequests * 5; // هر درخواست تعمیر ۵ امتیاز
+            $activityScore += $activeUnits * 20; // هر واحد فعال ۲۰ امتیاز
+            $activityScore += ($totalNotifications - $unreadNotifications) * 2; // هر اعلان خوانده شده ۲ امتیاز
+
+            // محاسبه وضعیت فعالیت
+            $activityStatus = $this->getActivityStatus($activityScore, $lastLogin);
+
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'status' => $user->status,
+                'roles' => $user->roles->pluck('name')->toArray(),
+                'total_units' => $totalUnits,
+                'active_units' => $activeUnits,
+                'owner_units' => $ownerUnits,
+                'resident_units' => $residentUnits,
+                'total_payments' => $totalPayments,
+                'total_paid_amount' => $totalPaidAmount,
+                'total_repair_requests' => $totalRepairRequests,
+                'pending_repair_requests' => $pendingRepairRequests,
+                'completed_repair_requests' => $completedRepairRequests,
+                'total_notifications' => $totalNotifications,
+                'unread_notifications' => $unreadNotifications,
+                'last_payment' => $lastPayment,
+                'last_repair_request' => $lastRepairRequest,
+                'last_login' => $lastLogin,
+                'activity_score' => $activityScore,
+                'activity_status' => $activityStatus,
+                'buildings' => $user->unitUsers->map(function ($unitUser) {
+                    return $unitUser->unit->building->name ?? 'نامشخص';
+                })->unique()->toArray(),
+            ];
+        });
+
+        // مرتب‌سازی بر اساس امتیاز فعالیت
+        $users = $users->sortByDesc('activity_score');
+
+        return [
+            'users' => $users,
+            'filters' => $filters,
+            'summary' => [
+                'total_users' => $users->count(),
+                'active_users' => $users->where('status', 'active')->count(),
+                'inactive_users' => $users->where('status', 'inactive')->count(),
+                'average_activity_score' => $users->avg('activity_score'),
+                'total_payments' => $users->sum('total_payments'),
+                'total_paid_amount' => $users->sum('total_paid_amount'),
+                'total_repair_requests' => $users->sum('total_repair_requests'),
+                'total_notifications' => $users->sum('total_notifications'),
+            ]
+        ];
+    }
+
+    private function getActivityStatus($score, $lastLogin)
+    {
+        $daysSinceLastLogin = now()->diffInDays($lastLogin);
+        
+        if ($score >= 100 && $daysSinceLastLogin <= 7) return 'خیلی فعال';
+        if ($score >= 50 && $daysSinceLastLogin <= 30) return 'فعال';
+        if ($score >= 20 && $daysSinceLastLogin <= 90) return 'متوسط';
+        if ($daysSinceLastLogin > 90) return 'غیرفعال';
+        return 'کم‌فعال';
+    }
 }

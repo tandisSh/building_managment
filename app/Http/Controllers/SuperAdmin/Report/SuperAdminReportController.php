@@ -115,4 +115,20 @@ class SuperAdminReportController extends Controller
 
         return view('super_admin.reports.print.building_performance', $data);
     }
+
+    public function userActivity(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'role', 'status', 'building_id']);
+        $data = $this->reportService->getUserActivityReport($filters);
+
+        return view('super_admin.reports.user_activity', $data);
+    }
+
+    public function printUserActivity(Request $request)
+    {
+        $filters = $request->only(['start_date', 'end_date', 'role', 'status', 'building_id']);
+        $data = $this->reportService->getUserActivityReport($filters);
+
+        return view('super_admin.reports.print.user_activity', $data);
+    }
 }

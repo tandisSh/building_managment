@@ -98,6 +98,12 @@
                                         <i class="bi bi-graph-up me-2"></i> <span>عملکرد ساختمان‌ها</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.user_activity') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.user_activity') }}">
+                                        <i class="bi bi-people-fill me-2"></i> <span>فعالیت کاربران</span>
+                                    </a>
+                                </li>
                                 {{-- <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">
