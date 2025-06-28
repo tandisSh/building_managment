@@ -224,6 +224,7 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('reports/user-activity', [SuperAdminReportController::class, 'userActivity'])->name('reports.user_activity');
     Route::get('reports/building-requests', [SuperAdminReportController::class, 'buildingRequests'])->name('reports.building_requests');
     Route::get('reports/revenue-analysis', [SuperAdminReportController::class, 'revenueAnalysis'])->name('reports.revenue_analysis');
+    Route::get('reports/system-statistics', [SuperAdminReportController::class, 'systemStatistics'])->name('reports.system_statistics');
 
     // روت‌های چاپ گزارشات
     Route::get('reports/overall-payments/print', [SuperAdminReportController::class, 'overallPayments'])->name('reports.overall_payments.print');
@@ -235,4 +236,5 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('reports/user-activity/print', [SuperAdminReportController::class, 'printUserActivity'])->name('reports.user_activity.print');
     Route::get('reports/building-requests/print', [SuperAdminReportController::class, 'printBuildingRequests'])->name('reports.building_requests.print');
     Route::get('reports/revenue-analysis/print', [SuperAdminReportController::class, 'printRevenueAnalysis'])->name('reports.revenue_analysis.print');
+    Route::get('reports/system-statistics/print', [SuperAdminReportController::class, 'printSystemStatistics'])->name('reports.system_statistics.print');
 });

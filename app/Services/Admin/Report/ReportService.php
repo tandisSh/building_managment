@@ -7,6 +7,10 @@ use App\Models\Invoice;
 use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use App\Models\Building;
+use App\Models\RepairRequest;
+use App\Models\Notification;
+use App\Models\BuildingRequest;
 
 class ReportService
 {
@@ -545,6 +549,176 @@ class ReportService
             'invoice_type_revenue' => $invoiceTypeRevenue,
             'top_users' => $userRevenue,
             'payments' => $payments->sortByDesc('paid_at')->take(50),
+        ];
+    }
+
+    public function getSystemStatisticsReport()
+    {
+        // آمار کاربران
+        $totalUsers = User::count();
+        $activeUsers = User::where('status', 'active')->count();
+        $inactiveUsers = User::where('status', 'inactive')->count();
+        $superAdmins = User::whereHas('roles', function ($query) {
+            $query->where('name', 'super_admin');
+        })->count();
+        $managers = User::whereHas('roles', function ($query) {
+            $query->where('name', 'manager');
+        })->count();
+        $residents = User::whereHas('roles', function ($query) {
+            $query->where('name', 'resident');
+        })->count();
+
+        // آمار ساختمان‌ها
+        $totalBuildings = Building::count();
+        $activeBuildings = Building::whereHas('manager')->count(); // ساختمان‌های فعال = دارای مدیر
+        $inactiveBuildings = Building::whereDoesntHave('manager')->count(); // ساختمان‌های غیرفعال = بدون مدیر
+        $buildingsWithManager = Building::whereHas('manager')->count();
+        $buildingsWithoutManager = $totalBuildings - $buildingsWithManager;
+
+        // آمار واحدها
+        $totalUnits = Unit::count();
+        $occupiedUnits = Unit::whereHas('unitUsers')->count();
+        $vacantUnits = $totalUnits - $occupiedUnits;
+        $ownerUnits = Unit::whereHas('unitUsers', function ($query) {
+            $query->where('role', 'owner');
+        })->count();
+        $tenantUnits = Unit::whereHas('unitUsers', function ($query) {
+            $query->where('role', 'resident');
+        })->count();
+
+        // آمار فاکتورها
+        $totalInvoices = Invoice::count();
+        $paidInvoices = Invoice::where('status', 'paid')->count();
+        $unpaidInvoices = Invoice::where('status', 'unpaid')->count();
+        $overdueInvoices = Invoice::where('due_date', '<', now())->where('status', 'unpaid')->count();
+        $totalInvoiceAmount = Invoice::sum('amount');
+        $paidInvoiceAmount = Invoice::where('status', 'paid')->sum('amount');
+        $unpaidInvoiceAmount = Invoice::where('status', 'unpaid')->sum('amount');
+
+        // آمار پرداخت‌ها
+        $totalPayments = Payment::count();
+        $successfulPayments = Payment::where('status', 'success')->count();
+        $failedPayments = Payment::where('status', 'failed')->count();
+        $totalPaymentAmount = Payment::where('status', 'success')->sum('amount');
+        $averagePaymentAmount = Payment::where('status', 'success')->avg('amount');
+
+        // آمار درخواست‌های تعمیر
+        $totalRepairRequests = RepairRequest::count();
+        $pendingRepairRequests = RepairRequest::where('status', 'pending')->count();
+        $inProgressRepairRequests = RepairRequest::where('status', 'in_progress')->count();
+        $completedRepairRequests = RepairRequest::where('status', 'completed')->count();
+        $cancelledRepairRequests = RepairRequest::where('status', 'cancelled')->count();
+
+        // آمار اعلان‌ها
+        $totalNotifications = Notification::count();
+        $readNotifications = Notification::where('read_at', '!=', null)->count();
+        $unreadNotifications = Notification::where('read_at', null)->count();
+
+        // آمار درخواست‌های ساختمان
+        $totalBuildingRequests = BuildingRequest::count();
+        $pendingBuildingRequests = BuildingRequest::where('status', 'pending')->count();
+        $approvedBuildingRequests = BuildingRequest::where('status', 'approved')->count();
+        $rejectedBuildingRequests = BuildingRequest::where('status', 'rejected')->count();
+
+        // آمار فعالیت‌های اخیر
+        $recentUsers = User::orderBy('created_at', 'desc')->take(5)->get();
+        $recentBuildings = Building::orderBy('created_at', 'desc')->take(5)->get();
+        $recentPayments = Payment::where('status', 'success')->orderBy('paid_at', 'desc')->take(5)->get();
+        $recentRepairRequests = RepairRequest::orderBy('created_at', 'desc')->take(5)->get();
+
+        // محاسبه درصدها
+        $userActivityRate = $totalUsers > 0 ? ($activeUsers / $totalUsers) * 100 : 0;
+        $buildingActivityRate = $totalBuildings > 0 ? ($activeBuildings / $totalBuildings) * 100 : 0;
+        $unitOccupancyRate = $totalUnits > 0 ? ($occupiedUnits / $totalUnits) * 100 : 0;
+        $invoicePaymentRate = $totalInvoices > 0 ? ($paidInvoices / $totalInvoices) * 100 : 0;
+        $paymentSuccessRate = $totalPayments > 0 ? ($successfulPayments / $totalPayments) * 100 : 0;
+        $repairCompletionRate = $totalRepairRequests > 0 ? ($completedRepairRequests / $totalRepairRequests) * 100 : 0;
+
+        // آمار ماهانه (آخرین 6 ماه)
+        $monthlyStats = collect();
+        for ($i = 5; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $monthStart = $month->startOfMonth();
+            $monthEnd = $month->endOfMonth();
+
+            $monthlyStats->push([
+                'month' => $month->format('Y/m'),
+                'new_users' => User::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
+                'new_buildings' => Building::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
+                'new_payments' => Payment::where('status', 'success')->whereBetween('paid_at', [$monthStart, $monthEnd])->count(),
+                'payment_amount' => Payment::where('status', 'success')->whereBetween('paid_at', [$monthStart, $monthEnd])->sum('amount'),
+                'new_repair_requests' => RepairRequest::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
+            ]);
+        }
+
+        return [
+            'users' => [
+                'total' => $totalUsers,
+                'active' => $activeUsers,
+                'inactive' => $inactiveUsers,
+                'super_admins' => $superAdmins,
+                'managers' => $managers,
+                'residents' => $residents,
+                'activity_rate' => $userActivityRate,
+                'recent' => $recentUsers,
+            ],
+            'buildings' => [
+                'total' => $totalBuildings,
+                'active' => $activeBuildings,
+                'inactive' => $inactiveBuildings,
+                'with_manager' => $buildingsWithManager,
+                'without_manager' => $buildingsWithoutManager,
+                'activity_rate' => $buildingActivityRate,
+                'recent' => $recentBuildings,
+            ],
+            'units' => [
+                'total' => $totalUnits,
+                'occupied' => $occupiedUnits,
+                'vacant' => $vacantUnits,
+                'owner' => $ownerUnits,
+                'tenant' => $tenantUnits,
+                'occupancy_rate' => $unitOccupancyRate,
+            ],
+            'invoices' => [
+                'total' => $totalInvoices,
+                'paid' => $paidInvoices,
+                'unpaid' => $unpaidInvoices,
+                'overdue' => $overdueInvoices,
+                'total_amount' => $totalInvoiceAmount,
+                'paid_amount' => $paidInvoiceAmount,
+                'unpaid_amount' => $unpaidInvoiceAmount,
+                'payment_rate' => $invoicePaymentRate,
+            ],
+            'payments' => [
+                'total' => $totalPayments,
+                'successful' => $successfulPayments,
+                'failed' => $failedPayments,
+                'total_amount' => $totalPaymentAmount,
+                'average_amount' => $averagePaymentAmount,
+                'success_rate' => $paymentSuccessRate,
+                'recent' => $recentPayments,
+            ],
+            'repair_requests' => [
+                'total' => $totalRepairRequests,
+                'pending' => $pendingRepairRequests,
+                'in_progress' => $inProgressRepairRequests,
+                'completed' => $completedRepairRequests,
+                'cancelled' => $cancelledRepairRequests,
+                'completion_rate' => $repairCompletionRate,
+                'recent' => $recentRepairRequests,
+            ],
+            'notifications' => [
+                'total' => $totalNotifications,
+                'read' => $readNotifications,
+                'unread' => $unreadNotifications,
+            ],
+            'building_requests' => [
+                'total' => $totalBuildingRequests,
+                'pending' => $pendingBuildingRequests,
+                'approved' => $approvedBuildingRequests,
+                'rejected' => $rejectedBuildingRequests,
+            ],
+            'monthly_stats' => $monthlyStats,
         ];
     }
 }

@@ -163,4 +163,18 @@ class SuperAdminReportController extends Controller
 
         return view('super_admin.reports.print.revenue_analysis', $data);
     }
+
+    public function systemStatistics()
+    {
+        $data = $this->reportService->getSystemStatisticsReport();
+
+        return view('super_admin.reports.system_statistics', $data);
+    }
+
+    public function printSystemStatistics()
+    {
+        $data = $this->reportService->getSystemStatisticsReport();
+
+        return view('super_admin.reports.print.system_statistics', $data);
+    }
 }

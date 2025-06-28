@@ -116,6 +116,12 @@
                                         <i class="bi bi-graph-up me-2"></i> <span>تحلیل درآمد</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.system_statistics') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.system_statistics') }}">
+                                        <i class="bi bi-bar-chart me-2"></i> <span>آمار کلی سیستم</span>
+                                    </a>
+                                </li>
                                 {{-- <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">
