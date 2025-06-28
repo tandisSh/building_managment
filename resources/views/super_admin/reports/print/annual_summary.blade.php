@@ -54,7 +54,7 @@
             @foreach($summary as $item)
                 <tr>
                     <td>{{ $item['year'] }}</td>
-                    <td>{{ jdate(Carbon::createFromFormat('Y/m', $item['year'] . '/' . $item['month'])->startOfMonth())->format('F') }}</td>
+                    <td>{{ \Carbon\Carbon::createFromFormat('Y/m', $item['year'] . '/' . $item['month'])->startOfMonth()->format('F') }}</td>
                     <td>{{ number_format($item['invoiced']) }} تومان</td>
                     <td>{{ number_format($item['paid']) }} تومان</td>
                     <td>{{ number_format($item['unpaid']) }} تومان</td>

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded flex-wrap">
-        <h6 class="mb-0 fw-bold text-white text-center"><i class="bi bi-receipt"></i> گزارش کلی پرداخت‌ها</h6>
+        <h6 class="mb-0 fw-bold text-white text-center"><i class="bi bi-journal-check"></i> گزارش صورتحساب‌ها</h6>
     </div>
 
     <div class="card search-filter-card mb-3">
@@ -17,6 +17,13 @@
                         value="{{ request('end_date') }}" placeholder="تا تاریخ" style="max-width: 200px;">
                 </div>
                 <div class="col-auto">
+                    <select name="status" class="form-control form-control-sm search-input" style="max-width: 200px;">
+                        <option value="">همه وضعیت‌ها</option>
+                        <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>پرداخت شده</option>
+                        <option value="unpaid" {{ request('status') == 'unpaid' ? 'selected' : '' }}>پرداخت نشده</option>
+                    </select>
+                </div>
+                <div class="col-auto">
                     <select name="building_id" class="form-control form-control-sm search-input" style="max-width: 200px;">
                         <option value="">همه ساختمان‌ها</option>
                         @foreach(\App\Models\Building::all() as $building)
@@ -28,7 +35,7 @@
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-sm btn-outline-primary filter-btn">فیلتر</button>
-                    <a href="{{ route('superadmin.reports.overall_payments') }}" class="btn btn-sm btn-outline-secondary filter-btn">حذف فیلتر</a>
+                    <a href="{{ route('superadmin.reports.aggregate_invoices') }}" class="btn btn-sm btn-outline-secondary filter-btn">حذف فیلتر</a>
                 </div>
             </form>
         </div>
@@ -36,10 +43,10 @@
 
     <div class="mb-3 d-flex justify-content-between align-items-center text-center">
         <div>
-            <strong>جمع کل پرداخت‌ها:</strong> {{ number_format($totalAmount) }} تومان
+            <strong>جمع کل صورتحساب‌ها:</strong> {{ number_format($totalAmount) }} تومان
         </div>
         <div>
-            <a href="{{ route('superadmin.reports.overall_payments.print', request()->query()) }}" target="_blank"
+            <a href="{{ route('superadmin.reports.aggregate_invoices.print', request()->query()) }}" target="_blank"
                 class="btn btn-info btn-sm">چاپ گزارش</a>
         </div>
     </div>
@@ -53,29 +60,29 @@
                 <div class="alert alert-danger text-center">{{ session('error') }}</div>
             @endif
 
-            @if ($payments->count() > 0)
+            @if ($invoices->count() > 0)
                 <table class="table table-bordered table-striped align-middle text-center table-units">
                     <thead>
                         <tr>
-                            <th>کاربر</th>
+                            <th>عنوان</th>
                             <th>واحد</th>
-                            <th>مبلغ</th>
-                            <th>تاریخ پرداخت</th>
                             <th>ساختمان</th>
+                            <th>مبلغ</th>
+                            <th>تاریخ سررسید</th>
                             <th>وضعیت</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($payments as $payment)
+                        @foreach ($invoices as $invoice)
                             <tr>
-                                <td>{{ $payment->user->name ?? '---' }}</td>
-                                <td>{{ $payment->invoice->unit->unit_number ?? '---' }}</td>
-                                <td>{{ number_format($payment->amount) }} تومان</td>
-                                <td>{{ $payment->paid_at ? $payment->paid_at->format('Y/m/d') : '---' }}</td>
-                                <td>{{ $payment->invoice->unit->building->name ?? '---' }}</td>
+                                <td>{{ $invoice->title ?? '---' }}</td>
+                                <td>{{ $invoice->unit->unit_number ?? '---' }}</td>
+                                <td>{{ $invoice->unit->building->name ?? '---' }}</td>
+                                <td>{{ number_format($invoice->amount) }} تومان</td>
+                                <td>{{ $invoice->due_date ? \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') : '---' }}</td>
                                 <td>
-                                    <span class="badge bg-{{ $payment->status === 'success' ? 'success' : 'warning text-dark' }} text-center">
-                                        {{ $payment->status === 'success' ? 'موفق' : 'ناموفق' }}
+                                    <span class="badge bg-{{ $invoice->status === 'paid' ? 'success' : 'warning text-dark' }} text-center">
+                                        {{ $invoice->status === 'paid' ? 'پرداخت شده' : 'پرداخت نشده' }}
                                     </span>
                                 </td>
                             </tr>
@@ -84,11 +91,15 @@
                 </table>
 
                 <div class="mt-3 text-center">
-                    {{ $payments->withQueryString()->links() }}
+                    {{ $invoices->withQueryString()->links() }}
+                </div>
+                <div class="mt-3 text-center">
+                    <a href="{{ route('superadmin.reports.aggregate_invoices.print', request()->query()) }}" target="_blank"
+                        class="btn btn-info">چاپ گزارش</a>
                 </div>
             @else
                 <div class="alert alert-info text-center">
-                    هیچ پرداختی یافت نشد.
+                    هیچ صورتحسابی یافت نشد.
                 </div>
             @endif
         </div>

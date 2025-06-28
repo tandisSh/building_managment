@@ -86,6 +86,10 @@
                 <div class="mt-3 text-center">
                     {{ $payments->withQueryString()->links() }}
                 </div>
+                <div class="mt-3 text-center">
+                    <a href="{{ route('superadmin.reports.overall_payments.print', request()->query()) }}" target="_blank"
+                        class="btn btn-info">چاپ گزارش</a>
+                </div>
             @else
                 <div class="alert alert-info text-center">
                     هیچ پرداختی یافت نشد.

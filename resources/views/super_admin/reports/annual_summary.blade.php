@@ -50,7 +50,7 @@
                         @foreach ($summary as $item)
                             <tr>
                                 <td>{{ $item['year'] }}</td>
-                                <td>{{ jdate(Carbon::createFromFormat('Y/m', $item['year'] . '/' . $item['month'])->startOfMonth())->format('F') }}</td>
+                                <td>{{ \Carbon\Carbon::createFromFormat('Y/m', $item['year'] . '/' . $item['month'])->startOfMonth()->format('F') }}</td>
                                 <td>{{ number_format($item['invoiced']) }} تومان</td>
                                 <td>{{ number_format($item['paid']) }} تومان</td>
                                 <td>{{ number_format($item['unpaid']) }} تومان</td>
@@ -64,5 +64,9 @@
                 </div>
             @endif
         </div>
+    </div>
+    <div class="mt-3 text-center">
+        <a href="{{ route('superadmin.reports.annual_summary.print', request()->query()) }}" target="_blank"
+            class="btn btn-info">چاپ گزارش</a>
     </div>
 @endsection

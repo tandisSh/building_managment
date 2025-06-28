@@ -55,7 +55,7 @@
                 <tr>
                     <td>{{ $invoice->unit->unit_number ?? '-' }}</td>
                     <td>{{ number_format($invoice->amount) }} تومان</td>
-                    <td>{{ jdate($invoice->due_date)->format('Y/m/d') }}</td>
+                    <td>{{ $invoice->due_date ? \Carbon\Carbon::parse($invoice->due_date)->format('Y/m/d') : '-' }}</td>
                     <td>{{ $invoice->status === 'paid' ? 'پرداخت‌شده' : 'پرداخت‌نشده' }}</td>
                     <td>{{ $invoice->unit->building->name ?? '-' }}</td>
                 </tr>

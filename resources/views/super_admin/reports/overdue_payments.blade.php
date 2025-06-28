@@ -69,7 +69,7 @@
                             <tr>
                                 <td>{{ $item['unit_number'] }}</td>
                                 <td>{{ number_format($item['amount']) }} تومان</td>
-                                <td>{{ $item['invoice']->due_date->format('Y/m/d') }}</td>
+                                <td>{{ $item['invoice']->due_date ? \Carbon\Carbon::parse($item['invoice']->due_date)->format('Y/m/d') : '---' }}</td>
                                 <td>{{ $item['days_overdue'] }}</td>
                                 <td>{{ $item['invoice']->unit->building->name ?? '---' }}</td>
                             </tr>

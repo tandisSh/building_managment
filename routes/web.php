@@ -227,11 +227,11 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::get('reports/system-statistics', [SuperAdminReportController::class, 'systemStatistics'])->name('reports.system_statistics');
 
     // روت‌های چاپ گزارشات
-    Route::get('reports/overall-payments/print', [SuperAdminReportController::class, 'overallPayments'])->name('reports.overall_payments.print');
-    Route::get('reports/aggregate-invoices/print', [SuperAdminReportController::class, 'aggregateInvoices'])->name('reports.aggregate_invoices.print');
-    Route::get('reports/system-debts/print', [SuperAdminReportController::class, 'systemDebts'])->name('reports.system_debts.print');
-    Route::get('reports/overdue-payments/print', [SuperAdminReportController::class, 'systemOverduePayments'])->name('reports.overdue_payments.print');
-    Route::get('reports/annual-summary/print', [SuperAdminReportController::class, 'annualFinancialSummary'])->name('reports.annual_summary.print');
+    Route::get('reports/overall-payments/print', [SuperAdminReportController::class, 'printOverallPayments'])->name('reports.overall_payments.print');
+    Route::get('reports/aggregate-invoices/print', [SuperAdminReportController::class, 'printAggregateInvoices'])->name('reports.aggregate_invoices.print');
+    Route::get('reports/system-debts/print', [SuperAdminReportController::class, 'printSystemDebts'])->name('reports.system_debts.print');
+    Route::get('reports/overdue-payments/print', [SuperAdminReportController::class, 'printOverduePayments'])->name('reports.overdue_payments.print');
+    Route::get('reports/annual-summary/print', [SuperAdminReportController::class, 'printAnnualSummary'])->name('reports.annual_summary.print');
     Route::get('reports/building-performance/print', [SuperAdminReportController::class, 'printBuildingPerformance'])->name('reports.building_performance.print');
     Route::get('reports/user-activity/print', [SuperAdminReportController::class, 'printUserActivity'])->name('reports.user_activity.print');
     Route::get('reports/building-requests/print', [SuperAdminReportController::class, 'printBuildingRequests'])->name('reports.building_requests.print');

@@ -122,30 +122,30 @@
                                         <i class="bi bi-bar-chart me-2"></i> <span>آمار کلی سیستم</span>
                                     </a>
                                 </li>
-                                {{-- <li>
+                                <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">
-                                        <i class="bi bi-journal-check me-2"></i> <span>گزارش صورتحساب</span>
+                                        <i class="bi bi-journal-check me-2"></i> <span>گزارش صورتحساب‌ها</span>
                                     </a>
-                                </li> --}}
+                                </li>
                                 <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.system_debts') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.system_debts') }}">
-                                        <i class="bi bi-currency-dollar me-2"></i> <span > گزارش بدهی سیستم</span>
+                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی سیستم</span>
                                     </a>
                                 </li>
-                                {{-- <li>
+                                <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.overdue_payments') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.overdue_payments') }}">
                                         <i class="bi bi-currency-dollar me-2"></i> <span>گزارش بدهی تاریخ گذشته</span>
                                     </a>
-                                </li> --}}
-                                  {{-- <li>
+                                </li>
+                                <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.annual_summary') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.annual_summary') }}">
-                                        <i class="bi bi-currency-dollar me-2"></i> <span>گزارش  سالانه</span>
+                                        <i class="bi bi-calendar-check me-2"></i> <span>گزارش سالانه</span>
                                     </a>
-                                </li> --}}
+                                </li>
                             </ul>
                         </div>
                 </li>
