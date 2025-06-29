@@ -35,17 +35,48 @@ class InvoicePaymentController extends Controller
 
     public function showFakePaymentForm(Invoice $invoice)
     {
-
         return view('resident.payments.fake-payment', ['invoiceId' => $invoice->id]);
     }
 
     public function showFakePaymentFormMultiple(Request $request)
     {
+        // دریافت invoice_ids از request
         $invoiceIds = $request->input('invoice_ids', []);
+        
+        // Debug: لاگ کردن داده‌های دریافتی
+        Log::info('showFakePaymentFormMultiple - Request data:', [
+            'invoice_ids' => $invoiceIds,
+            'all_request_data' => $request->all()
+        ]);
+        
+        // اگر در request نبود، از session بررسی می‌کنیم
+        if (empty($invoiceIds)) {
+            $invoiceIds = session('invoice_ids', []);
+            Log::info('Using session data:', ['invoice_ids' => $invoiceIds]);
+        }
+        
         if (!$invoiceIds || empty($invoiceIds)) {
+            Log::warning('No invoice IDs found');
             return redirect()->route('resident.invoices.unpaid')->with('error', 'هیچ صورتحساب انتخاب نشده است.');
         }
-        return view('resident.payments.fake-payment', ['invoiceIds' => $invoiceIds]);
+        
+        // اعتبارسنجی که همه ID ها معتبر هستند
+        $validInvoiceIds = Invoice::whereIn('id', $invoiceIds)
+            ->where('status', 'unpaid')
+            ->pluck('id')
+            ->toArray();
+            
+        Log::info('Valid invoice IDs:', ['valid_ids' => $validInvoiceIds]);
+            
+        if (empty($validInvoiceIds)) {
+            Log::warning('No valid invoices found');
+            return redirect()->route('resident.invoices.unpaid')->with('error', 'هیچ صورتحساب معتبری برای پرداخت یافت نشد.');
+        }
+        
+        // ذخیره در session برای استفاده بعدی
+        session(['invoice_ids' => $validInvoiceIds]);
+        
+        return view('resident.payments.fake-payment', ['invoiceIds' => $validInvoiceIds]);
     }
 
     public function processFakePayment(Request $request)
@@ -62,21 +93,74 @@ class InvoicePaymentController extends Controller
 
         Log::info('Fake Payment Attempt - Card: ' . $cardNumber . ', Expiry: ' . $expiryDate . ', CVV: ' . $cvv);
 
-        if ($request->has('invoice_id') && $request->invoice_id) {
-            $invoice = Invoice::findOrFail($request->invoice_id);
-            $this->paymentService->processSinglePayment(auth()->user(), $invoice);
-            return redirect()->route('resident.invoices.index')->with('success', 'پرداخت تک صورتحساب با موفقیت انجام شد.');
-        }
-
-        if ($request->has('invoice_ids') && $request->invoice_ids) {
-            $invoiceIds = json_decode($request->invoice_ids, true);
-            if (!$invoiceIds || empty($invoiceIds)) {
-                return redirect()->back()->with('error', 'هیچ صورتحساب انتخاب نشده است.');
+        try {
+            // پرداخت تک صورتحساب
+            if ($request->has('invoice_id') && $request->invoice_id) {
+                $invoice = Invoice::findOrFail($request->invoice_id);
+                
+                // بررسی اینکه آیا صورتحساب قبلاً پرداخت شده یا نه
+                if ($invoice->status === 'paid') {
+                    return redirect()->route('resident.invoices.index')->with('error', 'این صورتحساب قبلاً پرداخت شده است.');
+                }
+                
+                $this->paymentService->processSinglePayment(auth()->user(), $invoice);
+                return redirect()->route('resident.invoices.index')->with('success', 'پرداخت تک صورتحساب با موفقیت انجام شد.');
             }
-            $this->paymentService->processMultiplePayments(auth()->user(), $invoiceIds);
-            return redirect()->route('resident.invoices.unpaid')->with('success', 'پرداخت گروهی با موفقیت انجام شد.');
-        }
 
-        return redirect()->back()->with('error', 'خطا در پردازش پرداخت.');
+            // پرداخت گروهی
+            if ($request->has('invoice_ids') && $request->invoice_ids) {
+                $invoiceIds = $request->invoice_ids;
+                
+                // اگر رشته JSON است، آن را decode کنیم
+                if (is_string($invoiceIds)) {
+                    $invoiceIds = json_decode($invoiceIds, true);
+                }
+                
+                // اگر آرایه نیست، آن را به آرایه تبدیل کنیم
+                if (!is_array($invoiceIds)) {
+                    $invoiceIds = [$invoiceIds];
+                }
+                
+                if (empty($invoiceIds)) {
+                    return redirect()->back()->with('error', 'هیچ صورتحساب انتخاب نشده است.');
+                }
+                
+                // اعتبارسنجی نهایی
+                $validInvoices = Invoice::whereIn('id', $invoiceIds)
+                    ->where('status', 'unpaid')
+                    ->get();
+                    
+                if ($validInvoices->isEmpty()) {
+                    return redirect()->back()->with('error', 'هیچ صورتحساب معتبری برای پرداخت یافت نشد.');
+                }
+                
+                $this->paymentService->processMultiplePayments(auth()->user(), $invoiceIds);
+                return redirect()->route('resident.invoices.unpaid')->with('success', 'پرداخت گروهی با موفقیت انجام شد.');
+            }
+
+            return redirect()->back()->with('error', 'خطا در پردازش پرداخت: اطلاعات صورتحساب نامعتبر است.');
+            
+        } catch (\Exception $e) {
+            Log::error('Payment processing error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'خطا در پردازش پرداخت. لطفاً دوباره تلاش کنید.');
+        }
+    }
+
+    public function processMultiplePayment(Request $request)
+    {
+        $request->validate([
+            'invoice_ids' => 'required|array',
+            'invoice_ids.*' => 'exists:invoices,id',
+        ]);
+
+        try {
+            $invoiceIds = $request->input('invoice_ids');
+            $this->paymentService->processMultiplePayments(auth()->user(), $invoiceIds);
+            
+            return redirect()->route('resident.invoices.unpaid')->with('success', 'پرداخت گروهی با موفقیت انجام شد.');
+        } catch (\Exception $e) {
+            Log::error('Multiple payment processing error: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'خطا در پردازش پرداخت گروهی. لطفاً دوباره تلاش کنید.');
+        }
     }
 }

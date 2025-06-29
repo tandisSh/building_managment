@@ -8,6 +8,18 @@
         </a>
     </div>
 
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <div class="card admin-table-card">
         <div class="card-body">
             <form method="POST" action="{{ route('resident.payment.fake.form.multiple') }}" id="bulk-payment-form">
@@ -21,7 +33,7 @@
                         <span id="selected-total" class="fw-bold text-success">0</span> تومان
                     </div>
                     <button type="submit" class="btn btn-success btn-sm" id="submit-payment" disabled>
-                        پرداخت انتخابی
+                        <i class="bi bi-credit-card"></i> پرداخت انتخابی
                     </button>
                 </div>
 
@@ -73,6 +85,7 @@
             const totalSpan = document.getElementById('selected-total');
             const countSpan = document.getElementById('selected-count');
             const submitButton = document.getElementById('submit-payment');
+            const form = document.getElementById('bulk-payment-form');
 
             function updateSummary() {
                 let total = 0;
@@ -89,7 +102,7 @@
 
                 countSpan.textContent = count;
                 totalSpan.textContent = total.toLocaleString('fa-IR');
-                submitButton.disabled = count === 0; // غیرفعال کردن دکمه اگه هیچ‌کدوم انتخاب نشده
+                submitButton.disabled = count === 0;
             }
 
             // گوش دادن به تغییرات چک‌باکس‌ها
@@ -97,6 +110,20 @@
                 if (e.target.classList.contains('invoice-checkbox')) {
                     updateSummary();
                 }
+            });
+
+            // اعتبارسنجی فرم قبل از ارسال
+            form.addEventListener('submit', function(e) {
+                const checkboxes = document.querySelectorAll('.invoice-checkbox:checked');
+                if (checkboxes.length === 0) {
+                    e.preventDefault();
+                    alert('لطفاً حداقل یک صورتحساب انتخاب کنید.');
+                    return false;
+                }
+                
+                // نمایش loading
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="bi bi-hourglass-split"></i> در حال پردازش...';
             });
 
             // اجرای اولیه هنگام بارگذاری
