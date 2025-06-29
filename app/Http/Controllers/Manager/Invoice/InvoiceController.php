@@ -181,4 +181,21 @@ class InvoiceController extends Controller
         $invoices = $this->invoiceService->getUnitInvoices($unit->id, request()->all());
         return view('manager.invoices.unit_index', compact('invoices', 'unit'));
     }
+
+    // حذف صورتحساب تکی
+    public function destroySingle(Invoice $invoice)
+    {
+        try {
+            // بررسی اینکه آیا صورتحساب قابل حذف است
+            if (!$invoice->isDeletable()) {
+                return redirect()->back()->with('error', 'امکان حذف این صورتحساب وجود ندارد.');
+            }
+
+            $invoice->delete();
+            return redirect()->route('manager.invoices.index')
+                ->with('success', 'صورتحساب با موفقیت حذف شد.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'خطا در حذف صورتحساب: ' . $e->getMessage());
+        }
+    }
 }

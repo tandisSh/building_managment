@@ -98,4 +98,22 @@ class SuperAdminInvoiceController extends Controller
             return response()->json(['error' => 'خطا در دریافت واحدها'], 500);
         }
     }
+
+    // حذف صورتحساب
+    public function destroy(Invoice $invoice)
+    {
+        try {
+            // بررسی اینکه آیا صورتحساب قابل حذف است
+            if (!$invoice->isDeletable()) {
+                return redirect()->back()->with('error', 'امکان حذف این صورتحساب وجود ندارد.');
+            }
+
+            $invoice->delete();
+            return redirect()->route('superadmin.invoices.index')
+                ->with('success', 'صورتحساب با موفقیت حذف شد.');
+        } catch (\Exception $e) {
+            Log::error('Error in destroy invoice: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'خطا در حذف صورتحساب: ' . $e->getMessage());
+        }
+    }
 }

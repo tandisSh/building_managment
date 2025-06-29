@@ -135,6 +135,7 @@ Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function (
     Route::post('invoices/single/store', [InvoiceController::class, 'storeSingle'])->name('invoices.single.store');
     Route::get('/single-invoices/{invoice}/edit', [InvoiceController::class, 'editSingle'])->name('manager.single-invoices.edit');
     Route::put('/single-invoices/{invoice}', [InvoiceController::class, 'updateSingle'])->name('manager.single-invoices.update');
+    Route::delete('/single-invoices/{invoice}', [InvoiceController::class, 'destroySingle'])->name('manager.single-invoices.destroy');
     Route::get('invoice/show/{invoice}', [InvoiceController::class, 'show'])->name('manager.invoices.show');
 });
 
@@ -165,6 +166,7 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
     Route::post('/requests', [RepairRequestController::class, 'store'])->name('requests.store');
     Route::get('/requests/{request}/edit', [RepairRequestController::class, 'edit'])->name('requests.edit');
     Route::put('/requests/{request}', [RepairRequestController::class, 'update'])->name('requests.update');
+    Route::delete('/requests/{request}', [RepairRequestController::class, 'destroy'])->name('requests.destroy');
     Route::get('/requests/{request}', [RepairRequestController::class, 'show'])->name('requests.show');
 
     // invoices
@@ -219,6 +221,7 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::post('/invoices/store-single', [SuperAdminInvoiceController::class, 'storeSingle'])->name('invoices.store-single');
     Route::get('/invoices/{invoice}/edit-single', [SuperAdminInvoiceController::class, 'editSingle'])->name('invoices.edit-single');
     Route::put('/invoices/{invoice}/update-single', [SuperAdminInvoiceController::class, 'updateSingle'])->name('invoices.update-single');
+    Route::delete('/invoices/{invoice}', [SuperAdminInvoiceController::class, 'destroy'])->name('invoices.destroy');
     Route::get('/invoices/{invoiceId}', [SuperAdminInvoiceController::class, 'show'])->name('invoices.show');
     Route::get('/invoices/unit/{unit}', [SuperAdminInvoiceController::class, 'unitInvoices'])->name('invoices.unit');
     Route::get('/invoices/get-units/{building}', [SuperAdminInvoiceController::class, 'getUnits'])->name('invoices.get-units');

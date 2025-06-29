@@ -36,4 +36,16 @@ class Building extends Model
     {
         return $this->hasMany(Unit::class);
     }
+
+    public function isDeletable(): bool
+    {
+        return !$this->units()->exists() && !$this->users()->exists() && !$this->hasInvoicesOrPayments();
+    }
+
+    // Helper for checking invoices/payments
+    public function hasInvoicesOrPayments(): bool
+    {
+        // Check if any unit in this building has invoices or payments
+        return $this->units()->whereHas('invoices')->exists() || $this->units()->whereHas('invoices.payments')->exists();
+    }
 }

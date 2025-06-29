@@ -24,4 +24,9 @@ class RepairRequest extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function isDeletable(): bool
+    {
+        return !in_array($this->status, ['approved', 'in_progress', 'done']);
+    }
 }

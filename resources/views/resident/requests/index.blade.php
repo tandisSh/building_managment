@@ -84,6 +84,19 @@
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
                                 @endif
+                                @if($request->isDeletable())
+                                    <form action="{{ route('resident.requests.destroy', $request->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف" onclick="return confirm('آیا مطمئنید؟')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <button class="btn btn-sm btn-outline-danger" disabled title="قابل حذف نیست">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                @endif
                             </td>
                         </tr>
                     @empty

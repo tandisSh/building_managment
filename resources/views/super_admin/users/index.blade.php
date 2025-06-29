@@ -110,7 +110,7 @@
                                     <form action="{{ route('superadmin.users.destroy', $user->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف" @disabled(!$user->isDeletable())>
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>

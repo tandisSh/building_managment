@@ -50,4 +50,9 @@ class Invoice extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function isDeletable(): bool
+    {
+        return $this->status !== 'paid';
+    }
 }

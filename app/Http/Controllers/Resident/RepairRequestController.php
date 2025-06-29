@@ -85,4 +85,25 @@ class RepairRequestController extends Controller
 
         return view('resident.requests.show', compact('request'));
     }
+
+    public function destroy(RepairRequest $request)
+    {
+        try {
+            // بررسی مالکیت درخواست
+            if ($request->user_id !== auth()->id()) {
+                abort(403);
+            }
+
+            // بررسی اینکه آیا درخواست قابل حذف است
+            if (!$request->isDeletable()) {
+                return redirect()->back()->with('error', 'امکان حذف این درخواست وجود ندارد.');
+            }
+
+            $request->delete();
+            return redirect()->route('resident.requests.index')
+                ->with('success', 'درخواست با موفقیت حذف شد.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'خطا در حذف درخواست: ' . $e->getMessage());
+        }
+    }
 }

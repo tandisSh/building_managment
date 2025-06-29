@@ -103,7 +103,7 @@
                                         method="POST" onsubmit="return confirm('آیا مطمئنید حذف شود؟');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="حذف" @disabled(!$building->isDeletable())>
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>

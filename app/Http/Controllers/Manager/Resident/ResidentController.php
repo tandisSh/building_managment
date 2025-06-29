@@ -57,4 +57,20 @@ public function index(ResidentService $residentService)
         $service->update($resident, $request->validated());
         return redirect()->route('residents.index')->with('success', 'ساکن بروزرسانی شد.');
     }
+
+    public function destroy(User $resident)
+    {
+        try {
+            // بررسی اینکه آیا ساکن قابل حذف است
+            if (!$resident->isDeletable()) {
+                return redirect()->back()->with('error', 'امکان حذف این ساکن وجود ندارد.');
+            }
+
+            $resident->delete();
+            return redirect()->route('residents.index')
+                ->with('success', 'ساکن با موفقیت حذف شد.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'خطا در حذف ساکن: ' . $e->getMessage());
+        }
+    }
 }

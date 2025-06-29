@@ -112,4 +112,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(BuildingUser::class, 'user_id');
     }
+
+    public function isDeletable(): bool
+    {
+        return !$this->payments()->exists() && !$this->units()->whereHas('invoices')->exists();
+    }
 }
