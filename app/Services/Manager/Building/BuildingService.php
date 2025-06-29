@@ -15,6 +15,8 @@ class BuildingService
             'user_id' => auth()->id(),
             'name' => $data['name'],
             'address' => $data['address'],
+            'province' => $data['province'],
+            'city' => $data['city'],
             'number_of_floors' => $data['number_of_floors'],
             'number_of_units' => $data['number_of_units'],
             'shared_electricity' => !empty($data['shared_electricity']),

@@ -32,6 +32,28 @@
                     </div>
                 </div>
 
+                <!-- کارت استان -->
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card" style="min-height: 40px; padding: 5px 10px;">
+                        <i class="bi bi-geo-alt icon" style="width: 28px; height: 28px; font-size: 1rem;"></i>
+                        <div class="d-flex align-items-center">
+                            <span class="label fs-6">استان:</span>
+                            <span class="value ms-1 fs-6">{{ $building->province ?? 'تعیین نشده' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- کارت شهر -->
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card" style="min-height: 40px; padding: 5px 10px;">
+                        <i class="bi bi-geo-alt icon" style="width: 28px; height: 28px; font-size: 1rem;"></i>
+                        <div class="d-flex align-items-center">
+                            <span class="label fs-6">شهر:</span>
+                            <span class="value ms-1 fs-6">{{ $building->city ?? 'تعیین نشده' }}</span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- کارت تعداد طبقات -->
                 <div class="col-12 col-md-6">
                     <div class="compact-info-card" style="min-height: 40px; padding: 5px 10px;">

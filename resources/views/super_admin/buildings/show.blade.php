@@ -31,6 +31,22 @@
                     </div>
                 </div>
 
+                {{-- استان --}}
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card">
+                        <i class="bi bi-geo-alt icon"></i>
+                        <div><strong>استان:</strong> {{ $building->province ?? 'تعریف نشده' }}</div>
+                    </div>
+                </div>
+
+                {{-- شهر --}}
+                <div class="col-12 col-md-6">
+                    <div class="compact-info-card">
+                        <i class="bi bi-geo-alt icon"></i>
+                        <div><strong>شهر:</strong> {{ $building->city ?? 'تعریف نشده' }}</div>
+                    </div>
+                </div>
+
                 {{-- نام مدیر --}}
                 <div class="col-12 col-md-6">
                     <div class="compact-info-card">

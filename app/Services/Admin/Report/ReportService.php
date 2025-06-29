@@ -195,6 +195,8 @@ class ReportService
                 'id' => $building->id,
                 'name' => $building->name,
                 'address' => $building->address,
+                'province' => $building->province,
+                'city' => $building->city,
                 'manager_name' => $building->manager->name ?? 'نامشخص',
                 'total_units' => $totalUnits,
                 'occupied_units' => $occupiedUnits,

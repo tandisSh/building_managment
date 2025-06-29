@@ -15,6 +15,8 @@ public function rules(): array
     $rules = [
         'name' => 'required|string|max:255',
         'address' => 'required|string',
+        'province' => 'required|string|max:100',
+        'city' => 'required|string|max:100',
         'number_of_floors' => 'required|integer|min:1',
         'number_of_units' => 'required|integer|min:1',
         'shared_electricity' => 'nullable|boolean',

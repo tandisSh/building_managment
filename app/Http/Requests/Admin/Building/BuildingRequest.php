@@ -17,6 +17,8 @@ class BuildingRequest extends FormRequest
         $rules = [
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:1000',
+            'province' => 'required|string|max:100',
+            'city' => 'required|string|max:100',
             'number_of_floors' => 'required|integer|min:1',
             'number_of_units' => 'required|integer|min:1',
             'shared_electricity' => 'nullable|boolean',

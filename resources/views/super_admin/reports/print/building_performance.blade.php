@@ -167,6 +167,8 @@
                         <th>رتبه</th>
                         <th>نام ساختمان</th>
                         <th>آدرس</th>
+                        <th>استان</th>
+                        <th>شهر</th>
                         <th>مدیر</th>
                         <th>واحدها</th>
                         <th>اشغال (%)</th>
@@ -183,6 +185,8 @@
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $building['name'] }}</td>
                             <td>{{ $building['address'] }}</td>
+                            <td>{{ $building['province'] ?? 'تعریف نشده' }}</td>
+                            <td>{{ $building['city'] ?? 'تعریف نشده' }}</td>
                             <td>{{ $building['manager_name'] }}</td>
                             <td>{{ $building['occupied_units'] }}/{{ $building['total_units'] }}</td>
                             <td>

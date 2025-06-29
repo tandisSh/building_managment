@@ -13,6 +13,8 @@ class Building extends Model
         'manager_id',
         'name',
         'address',
+        'province',
+        'city',
         'shared_electricity',
         'shared_water',
         'shared_gas',

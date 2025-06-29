@@ -71,10 +71,37 @@
                     </div>
                 </div>
 
-                {{-- ردیف سوم --}}
+                {{-- ردیف سوم - استان و شهر --}}
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="province" class="form-label small">استان *</label>
+                        <select class="form-select form-select-sm @error('province') is-invalid @enderror"
+                                id="province" name="province">
+                            <option value="">انتخاب استان</option>
+                        </select>
+                        @error('province')
+                            <div class="invalid-feedback small">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="city" class="form-label small">شهر *</label>
+                        <select class="form-select form-select-sm @error('city') is-invalid @enderror"
+                                id="city" name="city">
+                            <option value="">انتخاب شهر</option>
+                        </select>
+                        @error('city')
+                            <div class="invalid-feedback small">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- ردیف چهارم --}}
                 <div class="col-12">
                     <div class="form-group">
-                        <label for="address" class="form-label small">آدرس کامل *</label>
+                        <label for="address" class="form-label small">آدرس جزئیات (خیابان، کوچه و ...) *</label>
                         <textarea class="form-control form-control-sm @error('address') is-invalid @enderror"
                                   id="address" name="address" rows="2">{{ old('address') }}</textarea>
                         @error('address')
@@ -83,7 +110,7 @@
                     </div>
                 </div>
 
-                {{-- ردیف چهارم --}}
+                {{-- ردیف پنجم --}}
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="document" class="form-label small">مدارک ملک *</label>
@@ -106,4 +133,28 @@
         </form>
     </div>
 </div>
+
+<script src="{{ asset('js/iran-cities.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        initializeProvinceCityDropdowns('province', 'city');
+        
+        // اگر مقادیر قبلی وجود دارند، آنها را تنظیم کن
+        @if(old('province'))
+            const provinceSelect = document.getElementById('province');
+            const citySelect = document.getElementById('city');
+            
+            // ابتدا استان را تنظیم کن
+            provinceSelect.value = '{{ old('province') }}';
+            
+            // شهرهای مربوطه را بارگذاری کن
+            populateCities(provinceSelect, citySelect);
+            
+            // سپس شهر را تنظیم کن
+            setTimeout(() => {
+                citySelect.value = '{{ old('city') }}';
+            }, 100);
+        @endif
+    });
+</script>
 @endsection

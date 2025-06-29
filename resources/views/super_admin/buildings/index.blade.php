@@ -20,7 +20,7 @@
                 class="row g-2 align-items-center text-center">
                 <div class="col-auto">
                     <input type="text" name="search" value="{{ request('search') }}"
-                        class="form-control form-control-sm w-auto search-input" placeholder="نام ساختمان یا آدرس"
+                        class="form-control form-control-sm w-auto search-input" placeholder="نام، آدرس، استان یا شهر"
                         style="max-width: 250px;">
                 </div>
                 <div class="col-auto">
@@ -67,6 +67,8 @@
                         <th>ردیف</th>
                         <th>نام ساختمان</th>
                         <th>آدرس</th>
+                        <th>استان</th>
+                        <th>شهر</th>
                         <th>تعداد طبقات</th>
                         <th>تعداد واحدها</th>
                         <th>مشترکات</th>
@@ -79,6 +81,8 @@
                             <td>{{ $index + 1 + ($buildings->currentPage() - 1) * $buildings->perPage() }}</td>
                             <td>{{ $building->name }}</td>
                             <td class="text-truncate" style="max-width: 150px;">{{ $building->address }}</td>
+                            <td>{{ $building->province ?? 'تعریف نشده' }}</td>
+                            <td>{{ $building->city ?? 'تعریف نشده' }}</td>
                             <td>{{ $building->number_of_floors }}</td>
                             <td>{{ $building->number_of_units }}</td>
                             <td>
@@ -112,7 +116,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">هیچ ساختمانی یافت نشد.</td>
+                            <td colspan="9" class="text-center">هیچ ساختمانی یافت نشد.</td>
                         </tr>
                     @endforelse
                 </tbody>
