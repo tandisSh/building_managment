@@ -8,7 +8,7 @@
     <!-- آمار کلی -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card text-center bg-primary text-white">
+            <div class="card text-center bg-purple-300 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $users['total'] }}</h5>
                     <p class="card-text small">کل کاربران</p>
@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-500 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $buildings['total'] }}</h5>
                     <p class="card-text small">کل ساختمان‌ها</p>
@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center bg-info text-white">
+            <div class="card text-center bg-purple-700 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $units['total'] }}</h5>
                     <p class="card-text small">کل واحدها</p>
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-center bg-warning text-dark">
+            <div class="card text-center bg-purple-900 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($payments['total_amount']) }} تومان</h5>
                     <p class="card-text small">کل درآمد</p>
@@ -411,4 +411,4 @@
         <a href="{{ route('superadmin.reports.system_statistics.print') }}" target="_blank"
             class="btn btn-info">چاپ گزارش</a>
     </div>
-@endsection 
+@endsection

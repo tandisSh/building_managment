@@ -52,7 +52,7 @@
     <!-- خلاصه کلی -->
     <div class="row mb-4">
         <div class="col-md-2">
-            <div class="card text-center bg-primary text-white">
+            <div class="card text-center bg-purple-300 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['total_users'] }}</h5>
                     <p class="card-text small">کل کاربران</p>
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-500 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['active_users'] }}</h5>
                     <p class="card-text small">کاربران فعال</p>
@@ -68,7 +68,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-warning text-dark">
+            <div class="card text-center bg-purple-700 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['inactive_users'] }}</h5>
                     <p class="card-text small">کاربران غیرفعال</p>
@@ -76,7 +76,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-info text-white">
+            <div class="card text-center bg-purple-900 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['average_activity_score'], 1) }}</h5>
                     <p class="card-text small">میانگین امتیاز فعالیت</p>
@@ -84,7 +84,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-100 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['total_payments'] }}</h5>
                     <p class="card-text small">کل پرداخت‌ها</p>
@@ -92,7 +92,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-danger text-white">
+            <div class="card text-center bg-danger text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['total_repair_requests'] }}</h5>
                     <p class="card-text small">کل درخواست‌های تعمیر</p>
@@ -200,7 +200,7 @@
                                 </td>
                                 <td>
                                     <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" 
+                                        <div class="progress-bar bg-warning" role="progressbar"
                                              style="width: {{ min(100, $user['activity_score']) }}%">
                                             {{ number_format($user['activity_score'], 1) }}
                                         </div>
@@ -232,4 +232,4 @@
             @endif
         </div>
     </div>
-@endsection 
+@endsection

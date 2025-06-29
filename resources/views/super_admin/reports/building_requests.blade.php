@@ -35,7 +35,7 @@
     <!-- خلاصه کلی -->
     <div class="row mb-4">
         <div class="col-md-2">
-            <div class="card text-center bg-primary text-white">
+            <div class="card text-center bg-purple-300 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['total_requests'] }}</h5>
                     <p class="card-text small">کل درخواست‌ها</p>
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-warning text-dark">
+            <div class="card text-center bg-purple-500 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['pending_requests'] }}</h5>
                     <p class="card-text small">در انتظار بررسی</p>
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-700 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['approved_requests'] }}</h5>
                     <p class="card-text small">تایید شده</p>
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-danger text-white">
+            <div class="card text-center bg-purple-900 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['rejected_requests'] }}</h5>
                     <p class="card-text small">رد شده</p>
@@ -67,18 +67,10 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-info text-white">
+            <div class="card text-center bg-purple-100 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['average_processing_days'], 1) }}</h5>
                     <p class="card-text small">میانگین روزهای بررسی</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="card text-center bg-secondary text-white">
-                <div class="card-body">
-                    <h5 class="card-title">{{ $summary['total_units_requested'] }}</h5>
-                    <p class="card-text small">کل واحدهای درخواستی</p>
                 </div>
             </div>
         </div>

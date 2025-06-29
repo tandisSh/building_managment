@@ -37,7 +37,7 @@
     <!-- خلاصه کلی -->
     <div class="row mb-4">
         <div class="col-md-2">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-300 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['total_revenue']) }} تومان</h5>
                     <p class="card-text small">کل درآمد</p>
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-primary text-white">
+            <div class="card text-center bg-purple-500 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['total_payments'] }}</h5>
                     <p class="card-text small">کل پرداخت‌ها</p>
@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-info text-white">
+            <div class="card text-center bg-purple-700 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['average_payment']) }} تومان</h5>
                     <p class="card-text small">میانگین پرداخت</p>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-warning text-dark">
+            <div class="card text-center bg-purple-900 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['unique_users'] }}</h5>
                     <p class="card-text small">کاربران منحصر به فرد</p>
@@ -69,7 +69,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-secondary text-white">
+            <div class="card text-center bg-purple-100 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['unique_buildings'] }}</h5>
                     <p class="card-text small">ساختمان‌های فعال</p>
@@ -77,7 +77,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center {{ $summary['revenue_growth'] >= 0 ? 'bg-success' : 'bg-danger' }} text-white">
+            <div class="card text-center {{ $summary['revenue_growth'] >= 0 ? 'bg-purple-600' : 'bg-danger' }} text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['revenue_growth'], 1) }}%</h5>
                     <p class="card-text small">رشد درآمد</p>

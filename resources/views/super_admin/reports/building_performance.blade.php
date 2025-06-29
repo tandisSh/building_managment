@@ -27,7 +27,7 @@
     <!-- خلاصه کلی -->
     <div class="row mb-4">
         <div class="col-md-2">
-            <div class="card text-center bg-primary text-white">
+            <div class="card text-center bg-purple-300 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ $summary['total_buildings'] }}</h5>
                     <p class="card-text small">کل ساختمان‌ها</p>
@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-500 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['average_occupancy'], 1) }}%</h5>
                     <p class="card-text small">میانگین اشغال</p>
@@ -43,7 +43,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-info text-white">
+            <div class="card text-center bg-purple-700 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['average_payment_rate'], 1) }}%</h5>
                     <p class="card-text small">میانگین پرداخت</p>
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-warning text-dark">
+            <div class="card text-center bg-purple-900 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['average_performance_score'], 1) }}</h5>
                     <p class="card-text small">امتیاز عملکرد</p>
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-success text-white">
+            <div class="card text-center bg-purple-100 text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['total_revenue']) }}</h5>
                     <p class="card-text small">کل درآمد (تومان)</p>
@@ -67,7 +67,7 @@
             </div>
         </div>
         <div class="col-md-2">
-            <div class="card text-center bg-danger text-white">
+            <div class="card text-center bg-danger text-dark">
                 <div class="card-body">
                     <h5 class="card-title">{{ number_format($summary['total_overdue']) }}</h5>
                     <p class="card-text small">کل بدهی معوق (تومان)</p>
@@ -128,7 +128,7 @@
                                 <td>{{ $building['occupied_units'] }}/{{ $building['total_units'] }}</td>
                                 <td>
                                     <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar bg-success" role="progressbar" 
+                                        <div class="progress-bar bg-success" role="progressbar"
                                              style="width: {{ $building['occupancy_rate'] }}%">
                                             {{ number_format($building['occupancy_rate'], 1) }}%
                                         </div>
@@ -137,7 +137,7 @@
                                 <td>{{ number_format($building['monthly_revenue']) }}</td>
                                 <td>
                                     <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar bg-info" role="progressbar" 
+                                        <div class="progress-bar bg-info" role="progressbar"
                                              style="width: {{ $building['payment_rate'] }}%">
                                             {{ number_format($building['payment_rate'], 1) }}%
                                         </div>
@@ -152,7 +152,7 @@
                                 </td>
                                 <td>
                                     <div class="progress" style="height: 20px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" 
+                                        <div class="progress-bar bg-warning" role="progressbar"
                                              style="width: {{ $building['performance_score'] }}%">
                                             {{ number_format($building['performance_score'], 1) }}
                                         </div>
@@ -183,4 +183,4 @@
             @endif
         </div>
     </div>
-@endsection 
+@endsection
