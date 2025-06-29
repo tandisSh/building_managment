@@ -6,7 +6,7 @@
     {{-- هدر --}}
     <div class="admin-header d-flex justify-content-between align-items-center mb-3 shadow-sm rounded" style="background-color: #4e3cb3;">
         <h6 class="mb-0 fw-bold text-white py-2 px-3">
-            <i class="bi bi-person-gear me-2"></i>ویرایش پروفایل
+            <i class="bi bi-person-gear me-2"></i>ویرایش پروفایل سوپر ادمین
         </h6>
     </div>
 
@@ -16,7 +16,7 @@
             <i class="bi bi-person-lines-fill me-2"></i>اطلاعات کاربری
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('resident.profile.update') }}">
+            <form method="POST" action="{{ route('superadmin.profile.update') }}">
                 @csrf
 
                 <div class="row g-3">
@@ -63,7 +63,7 @@
             <i class="bi bi-shield-lock me-2"></i>تغییر رمز عبور
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('resident.profile.password') }}">
+            <form method="POST" action="{{ route('superadmin.profile.password') }}">
                 @csrf
 
                 <div class="row g-3">
@@ -92,4 +92,4 @@
     </div>
 
 </div>
-@endsection
+@endsection 

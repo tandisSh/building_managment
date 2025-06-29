@@ -7,6 +7,8 @@ use App\Http\Controllers\Resident\InvoicePaymentController as ResidentInvoicePay
 use App\Http\Controllers\SuperAdmin\BuildingManager\BuildingManagerController;
 use App\Http\Controllers\SuperAdmin\Payment\SuperAdminPaymentController;
 use App\Http\Controllers\Superadmin\User\UserController;
+use App\Http\Controllers\SuperAdmin\ProfileController as SuperAdminProfileController;
+use App\Http\Controllers\Manager\ProfileController as ManagerProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Manager\ManagerController;
 use App\Http\Controllers\Manager\Unit\UnitController;
@@ -52,6 +54,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // مدیران
 Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function () {
     Route::get('/dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
+
+    // پروفایل مدیر
+    Route::get('/profile', [ManagerProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ManagerProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [ManagerProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [ManagerProfileController::class, 'updatePassword'])->name('profile.password');
 
     // مدیریت ساختمان‌ها
     Route::get('/buildings/create', [BuildingController::class, 'createRequest'])->name('manager.buildings.create');
@@ -169,6 +177,12 @@ Route::middleware(['auth', 'role:resident'])->prefix('resident')->name('resident
 Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadmin.')->group(function () {
     // داشبورد سوپر ادمین
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+
+    // پروفایل سوپر ادمین
+    Route::get('/profile', [SuperAdminProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [SuperAdminProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile', [SuperAdminProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/password', [SuperAdminProfileController::class, 'updatePassword'])->name('profile.password');
 
     // ساختمان‌ها
     Route::get('buildings', [AdminBuildingController::class, 'index'])->name('buildings.index');

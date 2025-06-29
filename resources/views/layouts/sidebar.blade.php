@@ -40,6 +40,15 @@
                         <i class="bi bi-speedometer2 me-2"></i> <span>داشبورد ادمین</span>
                     </a>
                 </li>
+
+                <!-- پروفایل سوپر ادمین -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('superadmin.profile.show') ? 'active fw-bold' : '' }}"
+                        href="{{ route('superadmin.profile.show') }}">
+                        <i class="bi bi-person me-2"></i> <span>پروفایل</span>
+                    </a>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('superadmin.requests') ? 'active fw-bold' : '' }}"
                         href="{{ route('superadmin.requests') }}">
@@ -157,6 +166,14 @@
                     <a class="nav-link {{ request()->routeIs('manager.dashboard') ? 'active fw-bold' : '' }}"
                         href="{{ route('manager.dashboard') }}">
                         <i class="bi bi-house-door me-2"></i> <span>داشبورد</span>
+                    </a>
+                </li>
+
+                <!-- پروفایل مدیر -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('manager.profile.show') ? 'active fw-bold' : '' }}"
+                        href="{{ route('manager.profile.show') }}">
+                        <i class="bi bi-person me-2"></i> <span>پروفایل</span>
                     </a>
                 </li>
 
