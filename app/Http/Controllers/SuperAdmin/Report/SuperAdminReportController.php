@@ -177,4 +177,20 @@ class SuperAdminReportController extends Controller
 
         return view('super_admin.reports.print.system_statistics', $data);
     }
+
+    public function buildingLocation(Request $request)
+    {
+        $filters = $request->only(['search']);
+        $data = $this->reportService->getBuildingLocationReport($filters);
+
+        return view('super_admin.reports.building_location', $data);
+    }
+
+    public function printBuildingLocation(Request $request)
+    {
+        $filters = $request->only(['search']);
+        $data = $this->reportService->getBuildingLocationReport($filters);
+
+        return view('super_admin.reports.print.building_location', $data);
+    }
 }

@@ -557,170 +557,192 @@ class ReportService
     public function getSystemStatisticsReport()
     {
         // آمار کاربران
-        $totalUsers = User::count();
-        $activeUsers = User::where('status', 'active')->count();
-        $inactiveUsers = User::where('status', 'inactive')->count();
-        $superAdmins = User::whereHas('roles', function ($query) {
-            $query->where('name', 'super_admin');
-        })->count();
-        $managers = User::whereHas('roles', function ($query) {
-            $query->where('name', 'manager');
-        })->count();
-        $residents = User::whereHas('roles', function ($query) {
-            $query->where('name', 'resident');
-        })->count();
+        $users = [
+            'total' => User::count(),
+            'active' => User::where('status', 'active')->count(),
+            'inactive' => User::where('status', 'inactive')->count(),
+            'activity_rate' => User::count() > 0 ? round((User::where('status', 'active')->count() / User::count()) * 100, 1) : 0,
+            'super_admins' => User::whereHas('roles', function($q) { $q->where('name', 'super_admin'); })->count(),
+            'managers' => User::whereHas('roles', function($q) { $q->where('name', 'manager'); })->count(),
+            'residents' => User::whereHas('roles', function($q) { $q->where('name', 'resident'); })->count(),
+        ];
 
         // آمار ساختمان‌ها
-        $totalBuildings = Building::count();
-        $activeBuildings = Building::whereHas('manager')->count(); // ساختمان‌های فعال = دارای مدیر
-        $inactiveBuildings = Building::whereDoesntHave('manager')->count(); // ساختمان‌های غیرفعال = بدون مدیر
-        $buildingsWithManager = Building::whereHas('manager')->count();
-        $buildingsWithoutManager = $totalBuildings - $buildingsWithManager;
+        $buildings = [
+            'total' => Building::count(),
+            'active' => Building::whereHas('units')->count(),
+            'inactive' => Building::whereDoesntHave('units')->count(),
+            'activity_rate' => Building::count() > 0 ? round((Building::whereHas('units')->count() / Building::count()) * 100, 1) : 0,
+            'with_manager' => Building::whereNotNull('manager_id')->count(),
+            'without_manager' => Building::whereNull('manager_id')->count(),
+        ];
 
         // آمار واحدها
-        $totalUnits = Unit::count();
-        $occupiedUnits = Unit::whereHas('unitUsers')->count();
-        $vacantUnits = $totalUnits - $occupiedUnits;
-        $ownerUnits = Unit::whereHas('unitUsers', function ($query) {
-            $query->where('role', 'owner');
-        })->count();
-        $tenantUnits = Unit::whereHas('unitUsers', function ($query) {
-            $query->where('role', 'resident');
-        })->count();
+        $units = [
+            'total' => Unit::count(),
+            'occupied' => Unit::whereHas('unitUsers')->count(),
+            'vacant' => Unit::whereDoesntHave('unitUsers')->count(),
+            'occupancy_rate' => Unit::count() > 0 ? round((Unit::whereHas('unitUsers')->count() / Unit::count()) * 100, 1) : 0,
+        ];
 
         // آمار فاکتورها
-        $totalInvoices = Invoice::count();
-        $paidInvoices = Invoice::where('status', 'paid')->count();
-        $unpaidInvoices = Invoice::where('status', 'unpaid')->count();
-        $overdueInvoices = Invoice::where('due_date', '<', now())->where('status', 'unpaid')->count();
-        $totalInvoiceAmount = Invoice::sum('amount');
-        $paidInvoiceAmount = Invoice::where('status', 'paid')->sum('amount');
-        $unpaidInvoiceAmount = Invoice::where('status', 'unpaid')->sum('amount');
+        $invoices = [
+            'total' => Invoice::count(),
+            'paid' => Invoice::where('status', 'paid')->count(),
+            'unpaid' => Invoice::where('status', 'unpaid')->count(),
+            'overdue' => Invoice::where('status', 'unpaid')->where('due_date', '<', now())->count(),
+            'total_amount' => Invoice::sum('amount'),
+            'paid_amount' => Invoice::where('status', 'paid')->sum('amount'),
+            'unpaid_amount' => Invoice::where('status', 'unpaid')->sum('amount'),
+        ];
 
         // آمار پرداخت‌ها
-        $totalPayments = Payment::count();
-        $successfulPayments = Payment::where('status', 'success')->count();
-        $failedPayments = Payment::where('status', 'failed')->count();
-        $totalPaymentAmount = Payment::where('status', 'success')->sum('amount');
-        $averagePaymentAmount = Payment::where('status', 'success')->avg('amount');
+        $payments = [
+            'total' => Payment::count(),
+            'successful' => Payment::where('status', 'success')->count(),
+            'failed' => Payment::where('status', 'failed')->count(),
+            'total_amount' => Payment::where('status', 'success')->sum('amount'),
+        ];
 
         // آمار درخواست‌های تعمیر
-        $totalRepairRequests = RepairRequest::count();
-        $pendingRepairRequests = RepairRequest::where('status', 'pending')->count();
-        $inProgressRepairRequests = RepairRequest::where('status', 'in_progress')->count();
-        $completedRepairRequests = RepairRequest::where('status', 'completed')->count();
-        $cancelledRepairRequests = RepairRequest::where('status', 'cancelled')->count();
-
-        // آمار اعلان‌ها
-        $totalNotifications = Notification::count();
-        $readNotifications = Notification::where('read_at', '!=', null)->count();
-        $unreadNotifications = Notification::where('read_at', null)->count();
+        $repair_requests = [
+            'total' => RepairRequest::count(),
+            'pending' => RepairRequest::where('status', 'pending')->count(),
+            'in_progress' => RepairRequest::where('status', 'in_progress')->count(),
+            'completed' => RepairRequest::where('status', 'completed')->count(),
+            'cancelled' => RepairRequest::where('status', 'cancelled')->count(),
+        ];
 
         // آمار درخواست‌های ساختمان
-        $totalBuildingRequests = BuildingRequest::count();
-        $pendingBuildingRequests = BuildingRequest::where('status', 'pending')->count();
-        $approvedBuildingRequests = BuildingRequest::where('status', 'approved')->count();
-        $rejectedBuildingRequests = BuildingRequest::where('status', 'rejected')->count();
+        $building_requests = [
+            'total' => BuildingRequest::count(),
+            'pending' => BuildingRequest::where('status', 'pending')->count(),
+            'approved' => BuildingRequest::where('status', 'approved')->count(),
+            'rejected' => BuildingRequest::where('status', 'rejected')->count(),
+        ];
 
-        // آمار فعالیت‌های اخیر
-        $recentUsers = User::orderBy('created_at', 'desc')->take(5)->get();
-        $recentBuildings = Building::orderBy('created_at', 'desc')->take(5)->get();
-        $recentPayments = Payment::where('status', 'success')->orderBy('paid_at', 'desc')->take(5)->get();
-        $recentRepairRequests = RepairRequest::orderBy('created_at', 'desc')->take(5)->get();
-
-        // محاسبه درصدها
-        $userActivityRate = $totalUsers > 0 ? ($activeUsers / $totalUsers) * 100 : 0;
-        $buildingActivityRate = $totalBuildings > 0 ? ($activeBuildings / $totalBuildings) * 100 : 0;
-        $unitOccupancyRate = $totalUnits > 0 ? ($occupiedUnits / $totalUnits) * 100 : 0;
-        $invoicePaymentRate = $totalInvoices > 0 ? ($paidInvoices / $totalInvoices) * 100 : 0;
-        $paymentSuccessRate = $totalPayments > 0 ? ($successfulPayments / $totalPayments) * 100 : 0;
-        $repairCompletionRate = $totalRepairRequests > 0 ? ($completedRepairRequests / $totalRepairRequests) * 100 : 0;
-
-        // آمار ماهانه (آخرین 6 ماه)
-        $monthlyStats = collect();
-        for ($i = 5; $i >= 0; $i--) {
-            $month = now()->subMonths($i);
-            $monthStart = $month->startOfMonth();
-            $monthEnd = $month->endOfMonth();
-
-            $monthlyStats->push([
-                'month' => $month->format('Y/m'),
-                'new_users' => User::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
-                'new_buildings' => Building::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
-                'new_payments' => Payment::where('status', 'success')->whereBetween('paid_at', [$monthStart, $monthEnd])->count(),
-                'payment_amount' => Payment::where('status', 'success')->whereBetween('paid_at', [$monthStart, $monthEnd])->sum('amount'),
-                'new_repair_requests' => RepairRequest::whereBetween('created_at', [$monthStart, $monthEnd])->count(),
-            ]);
+        // آمار ماهانه
+        $monthly_stats = [];
+        for ($i = 0; $i < 12; $i++) {
+            $date = now()->subMonths($i);
+            $monthly_stats[] = [
+                'month' => $date->format('Y/m'),
+                'users' => User::whereYear('created_at', $date->year)->whereMonth('created_at', $date->month)->count(),
+                'buildings' => Building::whereYear('created_at', $date->year)->whereMonth('created_at', $date->month)->count(),
+                'invoices' => Invoice::whereYear('created_at', $date->year)->whereMonth('created_at', $date->month)->count(),
+                'payments' => Payment::whereYear('created_at', $date->year)->whereMonth('created_at', $date->month)->count(),
+            ];
         }
 
         return [
-            'users' => [
-                'total' => $totalUsers,
-                'active' => $activeUsers,
-                'inactive' => $inactiveUsers,
-                'super_admins' => $superAdmins,
-                'managers' => $managers,
-                'residents' => $residents,
-                'activity_rate' => $userActivityRate,
-                'recent' => $recentUsers,
-            ],
-            'buildings' => [
-                'total' => $totalBuildings,
-                'active' => $activeBuildings,
-                'inactive' => $inactiveBuildings,
-                'with_manager' => $buildingsWithManager,
-                'without_manager' => $buildingsWithoutManager,
-                'activity_rate' => $buildingActivityRate,
-                'recent' => $recentBuildings,
-            ],
-            'units' => [
-                'total' => $totalUnits,
-                'occupied' => $occupiedUnits,
-                'vacant' => $vacantUnits,
-                'owner' => $ownerUnits,
-                'tenant' => $tenantUnits,
-                'occupancy_rate' => $unitOccupancyRate,
-            ],
-            'invoices' => [
-                'total' => $totalInvoices,
-                'paid' => $paidInvoices,
-                'unpaid' => $unpaidInvoices,
-                'overdue' => $overdueInvoices,
-                'total_amount' => $totalInvoiceAmount,
-                'paid_amount' => $paidInvoiceAmount,
-                'unpaid_amount' => $unpaidInvoiceAmount,
-                'payment_rate' => $invoicePaymentRate,
-            ],
-            'payments' => [
-                'total' => $totalPayments,
-                'successful' => $successfulPayments,
-                'failed' => $failedPayments,
-                'total_amount' => $totalPaymentAmount,
-                'average_amount' => $averagePaymentAmount,
-                'success_rate' => $paymentSuccessRate,
-                'recent' => $recentPayments,
-            ],
-            'repair_requests' => [
-                'total' => $totalRepairRequests,
-                'pending' => $pendingRepairRequests,
-                'in_progress' => $inProgressRepairRequests,
-                'completed' => $completedRepairRequests,
-                'cancelled' => $cancelledRepairRequests,
-                'completion_rate' => $repairCompletionRate,
-                'recent' => $recentRepairRequests,
-            ],
-            'notifications' => [
-                'total' => $totalNotifications,
-                'read' => $readNotifications,
-                'unread' => $unreadNotifications,
-            ],
-            'building_requests' => [
-                'total' => $totalBuildingRequests,
-                'pending' => $pendingBuildingRequests,
-                'approved' => $approvedBuildingRequests,
-                'rejected' => $rejectedBuildingRequests,
-            ],
-            'monthly_stats' => $monthlyStats,
+            'users' => $users,
+            'buildings' => $buildings,
+            'units' => $units,
+            'invoices' => $invoices,
+            'payments' => $payments,
+            'repair_requests' => $repair_requests,
+            'building_requests' => $building_requests,
+            'monthly_stats' => array_reverse($monthly_stats),
+        ];
+    }
+
+    public function getBuildingLocationReport(array $filters = [])
+    {
+        // کوئری اصلی ساختمان‌ها با جستجو
+        $buildingsQuery = Building::with(['manager', 'units'])
+            ->whereNotNull('province');
+
+        // اعمال فیلتر جستجو
+        if (!empty($filters['search'])) {
+            $search = $filters['search'];
+            $buildingsQuery->where(function ($query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('province', 'like', "%{$search}%")
+                      ->orWhere('city', 'like', "%{$search}%");
+            });
+        }
+
+        // دریافت ساختمان‌ها با صفحه‌بندی
+        $buildings = $buildingsQuery->orderBy('name')->paginate(20);
+
+        // آمار کلی بر اساس استان
+        $provinceStats = Building::selectRaw('
+            province,
+            COUNT(*) as total_buildings,
+            COUNT(CASE WHEN manager_id IS NOT NULL THEN 1 END) as buildings_with_manager,
+            COUNT(CASE WHEN manager_id IS NULL THEN 1 END) as buildings_without_manager,
+            SUM(number_of_units) as total_units,
+            SUM(number_of_floors) as total_floors,
+            AVG(number_of_units) as avg_units_per_building,
+            AVG(number_of_floors) as avg_floors_per_building
+        ')
+        ->whereNotNull('province')
+        ->groupBy('province')
+        ->orderBy('total_buildings', 'desc')
+        ->get();
+
+        // آمار تفصیلی بر اساس شهر
+        $cityStats = Building::selectRaw('
+            province,
+            city,
+            COUNT(*) as total_buildings,
+            COUNT(CASE WHEN manager_id IS NOT NULL THEN 1 END) as buildings_with_manager,
+            COUNT(CASE WHEN manager_id IS NULL THEN 1 END) as buildings_without_manager,
+            SUM(number_of_units) as total_units,
+            SUM(number_of_floors) as total_floors,
+            AVG(number_of_units) as avg_units_per_building,
+            AVG(number_of_floors) as avg_floors_per_building
+        ')
+        ->whereNotNull('province')
+        ->whereNotNull('city')
+        ->groupBy('province', 'city')
+        ->orderBy('total_buildings', 'desc')
+        ->get();
+
+        // آمار عملکرد بر اساس استان (شامل درآمد و پرداخت‌ها)
+        $provincePerformance = Building::with(['units.invoices.payments', 'manager'])
+        ->whereNotNull('province')
+        ->get()
+        ->groupBy('province')
+        ->map(function ($buildings, $province) {
+            $totalUnits = $buildings->sum('number_of_units');
+            $totalInvoices = $buildings->flatMap->units->flatMap->invoices;
+            $totalPayments = $totalInvoices->flatMap->payments->where('status', 'success');
+            
+            return [
+                'province' => $province,
+                'total_buildings' => $buildings->count(),
+                'total_units' => $totalUnits,
+                'total_invoices' => $totalInvoices->count(),
+                'total_invoiced_amount' => $totalInvoices->sum('amount'),
+                'total_payments' => $totalPayments->count(),
+                'total_paid_amount' => $totalPayments->sum('amount'),
+                'payment_rate' => $totalInvoices->sum('amount') > 0 ? 
+                    round(($totalPayments->sum('amount') / $totalInvoices->sum('amount')) * 100, 1) : 0,
+                'avg_units_per_building' => round($totalUnits / $buildings->count(), 1),
+                'buildings_with_manager' => $buildings->whereNotNull('manager_id')->count(),
+                'buildings_without_manager' => $buildings->whereNull('manager_id')->count(),
+            ];
+        })
+        ->sortByDesc('total_buildings')
+        ->values();
+
+        return [
+            'buildings' => $buildings,
+            'province_stats' => $provinceStats,
+            'city_stats' => $cityStats,
+            'province_performance' => $provincePerformance,
+            'filters' => $filters,
+            'summary' => [
+                'total_provinces' => $provinceStats->count(),
+                'total_cities' => $cityStats->count(),
+                'total_buildings' => $provinceStats->sum('total_buildings'),
+                'total_units' => $provinceStats->sum('total_units'),
+                'avg_buildings_per_province' => round($provinceStats->avg('total_buildings'), 1),
+                'avg_buildings_per_city' => round($cityStats->avg('total_buildings'), 1),
+                'most_buildings_province' => $provinceStats->first(),
+                'most_buildings_city' => $cityStats->first(),
+            ]
         ];
     }
 }

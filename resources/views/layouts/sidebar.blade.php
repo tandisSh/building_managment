@@ -132,6 +132,12 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.building_location') ? 'active fw-bold' : '' }}"
+                                        href="{{ route('superadmin.reports.building_location') }}">
+                                        <i class="bi bi-geo-alt me-2"></i> <span>تفکیک جغرافیایی ساختمان‌ها</span>
+                                    </a>
+                                </li>
+                                <li>
                                     <a class="nav-link sub-nav-link {{ request()->routeIs('superadmin.reports.aggregate_invoices') ? 'active fw-bold' : '' }}"
                                         href="{{ route('superadmin.reports.aggregate_invoices') }}">
                                         <i class="bi bi-journal-check me-2"></i> <span>گزارش صورتحساب‌ها</span>
