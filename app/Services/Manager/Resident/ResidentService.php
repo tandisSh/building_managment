@@ -173,10 +173,10 @@ public function getFilteredResidents($filters, $buildingId)
             // فقط از status کاربر اصلی استفاده کنیم
             $q->whereHas('user', fn($q2) => $q2->where('status', $status));
         })
-        ->get();
+        ->paginate(20);
 
     // گروه‌بندی بر اساس user_id و unit_id
-    $grouped = $unitUsers
+    $grouped = $unitUsers->getCollection()
         ->groupBy(fn($item) => $item->user_id . '-' . $item->unit_id)
         ->map(function ($items) {
             /** @var \Illuminate\Support\Collection $items */
@@ -202,6 +202,18 @@ public function getFilteredResidents($filters, $buildingId)
             ];
         })->values();
 
-    return $grouped;
+    // ایجاد یک paginator جدید با داده‌های گروه‌بندی شده
+    $paginatedResults = new \Illuminate\Pagination\LengthAwarePaginator(
+        $grouped,
+        $unitUsers->total(),
+        $unitUsers->perPage(),
+        $unitUsers->currentPage(),
+        [
+            'path' => $unitUsers->path(),
+            'pageName' => $unitUsers->getPageName(),
+        ]
+    );
+
+    return $paginatedResults;
 }
 }

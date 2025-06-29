@@ -109,4 +109,7 @@
             </table>
         </div>
     </div>
+    <div class="mt-3 d-flex justify-content-center">
+        {{ $residents->withQueryString()->links() }}
+    </div>
 @endsection

@@ -16,7 +16,7 @@
             <i class="bi bi-person-lines-fill me-2"></i>اطلاعات کاربری
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('manager.profile.update') }}">
+            <form method="POST" action="{{ route('profile.update') }}">
                 @csrf
 
                 <div class="row g-3">
@@ -63,7 +63,7 @@
             <i class="bi bi-shield-lock me-2"></i>تغییر رمز عبور
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('manager.profile.password') }}">
+            <form method="POST" action="{{ route('profile.password') }}">
                 @csrf
 
                 <div class="row g-3">

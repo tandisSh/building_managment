@@ -122,4 +122,7 @@
             </table>
         </div>
     </div>
+    <div class="mt-3 d-flex justify-content-center">
+        {{ $invoices->withQueryString()->links() }}
+    </div>
 @endsection

@@ -16,7 +16,7 @@ class SingleInvoiceService
         return Invoice::where('unit_id', $unitId)
             ->with('unit.building')
             ->latest()
-            ->get();
+            ->paginate(20);
     }
 
     // دریافت تمام صورتحساب‌های تکی برای سوپرادمین
@@ -48,7 +48,7 @@ $qo=Building::with('units');
             $query->where('unit_id', $filters['unit_id']);
         }
 
-        return $query->latest()->get();
+        return $query->latest()->paginate(20);
     }
 
     // ایجاد صورتحساب تکی

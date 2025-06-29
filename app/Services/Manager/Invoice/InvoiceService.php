@@ -30,7 +30,7 @@ class InvoiceService
         }
 
 
-        return $query->latest()->get();
+        return $query->latest()->paginate(20);
     }
 
     // دریافت تمام صورتحساب‌های واحدهای ساختمان مدیر
@@ -61,7 +61,7 @@ class InvoiceService
             $query->where('unit_id', $filters['unit_id']);
         }
 
-        return $query->latest()->get();
+        return $query->latest()->paginate(20);
     }
 
 

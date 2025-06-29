@@ -4,9 +4,10 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
- use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\View;
 use App\Models\BuildingUser;
 use App\Models\BuildingRequest;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,21 +25,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        Paginator::defaultView('vendor.pagination.default');
 
-     View::composer('*', function ($view) {
-    if (auth()->check()) {
-        $data = $view->getData();
-        if (!array_key_exists('building', $data)) {
-            $user = auth()->user();
-            $building = optional($user->buildingUser)->building;
-            $buildingRequestStatus = optional($user->buildingRequest)->status;
+        View::composer('*', function ($view) {
+            if (auth()->check()) {
+                $data = $view->getData();
+                if (!array_key_exists('building', $data)) {
+                    $user = auth()->user();
+                    $building = optional($user->buildingUser)->building;
+                    $buildingRequestStatus = optional($user->buildingRequest)->status;
 
-            $view->with(compact('building', 'buildingRequestStatus'));
-        }
+                    $view->with(compact('building', 'buildingRequestStatus'));
+                }
+            }
+        });
     }
-});
-
-
-    }
-
 }

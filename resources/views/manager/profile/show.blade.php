@@ -42,7 +42,7 @@
                         </table>
                         <div class="card-footer bg-light d-flex justify-content-center">
                             <button type="submit" class="btn btn-lg" style="background-color: #4e3cb3">
-                                <a class="text-white" href="{{ route('manager.profile.edit') }}">ویرایش پروفایل</a>
+                                <a class="text-white" href="{{ route('profile.edit') }}">ویرایش پروفایل</a>
                             </button>
                         </div>
                     </div>

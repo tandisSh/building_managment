@@ -93,10 +93,6 @@
                 <div class="mt-3 text-center">
                     {{ $invoices->withQueryString()->links() }}
                 </div>
-                <div class="mt-3 text-center">
-                    <a href="{{ route('superadmin.reports.aggregate_invoices.print', request()->query()) }}" target="_blank"
-                        class="btn btn-info">چاپ گزارش</a>
-                </div>
             @else
                 <div class="alert alert-info text-center">
                     هیچ صورتحسابی یافت نشد.

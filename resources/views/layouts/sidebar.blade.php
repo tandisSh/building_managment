@@ -171,8 +171,8 @@
 
                 <!-- پروفایل مدیر -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('manager.profile.show') ? 'active fw-bold' : '' }}"
-                        href="{{ route('manager.profile.show') }}">
+                    <a class="nav-link {{ request()->routeIs('profile.show') ? 'active fw-bold' : '' }}"
+                        href="{{ route('profile.show') }}">
                         <i class="bi bi-person me-2"></i> <span>پروفایل</span>
                     </a>
                 </li>

@@ -34,6 +34,6 @@ class PaymentService
             });
         }
 
-        return $query->latest()->get();
+        return $query->latest()->paginate(20);
     }
 }

@@ -79,7 +79,7 @@ class SuperAdminController extends Controller
 
     public function requests()
     {
-        $requests = BuildingRequest::with('user')->latest()->get();
+        $requests = BuildingRequest::with('user')->latest()->paginate(20);
         return view('super_admin.requests', compact('requests'));
     }
 

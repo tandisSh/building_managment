@@ -24,7 +24,7 @@ class UnitService
         });
     }
 
-    return $query->get();
+    return $query->paginate(20);
 }
 
 

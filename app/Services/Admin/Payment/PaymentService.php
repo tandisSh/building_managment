@@ -26,6 +26,6 @@ class PaymentService
             $query->where('status', $filters['status']);
         }
 
-        return $query->latest()->get();
+        return $query->latest()->paginate(20);
     }
 }

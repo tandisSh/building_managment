@@ -123,4 +123,7 @@
             </table>
         </div>
     </div>
+    <div class="mt-3 d-flex justify-content-center">
+        {{ $requests->withQueryString()->links() }}
+    </div>
 @endsection

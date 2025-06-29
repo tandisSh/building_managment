@@ -132,4 +132,7 @@
             </table>
         </div>
     </div>
+    <div class="mt-3 d-flex justify-content-center">
+        {{ $invoices->withQueryString()->links('vendor.pagination.default') }}
+    </div>
 @endsection
