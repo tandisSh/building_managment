@@ -20,7 +20,8 @@ class Building extends Model
         'shared_gas',
         'number_of_floors',
         'number_of_units',
-        'is_residential'
+        'is_residential',
+        'activation_status'
     ];
 
     public function manager()

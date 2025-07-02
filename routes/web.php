@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Manager\Payment\InitialPaymentController;
 use App\Http\Controllers\Manager\Payment\PaymentController;
 use App\Http\Controllers\Resident\InvoicePaymentController as ResidentInvoicePaymentController;
 
@@ -54,6 +55,11 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // مدیران
 Route::prefix('manager')->middleware(['auth', 'role:manager'])->group(function () {
     Route::get('/dashboard', [ManagerController::class, 'dashboard'])->name('manager.dashboard');
+
+    // Initial Payment Routes
+    Route::get('/initial-payment', [InitialPaymentController::class, 'show'])->name('manager.initial-payment.show');
+    Route::post('/initial-payment/pay', [InitialPaymentController::class, 'pay'])->name('manager.initial-payment.pay');
+    Route::post('/initial-payment/callback', [InitialPaymentController::class, 'callback'])->name('manager.initial-payment.callback');
 
     // پروفایل مدیر
     Route::get('/profile', [ManagerProfileController::class, 'show'])->name('profile.show');
@@ -196,6 +202,8 @@ Route::prefix('admin')->middleware(['auth', 'role:super_admin'])->name('superadm
     Route::delete('buildings/{building}', [AdminBuildingController::class, 'destroy'])->name('buildings.destroy');
 
     // مدیریت مدیران ساختمان
+    // پرداخت های اولیه مدیران
+    Route::get('/initial-payments', [SuperAdminController::class, 'initialPayments'])->name('initial-payments.index');
     Route::get('building-managers', [BuildingManagerController::class, 'index'])->name('building_managers.index');
     Route::get('building-managers/{building}/edit', [BuildingManagerController::class, 'edit'])->name('building_managers.edit');
     Route::put('building-managers/{building}', [BuildingManagerController::class, 'update'])->name('building_managers.update');

@@ -4,11 +4,15 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Requests\RejectBuildingRequest;
 use App\Http\Controllers\Controller;
+use App\Mail\BuildingRequestApproved;
 use App\Models\BuildingRequest;
 use App\Models\Building;
+use App\Models\InitialFeePayment;
 use App\Models\Payment;
 use App\Services\Admin\Report\ReportService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class SuperAdminController extends Controller
 {
@@ -17,6 +21,12 @@ class SuperAdminController extends Controller
     public function __construct(ReportService $reportService)
     {
         $this->reportService = $reportService;
+    }
+
+    public function initialPayments()
+    {
+        $payments = InitialFeePayment::with('building.manager')->latest()->paginate(20);
+        return view('super_admin.payments.initial_payments_index', compact('payments'));
     }
 
     public function dashboard()
@@ -87,23 +97,38 @@ class SuperAdminController extends Controller
     {
         $req = BuildingRequest::findOrFail($id);
 
-        $building = Building::create([
-            'manager_id' => $req->user_id,
-            'name' => $req->building_name,
-            'address' => $req->address,
-            'shared_electricity' => $req->shared_electricity,
-            'shared_water' => $req->shared_water,
-            'shared_gas' => $req->shared_gas,
-            'number_of_floors' => $req->number_of_floors,
-            'number_of_units' => $req->number_of_units,
-        ]);
+        try {
+            DB::transaction(function () use ($req) {
+                $building = Building::create([
+                    'manager_id' => $req->user_id,
+                    'name' => $req->name,
+                    'address' => $req->address,
+                    'province' => $req->province,
+                    'city' => $req->city,
+                    'shared_electricity' => $req->shared_electricity,
+                    'shared_water' => $req->shared_water,
+                    'shared_gas' => $req->shared_gas,
+                    'number_of_floors' => $req->number_of_floors,
+                    'number_of_units' => $req->number_of_units,
+                ]);
 
-        // اتصال مدیر به ساختمان جدید در جدول میانی
-        $building->users()->attach($req->user_id, ['role' => 'manager']);
+                InitialFeePayment::create([
+                    'building_id' => $building->id,
+                    'amount' => 500000.00,
+                    'status' => 'pending',
+                ]);
 
-        $req->update(['status' => 'approved']);
+                $building->users()->attach($req->user_id, ['role' => 'manager']);
 
-        return back()->with('success', 'درخواست تأیید شد و ساختمان ثبت گردید.');
+                $req->update(['status' => 'approved']);
+            });
+        } catch (\Exception $e) {
+            // Log the error for debugging
+            \Illuminate\Support\Facades\Log::error('Building approval failed: ' . $e->getMessage());
+            return back()->with('error', 'خطایی در هنگام تأیید درخواست رخ داد. لطفاً دوباره تلاش کنید.');
+        }
+
+        return back()->with('success', 'درخواست تأیید شد و ایمیل اطلاع‌رسانی برای مدیر ارسال گردید.');
     }
 
     public function rejectRequest(RejectBuildingRequest $request, $id)

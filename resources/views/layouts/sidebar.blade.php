@@ -6,9 +6,13 @@
     // اگر مدیر بود، آخرین وضعیت درخواست ساختمانش
     $buildingRequestStatus = null;
     if ($roles->contains('manager')) {
-        $latestRequest = \App\Models\BuildingRequest::where('user_id', $user->id)->latest()->first();
+        $latestRequest = \App\Models\BuildingRequest::where('user_id', $user->id)
+            ->latest()
+            ->first();
         $buildingRequestStatus = $latestRequest->status ?? null;
     }
+
+    $isManagerPanelActive = $building && $building->activation_status === 'active';
 @endphp
 
 <div class="sidebar" id="sidebar"> <!-- اضافه کردن ID برای دسترسی با JS -->
@@ -83,6 +87,12 @@
                     <a class="nav-link {{ request()->routeIs('superadmin.payments.index') ? 'active fw-bold' : '' }}"
                         href="{{ route('superadmin.payments.index') }}">
                         <i class="bi bi-credit-card me-2"></i> <span>  پرداخت‌ها </span>
+                    </a>
+                </li>
+                  <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('initial-payments.index') ? 'active fw-bold' : '' }}"
+                        href="{{ route('superadmin.initial-payments.index') }}">
+                        <i class="bi bi-wallet2 me-2"></i> <span> پرداخت‌های اولیه </span>
                     </a>
                 </li>
                     <!-- گزارشات (سرگروه) -->
@@ -209,7 +219,7 @@
 
                 <!-- اطلاعات واحدها -->
                 <li class="nav-item">
-                    @if ($building)
+                    @if ($isManagerPanelActive)
                         <a class="nav-link {{ request()->routeIs('units.index') ? 'active fw-bold' : '' }}"
                             href="{{ route('units.index', $building->id) }}">
                             <i class="bi bi-door-open me-2"></i> <span>اطلاعات واحدها</span>
@@ -223,7 +233,7 @@
 
                 <!-- ساکنین -->
                 <li class="nav-item">
-                    @if ($building && $buildingRequestStatus === 'approved')
+                    @if ($isManagerPanelActive)
                         <a class="nav-link {{ request()->routeIs('residents.index') ? 'active fw-bold' : '' }}"
                             href="{{ route('residents.index', $building->id) }}">
                             <i class="bi bi-people me-2"></i> <span>ساکنین</span>
@@ -237,7 +247,7 @@
 
                 <!-- صورتحساب‌ها (سرگروه) -->
                 <li class="nav-item dropdown">
-                    @if ($building && $buildingRequestStatus === 'approved')
+                    @if ($isManagerPanelActive)
                         <a class="nav-link dropdown-toggle {{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'active fw-bold' : '' }}"
                             href="#invoiceSubmenu" data-bs-toggle="collapse" role="button"
                             aria-expanded="{{ request()->routeIs('manager.invoices.*') || request()->routeIs('manager.bulk_invoices.*') ? 'true' : 'false' }}"
@@ -270,7 +280,7 @@
 
                 <!-- پرداخت ها -->
                 <li class="nav-item">
-                    @if ($building && $buildingRequestStatus === 'approved')
+                    @if ($isManagerPanelActive)
                         <a class="nav-link {{ request()->routeIs('payments.index') ? 'active fw-bold' : '' }}"
                             href="{{ route('payments.index', $building->id) }}">
                             <i class="bi bi-credit-card me-2"></i> <span>پرداخت‌ها</span>
@@ -284,7 +294,7 @@
 
                 <!-- درخواست ها -->
                 <li class="nav-item">
-                    @if ($building && $buildingRequestStatus === 'approved')
+                    @if ($isManagerPanelActive)
                         <a class="nav-link {{ request()->routeIs('requests.index') ? 'active fw-bold' : '' }}"
                             href="{{ route('requests.index') }}">
                             <i class="bi bi-tools me-2"></i> <span>درخواست‌ها</span>
@@ -298,7 +308,7 @@
 
                 <!-- گزارشات (سرگروه) -->
                 <li class="nav-item dropdown">
-                    @if ($building && $buildingRequestStatus === 'approved')
+                    @if ($isManagerPanelActive)
                         <a class="nav-link dropdown-toggle {{ request()->routeIs('reports.*') ? 'active fw-bold' : '' }}"
                             href="#reportSubmenu" data-bs-toggle="collapse" role="button"
                             aria-expanded="{{ request()->routeIs('reports.*') ? 'true' : 'false' }}"

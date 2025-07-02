@@ -17,13 +17,26 @@ class ManagerController extends Controller
 
     public function dashboard()
     {
-        $buildingId = auth()->user()->building()->pluck('id')->first();
+        $building = auth()->user()->building;
 
-        $stats = $this->reportService->getDashboardStats($buildingId);
-        $monthlyChart = $this->reportService->getMonthlyInvoiceAndPaymentChart($buildingId);
-        $expenseChart = $this->reportService->getExpenseTypeChart($buildingId);
-// dd($monthlyChart);
-// dd($expenseChart);
-        return view('manager.dashboard', compact('stats', 'monthlyChart', 'expenseChart'));
+        $initialPaymentPending = false;
+        $buildingNotReady = false;
+        $stats = [];
+        $monthlyChart = [];
+        $expenseChart = [];
+
+        if ($building) {
+            if ($building->activation_status === 'pending_payment') {
+                $initialPaymentPending = true;
+            } else {
+                $stats = $this->reportService->getDashboardStats($building->id);
+                $monthlyChart = $this->reportService->getMonthlyInvoiceAndPaymentChart($building->id);
+                $expenseChart = $this->reportService->getExpenseTypeChart($building->id);
+            }
+        } else {
+            $buildingNotReady = true;
+        }
+
+        return view('manager.dashboard', compact('stats', 'monthlyChart', 'expenseChart', 'initialPaymentPending', 'buildingNotReady'));
     }
 }
