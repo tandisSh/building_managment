@@ -127,7 +127,7 @@ class ReportService
 
     public function getBuildingPerformanceReport(array $filters = [])
     {
-        $query = \App\Models\Building::with([
+        $query = Building::with([
             'units',
             'units.unitUsers',
             'units.invoices',
@@ -708,7 +708,7 @@ class ReportService
             $totalUnits = $buildings->sum('number_of_units');
             $totalInvoices = $buildings->flatMap->units->flatMap->invoices;
             $totalPayments = $totalInvoices->flatMap->payments->where('status', 'success');
-            
+
             return [
                 'province' => $province,
                 'total_buildings' => $buildings->count(),
@@ -717,7 +717,7 @@ class ReportService
                 'total_invoiced_amount' => $totalInvoices->sum('amount'),
                 'total_payments' => $totalPayments->count(),
                 'total_paid_amount' => $totalPayments->sum('amount'),
-                'payment_rate' => $totalInvoices->sum('amount') > 0 ? 
+                'payment_rate' => $totalInvoices->sum('amount') > 0 ?
                     round(($totalPayments->sum('amount') / $totalInvoices->sum('amount')) * 100, 1) : 0,
                 'avg_units_per_building' => round($totalUnits / $buildings->count(), 1),
                 'buildings_with_manager' => $buildings->whereNotNull('manager_id')->count(),

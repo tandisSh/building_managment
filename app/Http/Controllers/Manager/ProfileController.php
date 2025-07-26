@@ -26,7 +26,7 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request)
     {
         $user = Auth::user();
-        
+
         $user->update($request->validated());
 
         return redirect()->route('manager.profile.show')->with('success', 'پروفایل با موفقیت به‌روزرسانی شد.');
@@ -44,4 +44,4 @@ class ProfileController extends Controller
 
         return redirect()->route('manager.profile.edit')->with('success', 'رمز عبور با موفقیت تغییر کرد.');
     }
-} 
+}
