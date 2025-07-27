@@ -27,6 +27,7 @@ class ReportService
 
         $query = Payment::query()
             ->with(['user', 'invoice.unit.building'])
+            //پرداخت های مربوط به واحد های این ساختمان
             ->whereHas('invoice.unit', function ($q) use ($buildingId, $filters) {
                 $q->where('building_id', $buildingId);
 
